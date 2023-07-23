@@ -163,7 +163,9 @@ class DataGenerator:
         generated_structure = {}
 
         # Go through each datapoint collection
-        for datapoint_collection_values in datapoint_collections.values():
+        for datapoint_collection_name, datapoint_collection_values in datapoint_collections.items():
+            if datapoint_collection_name[:2] == "--":
+                continue
             # Go through each datapoint in the datapoint collections
             for (
                 datapoints_values_key,

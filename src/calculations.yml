@@ -31,6 +31,9 @@
 - import_path: calculations.tba_team
   class_name: TBATeamCalc
 
+- import_path: calculations.auto_pims
+  class_name: AutoPIMCalc
+
 - import_path: calculations.auto_paths
   class_name: AutoPathCalc
 

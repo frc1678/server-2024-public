@@ -60,7 +60,7 @@ def generate_random_value(value_type: str, value_name: str = "", seed=None):
     elif value_type == "list":
         # For certain lists of strings, it is possible to generate a list of random specific enum values
         # generate random data for auto_pieces_start_position in match_collection_qr_schema
-        if value_name == "auto_pieces_start_position":
+        if "auto_pieces_start_position" in value_name:
             return [random.choice([0, 1]) for i in range(4)]
         # generate random data for modes (which are lists) in calc_obj_team_schema
         elif "mode" in value_name:

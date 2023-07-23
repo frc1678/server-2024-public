@@ -6,6 +6,52 @@ import generate_test_data
 from generate_test_data import DataGenerator, parse_args
 
 CORRECT_SCHEMA_DATAPOINT_COLLECTIONS = [
+    # Auto Paths
+    {
+        "team_number": "6604",
+        "auto_charge_level_max": "D",
+        "score_position_1_max": "yyyyyyyyyyy",
+        "score_position_2_max": "yyyyyyyyyyy",
+        "score_position_3_max": "yyyyyyyyyyy",
+        "score_piece_1_max": "yyyyyyyyyyy",
+        "score_piece_2_max": "yyyyyyyyyyy",
+        "score_piece_3_max": "yyyyyyyyyyy",
+        "auto_charge_successes": 49,
+        "score_1_max_successes": 49,
+        "score_1_successes": 49,
+        "score_2_max_successes": 49,
+        "score_2_successes": 49,
+        "score_3_max_successes": 49,
+        "score_3_successes": 49,
+    },
+    # Auto PIM
+    {
+        "team_number": "6604",
+        "match_number": 49,
+        "obj_tim.start_position": ["3", "0"],  # TODO: Should be str
+        "obj_tim.preloaded_gamepiece": "O",
+        "obj_tim.auto_charge_level": "D",
+        "tba_tim.mobility": True,
+        "subj_tim.auto_pieces_start_position": [1, 1, 0, 1],
+        "intake_piece_1": "yyyyyyyyyyy",
+        "intake_piece_2": "yyyyyyyyyyy",
+        "intake_piece_3": "yyyyyyyyyyy",
+        "intake_piece_4": "yyyyyyyyyyy",
+        "intake_position_1": "yyyyyyyyyyy",
+        "intake_position_2": "yyyyyyyyyyy",
+        "intake_position_3": "yyyyyyyyyyy",
+        "intake_position_4": "yyyyyyyyyyy",
+        "score_piece_1": "yyyyyyyyyyy",
+        "score_piece_2": "yyyyyyyyyyy",
+        "score_piece_3": "yyyyyyyyyyy",
+        "score_piece_4": "yyyyyyyyyyy",
+        "score_piece_5": "yyyyyyyyyyy",
+        "score_position_1": "yyyyyyyyyyy",
+        "score_position_2": "yyyyyyyyyyy",
+        "score_position_3": "yyyyyyyyyyy",
+        "score_position_4": "yyyyyyyyyyy",
+        "score_position_5": "yyyyyyyyyyy",
+    },
     # Obj Team
     {
         "team_number": "6604",

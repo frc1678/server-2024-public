@@ -21,6 +21,7 @@ COLLECTION_SCHEMA = utils.read_schema("schema/collection_schema.yml")
 COLLECTION_NAMES = [collection for collection in COLLECTION_SCHEMA["collections"].keys()]
 VALID_COLLECTIONS = [
     "auto_paths",
+    "auto_pim",
     "obj_team",
     "obj_tim",
     "subj_team",
@@ -128,6 +129,19 @@ class Database:
             return
         self.db[collection].update_one(query, {"$set": new_data}, upsert=True)
 
+    def update_many(
+        self,
+        collection: str,
+        new_data: dict,
+        query: dict,
+    ) -> None:
+        """Updates many documents that match 'query' with 'new_data', uses upsert"""
+        check_collection_name(collection)
+        if collection == "raw_qr":
+            log.warning(f"Attempted to modify raw qr data")
+            return
+        self.db[collection].update_many(query, {"$set": new_data}, upsert=True)
+
     def update_qr_blocklist_status(self, query, blocklist=True) -> None:
         """Changes the status of a raw qr matching 'query' from blocklisted: true to blocklisted: false
         Lowers risk of data loss from using normal update."""
@@ -186,7 +200,7 @@ def mongo_convert(sch):
     out["properties"] = {}
     for section, datapoints in sch.items():
         # These sections aren't stored in the database; ignore them
-        if section in ["schema_file", "enums"]:
+        if section in ["schema_file", "enums"] or section[:2] == "--":
             continue
         for datapoint, info in datapoints.items():
             datapoint_dict = {}
