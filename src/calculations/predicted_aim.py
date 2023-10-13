@@ -497,7 +497,7 @@ class PredictedAimCalc(BaseCalculations):
                     "picks": [
                         team[3:]
                         for team in (
-                            alliance["picks"][0] + alliance["picks"][2:4]
+                            [alliance["picks"][0]] + alliance["picks"][2:4]
                             if len(alliance["picks"]) > 3
                             else alliance["picks"][:3]
                         )

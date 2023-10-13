@@ -103,13 +103,14 @@ class UnconsolidatedTotals(BaseCalculations):
         grid_status = {}
         for match in matches:
             alliance_status = {}
-            for alliance in ["red", "blue"]:
-                alliance_status[alliance] = True
-                for row in match["score_breakdown"][alliance]["teleopCommunity"].values():
-                    if "None" in row:
-                        alliance_status[alliance] = False
+            if match["score_breakdown"] is not None:
+                for alliance in ["red", "blue"]:
+                    alliance_status[alliance] = True
+                    for row in match["score_breakdown"][alliance]["teleopCommunity"].values():
+                        if "None" in row:
+                            alliance_status[alliance] = False
 
-            grid_status[match["match_number"]] = alliance_status
+                    grid_status[match["match_number"]] = alliance_status
 
         return grid_status
 
