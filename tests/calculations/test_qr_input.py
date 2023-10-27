@@ -28,7 +28,7 @@ class TestQRInput:
             self.test_calc.run("*test")
             assert (query := self.server.db.find("raw_qr")) != []
             assert "data" in query[0].keys() and query[0]["data"] == "*test"
-            assert isinstance(query[0]["epoch_time"], float)
+            assert isinstance(query[0]["ulid"], str)
             assert isinstance(query[0]["readable_time"], str)
 
             self.test_calc.run("*test\ntest")
@@ -46,7 +46,7 @@ class TestQRInput:
             #     self.test_calc.run()
             #     assert (query := self.server.db.find("raw_qr")) != []
             #     assert "data" in query[0].keys() and query[0]["data"] == "*test"
-            #     assert isinstance(query[0]["epoch_time"], float)
+            #     assert isinstance(query[0]["ulid"], str)
             #     assert isinstance(query[0]["readable_time"], str)
             # with mock.patch("builtins.input", return_value="*test\ttest"):
             #     self.test_calc.run()

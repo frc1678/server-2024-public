@@ -17,7 +17,9 @@ def test_insert_fake_qr_data():
     # Use decompressor function to check if qrs match schema
     formatted_fake_qrs = []
     for qr in insert_fake_data.insert_fake_qr_data():
-        formatted_fake_qrs.append({"data": qr, "override": {}})
+        formatted_fake_qrs.append(
+            {"data": qr, "override": {}, "ulid": "01GWT1FZ20QQ277RAKQK0ND3DM"}
+        )
 
     DECOMPRESSOR.decompress_qrs(formatted_fake_qrs)
 

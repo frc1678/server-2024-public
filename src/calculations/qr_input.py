@@ -4,7 +4,7 @@ import calculations.base_calculations
 import utils
 
 import datetime
-
+from ulid import ULID
 import logging
 
 import sys
@@ -36,14 +36,14 @@ class QRInput(calculations.base_calculations.BaseCalculations):
             else:
                 log.warning(f'Invalid QR code not uploaded: "{qr_code}"')
         if qr != set():
-            curr_time = datetime.datetime.now()
+            ulid = ULID()
             qr = [
                 {
                     "data": qr_code,
                     "blocklisted": False,
                     "override": {},
-                    "epoch_time": curr_time.timestamp(),
-                    "readable_time": curr_time.strftime("%D - %H:%M:%S"),
+                    "ulid": str(ulid),
+                    "readable_time": str(ulid.datetime),
                 }
                 for qr_code in qr
             ]

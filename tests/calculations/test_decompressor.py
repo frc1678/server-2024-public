@@ -298,6 +298,7 @@ class TestDecompressor:
                     "auto_charge_level": "N",
                     "tele_charge_level": "N",
                     "preloaded_gamepiece": "N",
+                    "ulid": "01GWSXQYKYQQ963QMT77A3NPBZ",
                 }
             ],
             "subj_tim": [
@@ -316,6 +317,7 @@ class TestDecompressor:
                     "auto_pieces_start_position": [1, 1, 0, 0],
                     "played_defense": True,
                     "defense_timestamp": 196,
+                    "ulid": "01GWSXSNSF93BQZ2GRG0C4E7AC",
                 },
                 {
                     "schema_version": decompressor.Decompressor.SCHEMA["schema_file"]["version"],
@@ -332,6 +334,7 @@ class TestDecompressor:
                     "auto_pieces_start_position": [1, 1, 0, 0],
                     "played_defense": False,
                     "defense_timestamp": 373,
+                    "ulid": "01GWSXSNSF93BQZ2GRG0C4E7AC",
                 },
                 {
                     "schema_version": decompressor.Decompressor.SCHEMA["schema_file"]["version"],
@@ -348,6 +351,7 @@ class TestDecompressor:
                     "auto_pieces_start_position": [1, 1, 0, 0],
                     "played_defense": False,
                     "defense_timestamp": 746,
+                    "ulid": "01GWSXSNSF93BQZ2GRG0C4E7AC",
                 },
             ],
         }
@@ -356,10 +360,12 @@ class TestDecompressor:
                 {
                     "data": f"+A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$Bs1234$C34$D1230$Ev1.3$FName$GTRUE%Z1678$Y14$X4$W060AD061AE$VN$UN$TN",
                     "override": {},
+                    "ulid": "01GWSXQYKYQQ963QMT77A3NPBZ",
                 },
                 {
                     "data": f"*A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$Bs1234$C34$D1230$Ev1.3$FName$GFALSE%A1678$B1$C2$DFALSE$FTRUE$G196#A254$B2$C2$DFALSE$FFALSE$G373#A1323$B3$C3$DTRUE$FFALSE$G746^E1100",
                     "override": {},
+                    "ulid": "01GWSXSNSF93BQZ2GRG0C4E7AC",
                 },
             ]
         )
@@ -514,6 +520,7 @@ class TestDecompressor:
             "auto_charge_level": "N",
             "tele_charge_level": "N",
             "preloaded_gamepiece": "N",
+            "ulid": "01GWSYJHR5EC6PAKCS79YZAF3Z",
         }
         expected_sbj = [
             {
@@ -531,6 +538,7 @@ class TestDecompressor:
                 "auto_pieces_start_position": [1, 0, 1, 0],
                 "played_defense": False,
                 "defense_timestamp": 277,
+                "ulid": "01GWSYM2JP9JMDFCRVCX49PNY0",
             },
             {
                 "schema_version": decompressor.Decompressor.SCHEMA["schema_file"]["version"],
@@ -547,6 +555,7 @@ class TestDecompressor:
                 "auto_pieces_start_position": [1, 0, 1, 0],
                 "played_defense": False,
                 "defense_timestamp": 219,
+                "ulid": "01GWSYM2JP9JMDFCRVCX49PNY0",
             },
             {
                 "schema_version": decompressor.Decompressor.SCHEMA["schema_file"]["version"],
@@ -563,9 +572,9 @@ class TestDecompressor:
                 "auto_pieces_start_position": [1, 0, 1, 0],
                 "played_defense": False,
                 "defense_timestamp": 420,
+                "ulid": "01GWSYM2JP9JMDFCRVCX49PNY0",
             },
         ]
-        curr_time = datetime.datetime.utcnow()
 
         self.test_server.db.insert_documents(
             "raw_qr",
@@ -574,29 +583,29 @@ class TestDecompressor:
                     "data": f"+A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$BgCbtwqZ$C51$D9321$Ev1.3$FXvfaPcSrgJw25VKrcsphdbyEVjmHrH1V$GFALSE%Z3603$Y13$X2$W000AA001AB002AC005AO006AB007AD008AE$VN$UN$TN",
                     "blocklisted": False,
                     "override": {"start_position": "1", "doesnt_exist": 5},
-                    "epoch_time": curr_time.timestamp(),
-                    "readable_time": curr_time.strftime("%D - %H:%M:%S"),
+                    "ulid": "01GWSYJHR5EC6PAKCS79YZAF3Z",
+                    "readable_time": "2023-03-30 19:05:38.821000+00:00",
                 },
                 {
                     "data": f"+A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$BgCbtwqZ$C51$D9321$Ev1.3$FXvfaPcSrgJw25VKrcsphdbyEVjmHrH1V$GFALSE%Z3603$Y13$X2$W000AA001AB002AC005AO006AB007AD008AE$VN$UN$TN",
                     "blocklisted": True,
                     "override": {"start_position": "1", "doesnt_exist": 5},
-                    "epoch_time": curr_time.timestamp(),
-                    "readable_time": curr_time.strftime("%D - %H:%M:%S"),
+                    "ulid": "01GWSYKDZDM45M1K4ZBHN6G97H",
+                    "readable_time": "2023-03-30 19:06:07.725000+00:00",
                 },
                 {
                     "data": f"*A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$Bs1234$C34$D1230$Ev1.3$FName$GFALSE%A1678$B1$C2$DFALSE$FFALSE$G277#A254$B2$C2$DFALSE$FFALSE$G219#A1323$B3$C3$DTRUE$FFALSE$G420^E1010",
                     "blocklisted": False,
                     "override": {},
-                    "epoch_time": curr_time.timestamp(),
-                    "readable_time": curr_time.strftime("%D - %H:%M:%S"),
+                    "ulid": "01GWSYM2JP9JMDFCRVCX49PNY0",
+                    "readable_time": "2023-03-30 19:06:28.822000+00:00",
                 },
                 {
                     "data": f"*A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$Bs1234$C34$D1230$Ev1.3$FName$GFALSE%A1678$B2$C2$DFALSE$FFALSE$G277#A254$B3$C2$DFALSE$FFALSE$G219#A1323$B1$C3$DTRUE$FFALSE$G420^E1110",
                     "blocklisted": False,
                     "override": {},
-                    "epoch_time": curr_time.timestamp(),
-                    "readable_time": curr_time.strftime("%D - %H:%M:%S"),
+                    "ulid": "01GWSYMT48K5P3BFF183GXB9C0",
+                    "readable_time": "2023-03-30 19:06:52.936000+00:00",
                 },
             ],
         )

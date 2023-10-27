@@ -470,9 +470,9 @@ TEST_TBA_TEAM = [
 TEST_RAW_OBJ_PIT = [
     {
         "team_number": "254",
-        "drivetrain": 2,
+        "drivetrain": "2",
         "drivetrain_motors": 1,
-        "drivetrain_motor_type": 0,
+        "drivetrain_motor_type": "0",
         "has_vision": True,
         "has_communication_device": True,
         "weight": 5.8153,
@@ -481,9 +481,9 @@ TEST_RAW_OBJ_PIT = [
     },
     {
         "team_number": "0",
-        "drivetrain": 0,
+        "drivetrain": "0",
         "drivetrain_motors": 8,
-        "drivetrain_motor_type": 2,
+        "drivetrain_motor_type": "2",
         "has_vision": True,
         "has_communication_device": True,
         "weight": 0.6261,
@@ -492,9 +492,9 @@ TEST_RAW_OBJ_PIT = [
     },
     {
         "team_number": "1",
-        "drivetrain": 1,
+        "drivetrain": "1",
         "drivetrain_motors": 3,
-        "drivetrain_motor_type": 2,
+        "drivetrain_motor_type": "2",
         "has_vision": True,
         "has_communication_device": False,
         "weight": 5.1894,
@@ -746,9 +746,9 @@ class TestExportTeam:
             {
                 "0": {
                     "team_number": "0",
-                    "drivetrain": 0,
+                    "drivetrain": "0",
                     "drivetrain_motors": 8,
-                    "drivetrain_motor_type": 2,
+                    "drivetrain_motor_type": "2",
                     "has_vision": True,
                     "has_communication_device": True,
                     "weight": 0.6261,
@@ -766,9 +766,9 @@ class TestExportTeam:
                 },
                 "1": {
                     "team_number": "1",
-                    "drivetrain": 1,
+                    "drivetrain": "1",
                     "drivetrain_motors": 3,
-                    "drivetrain_motor_type": 2,
+                    "drivetrain_motor_type": "2",
                     "has_vision": True,
                     "has_communication_device": False,
                     "weight": 5.1894,

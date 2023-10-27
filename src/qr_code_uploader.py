@@ -11,6 +11,7 @@ from data_transfer import database
 import utils
 
 import datetime
+from ulid import ULID
 import logging
 
 log = logging.getLogger(__name__)
@@ -49,14 +50,14 @@ def upload_qr_codes(qr_codes):
 
     # Adds the QR codes to the local database if the set isn't empty
     if qr != set():
-        curr_time = datetime.datetime.now()
+        ulid = ULID()
         qr = [
             {
                 "data": qr_code,
                 "blocklisted": False,
                 "override": {},
-                "epoch_time": curr_time.timestamp(),
-                "readable_time": curr_time.strftime("%D - %H:%M:%S"),
+                "ulid": str(ulid),
+                "readable_time": str(ulid.datetime),
             }
             for qr_code in qr
         ]

@@ -268,6 +268,7 @@ class Decompressor(base_calculations.BaseCalculations):
                 continue
             # Check for overrides
             for decompressed in decompressed_qr:
+                decompressed["ulid"] = qr["ulid"]
                 not_overriden = {}
                 for edited_datapoint in qr["override"]:
                     if edited_datapoint in decompressed:
