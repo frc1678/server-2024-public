@@ -465,18 +465,20 @@ class PredictedAimCalc(BaseCalculations):
         )
         playoffs_alliances = []
 
-        for alliance in tba_playoffs_data:
+        for (num, alliance) in enumerate(tba_playoffs_data):
+            # Get alliance number (enumerate function is zero-indexed so each number has to be incremented by one)
+            alliance_num = num + 1
             # Add captain, 1st, and 2nd pick
             playoffs_alliances.append(
                 {
-                    "alliance_num": int(alliance["name"][-1]),
+                    "alliance_num": alliance_num,
                     "picks": [team[3:] for team in alliance["picks"][:3]],
                 }
             )
             # Add captain, 1st, and 3rd pick
             playoffs_alliances.append(
                 {
-                    "alliance_num": int(alliance["name"][-1]) + 8,
+                    "alliance_num": alliance_num + 8,
                     "picks": [
                         team[3:]
                         for team in (
@@ -493,7 +495,7 @@ class PredictedAimCalc(BaseCalculations):
             # Add captain, 2nd, and 3rd pick
             playoffs_alliances.append(
                 {
-                    "alliance_num": int(alliance["name"][-1]) + 16,
+                    "alliance_num": alliance_num + 16,
                     "picks": [
                         team[3:]
                         for team in (
