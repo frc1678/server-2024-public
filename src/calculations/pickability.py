@@ -54,21 +54,6 @@ class PickabilityCalc(base_calculations.BaseCalculations):
                 weighted_sum += product
         return weighted_sum
 
-    def calculate_max_pickability(self, calc_name, updates):
-        """Returns the max between offensive and defensive second pickability
-        //TODO Remove unnecessary variables and make the code cleaner"""
-        # Only used for overall_second_pickability
-        offensive_second_pickability = None
-        defensive_second_pickability = None
-        for update in updates:
-            if "offensive_second_pickability" in update:
-                offensive_second_pickability = update["offensive_second_pickability"]
-            if "defensive_second_pickability" in update:
-                defensive_second_pickability = update["defensive_second_pickability"]
-        if not offensive_second_pickability or not defensive_second_pickability:
-            return  # Can't calculate pickability without both
-        return max(offensive_second_pickability, defensive_second_pickability)
-
     def update_pickability(self):
         """Creates updated pickability documents"""
         updates = []
@@ -87,14 +72,6 @@ class PickabilityCalc(base_calculations.BaseCalculations):
                     continue
                 update[calc_name] = value
                 updates.append(update)
-            if "max_calculations" in self.pickability_schema:
-                for calc_name in self.pickability_schema["max_calculations"]:
-                    value = self.calculate_max_pickability(calc_name, updates)
-                    if value is None:
-                        log.error(f"{calc_name} could not be calculated for team: {team}")
-                        continue
-                    update[calc_name] = value
-                    updates.append(update)
         return updates
 
     def run(self) -> None:

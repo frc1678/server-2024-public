@@ -1,9 +1,9 @@
-from calculations import pickability
-from server import Server
+import pytest
 
 from unittest import mock
 
-import pytest
+from calculations import pickability
+from server import Server
 
 
 FAKE_SCHEMA = {
@@ -26,12 +26,6 @@ FAKE_SCHEMA = {
             "test.datapoint2": 1,
             "test2.datapoint1": 2,
         },
-    },
-    "max_calculations": {
-        "overall_second_pickability": {
-            "type": "float",
-            "fields": ["offensive_second_pickability", "defensive_second_pickability"],
-        }
     },
 }
 
@@ -79,37 +73,6 @@ class TestPickability:
     @staticmethod
     @mock.patch("utils.read_schema", return_value=FAKE_SCHEMA)
     @mock.patch("server.Server.ask_calc_all_data", return_value=False)
-    def test_calculate_max_pickability(mock, calc_all_data_mock):
-        test_calc = pickability.PickabilityCalc(Server())
-        calc_data = [
-            {"first_pickability": 6},
-            {"offensive_second_pickability": 5},
-            {"defensive_second_pickability": 9},
-        ]
-        calc_data_2 = [
-            {"first_pickability": 6},
-            {"offensive_second_pickability": 5},
-            {"defensive_second_pickability": 5},
-        ]
-        calc_data_3 = [
-            {"first_pickability": 6},
-            {"offensive_second_pickability": 10},
-            {"defensive_second_pickability": 9},
-        ]
-        calc_data_4 = [
-            {"first_pickability": 6},
-            {"offensive_second_pickability": 5},
-        ]
-        assert test_calc.calculate_max_pickability("overall_second_pickability", calc_data) == 9
-        assert test_calc.calculate_max_pickability("overall_second_pickability", calc_data_2) == 5
-        assert test_calc.calculate_max_pickability("overall_second_pickability", calc_data_3) == 10
-        assert (
-            test_calc.calculate_max_pickability("overall_second_pickability", calc_data_4) is None
-        )
-
-    @staticmethod
-    @mock.patch("utils.read_schema", return_value=FAKE_SCHEMA)
-    @mock.patch("server.Server.ask_calc_all_data", return_value=False)
     def test_run(calc_all_data_mock, schema_mock):
         server_obj = Server()
         test_calc = pickability.PickabilityCalc(server_obj)
@@ -133,7 +96,6 @@ class TestPickability:
             "defensive_second_pickability": 12,
             "first_pickability": 7,
             "offensive_second_pickability": 10,
-            "overall_second_pickability": 12,
         }
 
         # Test updating the function
