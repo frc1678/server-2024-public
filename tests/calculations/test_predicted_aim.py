@@ -444,18 +444,7 @@ class TestPredictedAimCalc:
             {
                 "match_number": 3,
                 "comp_level": "qm",
-                "score_breakdown": {
-                    "blue": {
-                        "activationBonusAchieved": None,
-                        "sustainabilityBonusAchieved": None,
-                        "totalPoints": 0,
-                    },
-                    "red": {
-                        "activationBonusAchieved": None,
-                        "sustainabilityBonusAchieved": None,
-                        "totalPoints": 0,
-                    },
-                },
+                "score_breakdown": {},
                 "post_result_time": None,
                 "winning_alliance": "",
             },

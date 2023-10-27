@@ -567,7 +567,7 @@ class PredictedAimCalc(BaseCalculations):
             if (
                 match["match_number"] == match_number
                 and match["comp_level"] == "qm"
-                and match["post_result_time"] != None
+                and match["score_breakdown"] != {}
             ):
                 actual_aim = match["score_breakdown"]
                 if aim["alliance_color"] == "R":
