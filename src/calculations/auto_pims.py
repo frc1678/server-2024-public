@@ -41,9 +41,9 @@ class AutoPIMCalc(BaseCalculations):
             )
             sim_precision: List[Dict[str, float]] = self.server.db.find("sim_precision", sim)
             if len(sim_precision) == 0:
-                log.warning(f"auto_pim: sim_precision for {sim} not found")
+                continue
             elif "sim_precision" not in sim_precision[0]:
-                log.error(f"auto_pim: 'sim_precision' not found in sim for {sim}")
+                continue
             else:
                 if len(sim_precision) > 1:
                     log.error(
