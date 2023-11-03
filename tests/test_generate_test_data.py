@@ -378,8 +378,8 @@ CORRECT_SCHEMA_DATAPOINT_COLLECTIONS = [
     # Obj Pit
     {
         "team_number": "6604",
-        "drivetrain": None,
-        "drivetrain_motor_type": None,
+        "drivetrain": 1,
+        "drivetrain_motor_type": 1,
         "drivetrain_motors": 49,
         "has_vision": True,
         "has_communication_device": True,

@@ -9,7 +9,6 @@ class TestQRState:
         # Set of what the data fields should be
         expected_data_fields = {
             "schema_version",
-            "serial_number",
             "match_number",
             "timestamp",
             "match_collection_version_number",

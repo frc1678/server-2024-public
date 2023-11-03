@@ -23,11 +23,6 @@ def test_compress_section_generic_data():
     schema_data = {"schema_version": 5}
     compressed_schema = "A5"
     assert compression.compress_section(schema_data, "generic_data") == compressed_schema
-    # Check multiple points
-    schema_data["serial_number"] = "test"
-    # Qrs are only uppercase
-    compressed_schema += "$BTEST"
-    assert compression.compress_section(schema_data, "generic_data") == compressed_schema
 
 
 def test_compress_section_obj():
@@ -55,7 +50,6 @@ def test_compress_section_subj():
 def test_compress_obj_tim():
     data = {
         "schema_version": 1,
-        "serial_number": "HASAMPLENUM",
         "match_number": 1,
         "timestamp": 1582994470,
         "match_collection_version_number": "1.0.2",
@@ -69,7 +63,7 @@ def test_compress_obj_tim():
         ],
         "auto_charge_level": "N",
     }
-    compressed_data = "+A1$BHASAMPLENUM$C1$D1582994470$E1.0.2$FKEI R%Z9999$Y2$XFOUR$W045AL007AM$VN"
+    compressed_data = "+A1$B1$C1582994470$D1.0.2$EKEI R%Z9999$Y2$XFOUR$W045AL007AM$VN"
     assert compression.compress_obj_tim(data) == compressed_data
 
 
@@ -77,7 +71,6 @@ def test_compress_subj_aim():
     data = [
         {
             "schema_version": 1,
-            "serial_number": "HASAMPLENUM",
             "match_number": 1,
             "timestamp": 1582994470,
             "match_collection_version_number": "1.0.2",
@@ -89,7 +82,6 @@ def test_compress_subj_aim():
         },
         {
             "schema_version": 1,
-            "serial_number": "HASAMPLENUM",
             "match_number": 1,
             "timestamp": 1582994470,
             "match_collection_version_number": "1.0.2",
@@ -101,7 +93,6 @@ def test_compress_subj_aim():
         },
         {
             "schema_version": 1,
-            "serial_number": "HASAMPLENUM",
             "match_number": 1,
             "timestamp": 1582994470,
             "match_collection_version_number": "1.0.2",
@@ -112,12 +103,13 @@ def test_compress_subj_aim():
             "played_defense": True,
         },
     ]
-    compressed_data = "*A1$BHASAMPLENUM$C1$D1582994470$E1.0.2$FYOUYOU X%A3128$B1$C2$FFALSE#A1678$B2$C1$FFALSE#A972$B3$C3$FTRUE"
+    compressed_data = (
+        "*A1$B1$C1582994470$D1.0.2$EYOUYOU X%A3128$B1$C2$FFALSE#A1678$B2$C1$FFALSE#A972$B3$C3$FTRUE"
+    )
     assert compression.compress_subj_aim(data) == compressed_data
     error_data = [
         {
             "schema_version": 1,
-            "serial_number": "HASAMPLENUM",
             "match_number": 1,
             "timestamp": 1582994470,
             "match_collection_version_number": "1.0.2",
@@ -129,7 +121,6 @@ def test_compress_subj_aim():
         },
         {
             "schema_version": 1,
-            "serial_number": "HASAMPLENUM",
             "match_number": 1,
             "timestamp": 1582994470,
             "match_collection_version_number": "1.0.2",
@@ -141,7 +132,6 @@ def test_compress_subj_aim():
         },
         {
             "schema_version": 1,
-            "serial_number": "HASAMPLENUM",
             "match_number": 1,
             "timestamp": 1582994470,
             "match_collection_version_number": "1.0.2",

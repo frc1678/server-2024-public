@@ -76,7 +76,6 @@ class TestDecompressor:
         assert "_section_separator" == self.test_decompressor.get_decompressed_name(
             "%", "generic_data"
         )
-        assert "serial_number" == self.test_decompressor.get_decompressed_name("B", "generic_data")
         assert "timeline" == self.test_decompressor.get_decompressed_name("W", "objective_tim")
         assert "_start_character" == self.test_decompressor.get_decompressed_name(
             "+", "objective_tim"
@@ -111,9 +110,6 @@ class TestDecompressor:
         assert "int" == self.test_decompressor.get_decompressed_type(
             "schema_version", "generic_data"
         )
-        assert "str" == self.test_decompressor.get_decompressed_type(
-            "serial_number", "generic_data"
-        )
         # Test when list has more than two values
         assert ["list", "dict"] == self.test_decompressor.get_decompressed_type(
             "timeline", "objective_tim"
@@ -124,7 +120,7 @@ class TestDecompressor:
         assert {
             "schema_version": 7,
             "scout_name": "Name",
-        } == self.test_decompressor.decompress_data(["A7", "FName"], "generic_data")
+        } == self.test_decompressor.decompress_data(["A7", "EName"], "generic_data")
         # Test objective tim
         assert {"team_number": "1678"} == self.test_decompressor.decompress_data(
             ["Z1678"], "objective_tim"
@@ -149,14 +145,13 @@ class TestDecompressor:
             "schema_version": decompressor.Decompressor.SCHEMA["schema_file"][
                 "version"
             ],  # read the current version of schema file
-            "serial_number": "s1234",
             "match_number": 34,
             "timestamp": 1230,
             "match_collection_version_number": "v1.3",
             "scout_name": "Name",
         }
         assert expected_decompressed_data == self.test_decompressor.decompress_generic_qr(
-            f"A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$Bs1234$C34$D1230$Ev1.3$FName"
+            f"A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B34$C1230$Dv1.3$EName"
         )
 
     def test_decompress_timeline(self):
@@ -178,7 +173,6 @@ class TestDecompressor:
         expected_objective = [
             {
                 "schema_version": decompressor.Decompressor.SCHEMA["schema_file"]["version"],
-                "serial_number": "s1234",
                 "match_number": 34,
                 "timestamp": 1230,
                 "match_collection_version_number": "v1.3",
@@ -201,7 +195,6 @@ class TestDecompressor:
         expected_subjective = [
             {
                 "schema_version": decompressor.Decompressor.SCHEMA["schema_file"]["version"],
-                "serial_number": "s1234",
                 "match_number": 34,
                 "timestamp": 1230,
                 "match_collection_version_number": "v1.3",
@@ -217,7 +210,6 @@ class TestDecompressor:
             },
             {
                 "schema_version": decompressor.Decompressor.SCHEMA["schema_file"]["version"],
-                "serial_number": "s1234",
                 "match_number": 34,
                 "timestamp": 1230,
                 "match_collection_version_number": "v1.3",
@@ -234,36 +226,36 @@ class TestDecompressor:
         ]
         # Test objective qr decompression
         assert expected_objective == self.test_decompressor.decompress_single_qr(
-            f"A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$Bs1234$C34$D1230$Ev1.3$FName$GFALSE%Z1678$Y14$X3$UE$TO$W060AD061AE$VN",
+            f"A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B34$C1230$Dv1.3$EName$FFALSE%Z1678$Y14$X3$UE$TO$W060AD061AE$VN",
             decompressor.QRType.OBJECTIVE,
         )
         # Test subjective qr decompression
         assert expected_subjective == self.test_decompressor.decompress_single_qr(
-            f"A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$Bs1234$C34$D1230$Ev1.3$FName$GTRUE%A1678$FFALSE$B1$C2$DTRUE$G291#A254$B4$C1$DFALSE$FTRUE$G826#A1323$B3$C1$DTRUE$FFALSE$G195^E0000",
+            f"A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B34$C1230$Dv1.3$EName$FTRUE%A1678$FFALSE$B1$C2$DTRUE$G291#A254$B4$C1$DFALSE$FTRUE$G826#A1323$B3$C1$DTRUE$FFALSE$G195^E0000",
             decompressor.QRType.SUBJECTIVE,
         )
         # Test error raising for objective and subjective using incomplete qrs
         with pytest.raises(ValueError) as excinfo:
             self.test_decompressor.decompress_single_qr(
-                f"A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$Bs1234$C34$D1230$Ev1.3$FName$GTRUE%Z1678$Y14",
+                f"A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B34$C1230$Dv1.3$EName$FTRUE%Z1678$Y14",
                 decompressor.QRType.OBJECTIVE,
             )
         assert "QR missing data fields" in str(excinfo)
         with pytest.raises(IndexError) as excinfo:
             self.test_decompressor.decompress_single_qr(
-                f"A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$Bs1234$C34$D1230$Ev1.3$FName$GTRUE%A1678$ETRUE$B1$C2$DTRUE#A254$B2$C1$DFALSE$ETRUE#A1323$B3$C1$DTRUE$ETRUE",
+                f"A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B34$C1230$Dv1.3$EName$FTRUE%A1678$ETRUE$B1$C2$DTRUE#A254$B2$C1$DFALSE$ETRUE#A1323$B3$C1$DTRUE$ETRUE",
                 decompressor.QRType.SUBJECTIVE,
             )
         assert "Subjective QR missing whole-alliance data" in str(excinfo)
         with pytest.raises(IndexError) as excinfo:
             self.test_decompressor.decompress_single_qr(
-                f"A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$Bs1234$C34$D1230$Ev1.3$FName$GFALSE%A1678$B1$C2$D3$EFALSE^E0000",
+                f"A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B34$C1230$Dv1.3$EName$FFALSE%A1678$B1$C2$D3$EFALSE^E0000",
                 decompressor.QRType.SUBJECTIVE,
             )
         assert "Incorrect number of teams in Subjective QR" in str(excinfo)
         with pytest.raises(ValueError) as excinfo:
             self.test_decompressor.decompress_single_qr(
-                f"A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$Bs1234$C34$D1230$Ev1.3$FNameGTRUE%A1678$B1$C2#A254#A1323^",
+                f"A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B34$C1230$Dv1.3$ENameFTRUE%A1678$B1$C2#A254#A1323^",
                 decompressor.QRType.SUBJECTIVE,
             )
         assert "QR missing data fields" in str(excinfo)
@@ -274,7 +266,6 @@ class TestDecompressor:
             "unconsolidated_obj_tim": [
                 {
                     "schema_version": decompressor.Decompressor.SCHEMA["schema_file"]["version"],
-                    "serial_number": "s1234",
                     "match_number": 34,
                     "timestamp": 1230,
                     "match_collection_version_number": "v1.3",
@@ -304,7 +295,6 @@ class TestDecompressor:
             "subj_tim": [
                 {
                     "schema_version": decompressor.Decompressor.SCHEMA["schema_file"]["version"],
-                    "serial_number": "s1234",
                     "match_number": 34,
                     "timestamp": 1230,
                     "match_collection_version_number": "v1.3",
@@ -321,7 +311,6 @@ class TestDecompressor:
                 },
                 {
                     "schema_version": decompressor.Decompressor.SCHEMA["schema_file"]["version"],
-                    "serial_number": "s1234",
                     "match_number": 34,
                     "timestamp": 1230,
                     "match_collection_version_number": "v1.3",
@@ -338,7 +327,6 @@ class TestDecompressor:
                 },
                 {
                     "schema_version": decompressor.Decompressor.SCHEMA["schema_file"]["version"],
-                    "serial_number": "s1234",
                     "match_number": 34,
                     "timestamp": 1230,
                     "match_collection_version_number": "v1.3",
@@ -358,12 +346,12 @@ class TestDecompressor:
         assert expected_output == self.test_decompressor.decompress_qrs(
             [
                 {
-                    "data": f"+A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$Bs1234$C34$D1230$Ev1.3$FName$GTRUE%Z1678$Y14$X4$W060AD061AE$VN$UN$TN",
+                    "data": f"+A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B34$C1230$Dv1.3$EName$FTRUE%Z1678$Y14$X4$W060AD061AE$VN$UN$TN",
                     "override": {},
                     "ulid": "01GWSXQYKYQQ963QMT77A3NPBZ",
                 },
                 {
-                    "data": f"*A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$Bs1234$C34$D1230$Ev1.3$FName$GFALSE%A1678$B1$C2$DFALSE$FTRUE$G196#A254$B2$C2$DFALSE$FFALSE$G373#A1323$B3$C3$DTRUE$FFALSE$G746^E1100",
+                    "data": f"*A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B34$C1230$Dv1.3$EName$FFALSE%A1678$B1$C2$DFALSE$FTRUE$G196#A254$B2$C2$DFALSE$FFALSE$G373#A1323$B3$C3$DTRUE$FFALSE$G746^E1100",
                     "override": {},
                     "ulid": "01GWSXSNSF93BQZ2GRG0C4E7AC",
                 },
@@ -498,7 +486,6 @@ class TestDecompressor:
     def test_run(self):
         expected_obj = {
             "schema_version": decompressor.Decompressor.SCHEMA["schema_file"]["version"],
-            "serial_number": "gCbtwqZ",
             "override": {"doesnt_exist": 5},
             "match_number": 51,
             "timestamp": 9321,
@@ -525,7 +512,6 @@ class TestDecompressor:
         expected_sbj = [
             {
                 "schema_version": decompressor.Decompressor.SCHEMA["schema_file"]["version"],
-                "serial_number": "s1234",
                 "match_number": 34,
                 "timestamp": 1230,
                 "match_collection_version_number": "v1.3",
@@ -542,7 +528,6 @@ class TestDecompressor:
             },
             {
                 "schema_version": decompressor.Decompressor.SCHEMA["schema_file"]["version"],
-                "serial_number": "s1234",
                 "match_number": 34,
                 "timestamp": 1230,
                 "match_collection_version_number": "v1.3",
@@ -559,7 +544,6 @@ class TestDecompressor:
             },
             {
                 "schema_version": decompressor.Decompressor.SCHEMA["schema_file"]["version"],
-                "serial_number": "s1234",
                 "match_number": 34,
                 "timestamp": 1230,
                 "match_collection_version_number": "v1.3",
@@ -580,28 +564,28 @@ class TestDecompressor:
             "raw_qr",
             [
                 {
-                    "data": f"+A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$BgCbtwqZ$C51$D9321$Ev1.3$FXvfaPcSrgJw25VKrcsphdbyEVjmHrH1V$GFALSE%Z3603$Y13$X2$W000AA001AB002AC005AO006AB007AD008AE$VN$UN$TN",
+                    "data": f"+A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B51$C9321$Dv1.3$EXvfaPcSrgJw25VKrcsphdbyEVjmHrH1V$FFALSE%Z3603$Y13$X2$W000AA001AB002AC005AO006AB007AD008AE$VN$UN$TN",
                     "blocklisted": False,
                     "override": {"start_position": "1", "doesnt_exist": 5},
                     "ulid": "01GWSYJHR5EC6PAKCS79YZAF3Z",
                     "readable_time": "2023-03-30 19:05:38.821000+00:00",
                 },
                 {
-                    "data": f"+A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$BgCbtwqZ$C51$D9321$Ev1.3$FXvfaPcSrgJw25VKrcsphdbyEVjmHrH1V$GFALSE%Z3603$Y13$X2$W000AA001AB002AC005AO006AB007AD008AE$VN$UN$TN",
+                    "data": f"+A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B51$C9321$Dv1.3$EXvfaPcSrgJw25VKrcsphdbyEVjmHrH1V$FFALSE%Z3603$Y13$X2$W000AA001AB002AC005AO006AB007AD008AE$VN$UN$TN",
                     "blocklisted": True,
                     "override": {"start_position": "1", "doesnt_exist": 5},
                     "ulid": "01GWSYKDZDM45M1K4ZBHN6G97H",
                     "readable_time": "2023-03-30 19:06:07.725000+00:00",
                 },
                 {
-                    "data": f"*A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$Bs1234$C34$D1230$Ev1.3$FName$GFALSE%A1678$B1$C2$DFALSE$FFALSE$G277#A254$B2$C2$DFALSE$FFALSE$G219#A1323$B3$C3$DTRUE$FFALSE$G420^E1010",
+                    "data": f"*A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B34$C1230$Dv1.3$EName$FFALSE%A1678$B1$C2$DFALSE$FFALSE$G277#A254$B2$C2$DFALSE$FFALSE$G219#A1323$B3$C3$DTRUE$FFALSE$G420^E1010",
                     "blocklisted": False,
                     "override": {},
                     "ulid": "01GWSYM2JP9JMDFCRVCX49PNY0",
                     "readable_time": "2023-03-30 19:06:28.822000+00:00",
                 },
                 {
-                    "data": f"*A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$Bs1234$C34$D1230$Ev1.3$FName$GFALSE%A1678$B2$C2$DFALSE$FFALSE$G277#A254$B3$C2$DFALSE$FFALSE$G219#A1323$B1$C3$DTRUE$FFALSE$G420^E1110",
+                    "data": f"*A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B34$C1230$Dv1.3$EName$FFALSE%A1678$B2$C2$DFALSE$FFALSE$G277#A254$B3$C2$DFALSE$FFALSE$G219#A1323$B1$C3$DTRUE$FFALSE$G420^E1110",
                     "blocklisted": False,
                     "override": {},
                     "ulid": "01GWSYMT48K5P3BFF183GXB9C0",
