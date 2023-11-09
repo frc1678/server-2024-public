@@ -164,7 +164,7 @@ class AutoPIMCalc(BaseCalculations):
         update = {}
         for field, info in self.schema["--timeline_fields"].items():
             for i in range(info["max_count"]):
-                update[f"{field}_{i+1}"] = None
+                update[f"{field}_{i + 1}"] = "none"
 
         # For each action in the consolidated timeline, add it to one of the new fields (if it applies)
         for action in tim["auto_timeline"]:

@@ -62,7 +62,7 @@ while True:
 
     # Determine if each connected device_serial is a tablet or phone and if it needs the APK
     for serial in DEVICES:
-        if serial.split("A")[0] == "H":
+        if serial[0] == "H":
             # Only add device_serial if it does not already have the apk
             if serial not in DEVICES_WITH_APK:
                 TABLET_SERIALS.append(serial)

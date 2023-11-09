@@ -173,6 +173,8 @@ class Database:
             out[entry] = COLLECTION_SCHEMA["collections"][entry]["schema"]
             if out[entry] == None:
                 out.pop(entry)
+            elif utils.read_schema("schema/" + out[entry]) is None:
+                out.pop(entry)
         return out
 
     def bulk_write(self, collection: str, actions: list) -> pymongo.results.BulkWriteResult:

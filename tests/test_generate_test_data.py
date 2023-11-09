@@ -399,7 +399,9 @@ class TestDataGenerator:
 
         filenames = utils.get_schema_filenames()
         self.schema_files = []
-        [self.schema_files.append(file) for file in filenames if file not in self.schema_files]
+        for file in filenames:
+            if file not in self.schema_files and utils.read_schema("schema" + file) is not None:
+                self.schema_files.append(file)
         self.schema_files.sort()
 
     def test_open_schema_file(self):
@@ -444,8 +446,11 @@ class TestDataGenerator:
 
 
 def test_name_sample_data():
-    schema_files = utils.get_schema_filenames()
-    schema_files = list(schema_files)
+    filenames = utils.get_schema_filenames()
+    schema_files = []
+    for file in filenames:
+        if utils.read_schema("schema" + file) is not None:
+            schema_files.append(file)
     schema_files.sort()
 
     for schema in schema_files:
