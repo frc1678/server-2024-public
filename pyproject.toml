@@ -1,0 +1,9 @@
+# Black Documentation: https://black.readthedocs.io/en/stable/index.html
+
+# This file is a config file that `black` will use in place of command line arguments.
+# If other related tools like isort are ever added, the configuration should also be put in this file.
+
+# Specifies files to reformat. All files in .gitignore will be automatically ignored.
+[tool.black]
+include = '/(src|tests)/.*\.py' # Tells black to format all the files ending in ".py" contained in the "src/" and "test/" directories
+line-length = 100 # Tells black to limit line length to 100. This means that it will change the formatting on longer lines in order to split them up into shorter lines.
