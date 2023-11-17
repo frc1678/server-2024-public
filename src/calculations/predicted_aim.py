@@ -465,7 +465,10 @@ class PredictedAimCalc(BaseCalculations):
         )
         playoffs_alliances = []
 
-        for (num, alliance) in enumerate(tba_playoffs_data):
+        if tba_playoffs_data == None:
+            return playoffs_alliances
+
+        for num, alliance in enumerate(tba_playoffs_data):
             # Get alliance number (enumerate function is zero-indexed so each number has to be incremented by one)
             alliance_num = num + 1
             # Add captain, 1st, and 2nd pick
@@ -650,6 +653,9 @@ class PredictedAimCalc(BaseCalculations):
         obj_team = self.server.db.find("obj_team")
         tba_team = self.server.db.find("tba_team")
         playoffs_alliances = self.get_playoffs_alliances()
+
+        if playoffs_alliances == updates:
+            return updates
 
         for alliance in playoffs_alliances:
             predicted_values = PredictedAimScores()
