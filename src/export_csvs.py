@@ -10,6 +10,8 @@ import csv
 from datetime import datetime
 from data_transfer import database
 from data_transfer import tba_communicator
+from data_transfer import cloud_db_updater
+import pymongo
 import os
 import re
 from typing import List, Dict, Tuple, Optional, Any
@@ -23,6 +25,18 @@ import logging
 log = logging.getLogger(__name__)
 
 DATABASE = database.Database()
+
+try:
+    CLOUD_CLIENT = pymongo.MongoClient(cloud_db_updater.CloudDBUpdater.get_connection_string())
+    """Make sure production is on or cloud database won't return anything"""
+    CLOUD_DATABASE = database.Database(
+        connection=cloud_db_updater.CloudDBUpdater.get_connection_string()
+    )
+    CLOUD_CLIENT.close()
+except FileNotFoundError:
+    print("Cloud database password not found")
+
+
 SCHEMA = utils.read_schema("schema/collection_schema.yml")
 
 
@@ -33,17 +47,24 @@ class BaseExport:
         The collections schenma, timestamp and teams_list will be used heavily
         in subclasses and to avoid repetition
         """
+
         self.collections = list(SCHEMA["collections"].keys())
         self.timestamp_str = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         self.teams_list = self.get_teams_list()
         self.name = None
 
     @staticmethod
-    def load_single_collection(collection_name: str) -> List[Dict]:
+    def load_single_collection(collection_name: str, export_cloud=False) -> List[Dict]:
         """Return a list of all the documents in a given collection"""
-        return DATABASE.find(collection_name)
+        """Will return from cloud database instead of local if export_cloud is true"""
+        if export_cloud == True and CLOUD_DATABASE != None:
+            return CLOUD_DATABASE.find(collection_name)
+        else:
+            return DATABASE.find(collection_name)
 
-    def get_data(self, collection_names: Optional[List[str]] = None) -> Dict[str, List[Dict]]:
+    def get_data(
+        self, collection_names: Optional[List[str]] = None, export_cloud=False
+    ) -> Dict[str, List[Dict]]:
         """Return a dictionary of lists of documents of a given list of collections
 
         Give this a list of collection names and it will make a key value pair
@@ -52,7 +73,7 @@ class BaseExport:
         """
         if collection_names is None:
             collection_names = self.collections
-        return {a: self.load_single_collection(a) for a in collection_names}
+        return {a: self.load_single_collection(a, export_cloud) for a in collection_names}
 
     def create_name(self, name: str) -> str:
         """Generate a file name based on timestamp"""
@@ -93,8 +114,8 @@ class BaseExport:
     def build_data(self):
         raise NotImplementedError
 
-    def write_data(self, directory_path: str):
-        column_headers, final_built_data = self.build_data()
+    def write_data(self, directory_path: str, export_cloud=False):
+        column_headers, final_built_data = self.build_data(export_cloud)
 
         file_path = os.path.join(directory_path, self.name)
         with open(file_path, "w") as file:
@@ -181,7 +202,7 @@ class ExportTBA(BaseExport):
 class ExportTIM(BaseExport):
     db_data_paths = ["obj_tim", "tba_tim"]
 
-    def __init__(self):
+    def __init__(self, export_cloud=False):
         """Build the TIM data from the database and format it as a directory
         then write it as a csv
         """
@@ -189,9 +210,11 @@ class ExportTIM(BaseExport):
         self.name = self.create_name("tim_export")
         self.teams_list = self.get_teams_list()
 
-        self.column_headers, self.final_built_data = self.build_data()
+        self.column_headers, self.final_built_data = self.build_data(export_cloud)
 
-    def build_data(self) -> Tuple[List[str], Dict[Tuple[str, int], List[Dict[str, Any]]]]:
+    def build_data(
+        self, export_cloud=False
+    ) -> Tuple[List[str], Dict[Tuple[str, int], List[Dict[str, Any]]]]:
         """Build the raw TIM data into a dictionary format with the key as team
 
         Gets the TIM data from the database and writes a dictionary where the
@@ -200,7 +223,7 @@ class ExportTIM(BaseExport):
         """
         log.info("Starting export of tim_data")
         # Gets the lists of column headers and dictionaries to use in export
-        tim_data = self.get_data(ExportTIM.db_data_paths)
+        tim_data = self.get_data(ExportTIM.db_data_paths, export_cloud)
         column_headers: List[str] = []
         data_by_team_and_match: Dict[Tuple[str, int], List[Dict[str, Any]]] = {}
 
@@ -250,7 +273,7 @@ class ExportTeam(BaseExport):
         "pickability",
     ]
 
-    def __init__(self):
+    def __init__(self, export_cloud=False):
         """Get the team data, format it and write it as a csv
 
         Get the column_headers from the data as well as the final_built_data
@@ -260,9 +283,11 @@ class ExportTeam(BaseExport):
         self.name = self.create_name("team_export")
         self.teams_list = self.get_teams_list()
 
-        self.column_headers, self.final_built_data = self.build_data()
+        self.column_headers, self.final_built_data = self.build_data(export_cloud)
 
-    def build_data(self) -> Tuple[List[str], Dict[Tuple[str, int], List[Dict[str, Any]]]]:
+    def build_data(
+        self, export_cloud=False
+    ) -> Tuple[List[str], Dict[Tuple[str, int], List[Dict[str, Any]]]]:
         """Takes data team data and writes to CSV
 
         Merges raw and processed team data into one dictionary
@@ -271,7 +296,7 @@ class ExportTeam(BaseExport):
         """
         log.info("Starting export of team_data")
         # Get the lists of column headers and dictionaries to use in export
-        team_data = self.get_data(ExportTeam.db_data_paths)
+        team_data = self.get_data(ExportTeam.db_data_paths, export_cloud)
 
         column_headers: List[str] = []
         data_by_team_num: Dict[str, List[Dict[str, Any]]] = {}
@@ -318,16 +343,18 @@ class ExportTeam(BaseExport):
 class ExportScout(BaseExport):
     db_data_paths = ["sim_precision"]
 
-    def __init__(self):
+    def __init__(self, export_cloud=False):
         """Build the scout data from the database and format it as a directory
         then write it as a csv
         """
         super().__init__()
         self.name = self.create_name("scout_export")
 
-        self.column_headers, self.final_built_data = self.build_data()
+        self.column_headers, self.final_built_data = self.build_data(export_cloud)
 
-    def build_data(self) -> Tuple[List[str], Dict[Tuple[str, int], List[Dict[str, Any]]]]:
+    def build_data(
+        self, export_cloud=False
+    ) -> Tuple[List[str], Dict[Tuple[str, int], List[Dict[str, Any]]]]:
         """Build the scout data into a dictionary format with the key as scout
 
         Gets the scout data from the database and writes a dictionary where the
@@ -336,7 +363,7 @@ class ExportScout(BaseExport):
         """
         log.info("Starting export of scout_data")
         # Gets the lists of column headers and dictionaries to use in export
-        scout_data = self.get_data(ExportScout.db_data_paths)
+        scout_data = self.get_data(ExportScout.db_data_paths, export_cloud)
         column_headers: List[str] = []
         data_by_scout_and_match: Dict[Tuple[str, int], List[Dict[str, Any]]] = {}
 
@@ -441,7 +468,7 @@ def make_zip(directory_path: str):
     print("Zip archive complete!")
 
 
-def full_data_export(should_zip, should_return_scout_data) -> None:
+def full_data_export(should_zip, should_return_scout_data, export_cloud=False) -> None:
     """Generate each of the types of data
 
     Instantiate each exporter class and write the csv to a directory shared by
@@ -452,20 +479,20 @@ def full_data_export(should_zip, should_return_scout_data) -> None:
 
     if not should_return_scout_data:
         # Generate and export Tim data
-        tim_exporter = ExportTIM()
-        tim_exporter.write_data(directory_path)
+        tim_exporter = ExportTIM(export_cloud)
+        tim_exporter.write_data(directory_path, export_cloud)
 
         # Generate and export Team data
-        team_exporter = ExportTeam()
-        team_exporter.write_data(directory_path)
+        team_exporter = ExportTeam(export_cloud)
+        team_exporter.write_data(directory_path, export_cloud)
 
         # Generate and export TBA data
         tba_exporter = ExportTBA()
         tba_exporter.write_data(directory_path)
     else:
         # Generate and export Scout data
-        scout_exporter = ExportScout()
-        scout_exporter.write_data(directory_path)
+        scout_exporter = ExportScout(export_cloud)
+        scout_exporter.write_data(directory_path, export_cloud)
 
     # This is default to yes but is not necessary
     if should_zip:
@@ -473,6 +500,13 @@ def full_data_export(should_zip, should_return_scout_data) -> None:
 
 
 def parser():
+    """
+    Defines the argument options when running the file from the command line
+
+    --dont_zip | Won't zip the exported file
+    --scout_data | Will return the scout data
+    --export_cloud | Will return from the cloud database
+    """
     parse = argparse.ArgumentParser()
     parse.add_argument(
         "--dont_zip", help="Should create a zip archive", default=True, action="store_false"
@@ -480,9 +514,15 @@ def parser():
     parse.add_argument(
         "--scout_data", help="Should return scout data", default=False, action="store_true"
     )
+    parse.add_argument(
+        "--export_cloud",
+        help="Should return from cloud database",
+        default=False,
+        action="store_true",
+    )
     return parse.parse_args()
 
 
 if __name__ == "__main__":
     args = parser()
-    full_data_export(args.dont_zip, args.scout_data)
+    full_data_export(args.dont_zip, args.scout_data, args.export_cloud)

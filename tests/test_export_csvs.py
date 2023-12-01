@@ -10,6 +10,7 @@ import shutil
 
 from server import Server
 
+
 DATABASE = database.Database()
 
 
