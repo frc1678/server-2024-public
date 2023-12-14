@@ -76,6 +76,7 @@ class TestPredictedAimCalc:
                 "predicted_score": 280.83333,
                 "predicted_rp1": 0.25,
                 "predicted_rp2": 1.0,
+                "team_numbers": ["1678", "1533", "7229"],
             },
             {
                 "match_number": 1,
@@ -88,6 +89,7 @@ class TestPredictedAimCalc:
                 "predicted_score": 279.33333,
                 "predicted_rp1": 0.25,
                 "predicted_rp2": 1.0,
+                "team_numbers": ["1678", "1533", "2468"],
             },
             {
                 "match_number": 3,
@@ -100,6 +102,7 @@ class TestPredictedAimCalc:
                 "predicted_score": 279.33333,
                 "predicted_rp1": 0.25,
                 "predicted_rp2": 1.0,
+                "team_numbers": ["1678", "1533", "2468"],
             },
             {
                 "match_number": 3,
@@ -112,6 +115,7 @@ class TestPredictedAimCalc:
                 "predicted_score": 280.83333,
                 "predicted_rp1": 0.25,
                 "predicted_rp2": 1.0,
+                "team_numbers": ["1678", "1533", "7229"],
             },
         ]
         self.expected_playoffs_updates = [
@@ -156,6 +160,7 @@ class TestPredictedAimCalc:
                 "predicted_rp1": 0.25,
                 "predicted_rp2": 1.0,
                 "win_chance": 0.96789,
+                "team_numbers": ["1678", "1533", "7229"],
             },
             {
                 "match_number": 1,
@@ -169,6 +174,7 @@ class TestPredictedAimCalc:
                 "predicted_rp1": 0.25,
                 "predicted_rp2": 1.0,
                 "win_chance": 1 - 0.96789,
+                "team_numbers": ["1678", "1533", "2468"],
             },
             {
                 "match_number": 3,
@@ -182,6 +188,7 @@ class TestPredictedAimCalc:
                 "predicted_rp1": 0.25,
                 "predicted_rp2": 1.0,
                 "win_chance": 1 - 0.96789,
+                "team_numbers": ["1678", "1533", "2468"],
             },
             {
                 "match_number": 3,
@@ -195,6 +202,7 @@ class TestPredictedAimCalc:
                 "predicted_rp1": 0.25,
                 "predicted_rp2": 1.0,
                 "win_chance": 0.96789,
+                "team_numbers": ["1678", "1533", "7229"],
             },
         ]
         self.expected_playoffs_alliances = [

@@ -641,6 +641,7 @@ class PredictedAimCalc(BaseCalculations):
             )
             update["predicted_rp2"] = self.calculate_predicted_link_rp(predicted_values)
             update.update(self.get_actual_values(aim, tba_match_data))
+            update["team_numbers"] = aim["team_list"]
             updates.append(update)
         return updates
 
