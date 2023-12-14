@@ -452,7 +452,7 @@ class TestPredictedAimCalc:
             {
                 "match_number": 3,
                 "comp_level": "qm",
-                "score_breakdown": {},
+                "score_breakdown": None,
                 "post_result_time": None,
                 "winning_alliance": "",
             },

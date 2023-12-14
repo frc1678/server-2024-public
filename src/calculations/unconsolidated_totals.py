@@ -103,7 +103,7 @@ class UnconsolidatedTotals(BaseCalculations):
         grid_status = {}
         for match in matches:
             alliance_status = {}
-            if match["score_breakdown"] is not None:
+            if match["score_breakdown"] is not None and match["comp_level"] == "qm":
                 for alliance in ["red", "blue"]:
                     alliance_status[alliance] = True
                     for row in match["score_breakdown"][alliance]["teleopCommunity"].values():
