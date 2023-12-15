@@ -66,7 +66,7 @@ while True:
             # Only add device_serial if it does not already have the apk
             if serial not in DEVICES_WITH_APK:
                 TABLET_SERIALS.append(serial)
-        if serial.split("A")[0] == "9":
+        if serial[0] == "9":
             # Only add device_serial if it does not already have the apk
             if serial not in DEVICES_WITH_APK:
                 PHONE_SERIALS.append(serial)
