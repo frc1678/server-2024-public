@@ -8,9 +8,9 @@ def test_compress_timeline():
         {"time": 51, "action_type": "start_incap"},
         {"time": 32, "action_type": "end_incap"},
     ]
-    assert compression.compress_timeline(timeline_data) == "051AL032AM"
-    timeline_data[1]["action_type"] = "score_cone_high"
-    assert compression.compress_timeline(timeline_data) == "051AL032AA"
+    assert compression.compress_timeline(timeline_data) == "051AD032AE"
+    timeline_data[1]["action_type"] = "intake_amp"
+    assert compression.compress_timeline(timeline_data) == "051AD032AN"
 
 
 def test_compress_section_generic_data():
@@ -32,7 +32,7 @@ def test_compress_section_obj():
     assert compression.compress_section(schema_data, "objective_tim") == compressed_schema
     # With timeline
     schema_data["timeline"] = [{"time": 51, "action_type": "start_incap", "in_teleop": False}]
-    compressed_schema += "$W051AL"
+    compressed_schema += "$W051AD"
     assert compression.compress_section(schema_data, "objective_tim") == compressed_schema
 
 
@@ -61,9 +61,8 @@ def test_compress_obj_tim():
             {"time": 45, "action_type": "start_incap"},
             {"time": 7, "action_type": "end_incap"},
         ],
-        "auto_charge_level": "N",
     }
-    compressed_data = "+A1$B1$C1582994470$D1.0.2$EKEI R%Z9999$Y2$XFOUR$W045AL007AM$VN"
+    compressed_data = "+A1$B1$C1582994470$D1.0.2$EKEI R%Z9999$Y2$XFOUR$W045AD007AE"
     assert compression.compress_obj_tim(data) == compressed_data
 
 
