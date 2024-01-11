@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Copyright (c) 2022 FRC Team 1678: Citrus Circuits
+# Copyright (c) 2024 FRC Team 1678: Citrus Circuits
 """Holds functions used to determine auto scoring and paths in each match"""
 
 from typing import List, Dict, Union, Any, Tuple
@@ -59,67 +59,22 @@ class AutoPIMCalc(BaseCalculations):
         self, unconsolidated_timelines: List[List[dict]], best_scout_index: int
     ) -> List[dict]:
         """Given a list of unconsolidated auto timelines and the index of the best scout's timeline
-        (output from the get_unconsolidated_auto_timelines function), consolidates the timelines into a single timeline."""
+        (output from the get_unconsolidated_auto_timelines function), consolidates the timelines into a single timeline.
+
+        If two timelines are the same, use that timeline.
+        Else, choose timeline from scout with highest SPR.
+        """
 
         ut = unconsolidated_timelines  # alias
         consolidated_timeline = []
+        lengths = list(map(len, ut))
 
-        # If all three timelines are empty, return empty list
-        if (max_length := max([len(timeline) for timeline in ut])) == 0:
-            return consolidated_timeline
-
-        # Iterate through the longest timeline
-        for i in range(max_length):
-            # values is a list to store the value of every item in the action dict
-            # {"in_teleop": False, "time": 140, "action_type": "score_cone_high"}
-            # Should look something like [False, False, False], [139, 140, 138], or ["score_cone_high", "score_cube_mid", "score_cone_high"]
-            values = []
-
-            # Get all variables in the action dict
-            for name in list(filter(lambda x: len(x) == max_length, ut))[0][0].keys():
-                # For every unconsolidated timeline, take the value of the variable in the current action dict
-                for j in range(len(ut)):
-                    # If the action at index i exists in the timeline, append the value of the variable
-                    try:
-                        values.append(ut[j][i][name])
-                    # If not, append None
-                    except:
-                        values.append(None)
-
-                # Check if there is a mode
-                if len(mode := BaseCalculations.modes(values)) == 1:
-                    # If the mode is None (meaning that most or all timelines don't have an action at that index), don't add it to the consolidated timeline
-                    if mode == [None]:
-                        # Reset values list
-                        values = []
-                        continue
-
-                    # If an action of that index already exists, add the mode to it
-                    try:
-                        consolidated_timeline[i][name] = mode[0]
-                    # If not, create a new action at that index
-                    except:
-                        consolidated_timeline.append({name: mode[0]})
-
-                # If values are integers, take average and round it
-                elif len(list(filter(lambda y: type(y) is not int, values))) == 0:
-                    # If an action of that index already exists, add the average to it
-                    try:
-                        consolidated_timeline[i][name] = round(statistics.mean(values))
-                    # If not, create a new action at that index
-                    except IndexError:
-                        consolidated_timeline.append({name: round(statistics.mean(values))})
-
-                else:
-                    # If an action of that index already exists, add the value to it
-                    try:
-                        consolidated_timeline[i][name] = values[best_scout_index]
-                    # If not, create a new action at that index
-                    except:
-                        consolidated_timeline.append({name: values[best_scout_index]})
-
-                # Reset values list
-                values = []
+        # Check for identical timelines
+        if len(mode := BaseCalculations.modes(lengths)) == 1:
+            consolidated_timeline = ut[lengths.index(mode[0])]
+        # Else use timeline from best scout
+        else:
+            consolidated_timeline = ut[best_scout_index]
 
         return consolidated_timeline
 
@@ -144,10 +99,7 @@ class AutoPIMCalc(BaseCalculations):
                 )
                 if data == []:
                     # Handle no data
-                    if tim_fields[field]["type"] == "List":
-                        tim_auto_values[datapoint] = [2, 2, 2, 2]
-                    elif tim_fields[field]["type"] == "bool":
-                        tim_auto_values[datapoint] = False
+                    tim_auto_values[datapoint] = None
                     log.critical(
                         f"auto pim: data not found for {field, calculated_tim['match_number'], calculated_tim['team_number']}"
                     )
@@ -173,55 +125,32 @@ class AutoPIMCalc(BaseCalculations):
                 log.warning("auto_pim: action_type does not exist")
                 continue
             # BUG: action_type can sometimes be null, need better tests in auto_pim, more edge cases
-            if action["action_type"] is None:
+            elif action["action_type"] is None:
                 log.warning("auto_pim: action_type is null")
                 continue
             # Iterate through each timeline_field
             for field, info in self.schema["--timeline_fields"].items():
                 # Check if the action is one of the valid actions for this field
-                if action["action_type"] in info["valid_actions"]:
+                if action["action_type"] in info["valid_actions"].keys():
                     # Iterate to the next datapoint for that field
                     counts[field] += 1
                     # Calculate the value for the field
                     update[f"{field}_{counts[field]}"] = self.calculate_action(
-                        action["action_type"], info["calculation"], tim
+                        action["action_type"], info["valid_actions"]
                     )
         return update
 
-    def calculate_action(
-        self, action: str, calculation: Union[str, Dict[str, Union[str, dict]]], tim: dict
-    ) -> Any:
-        """A recursive function which calculates a return value based on 'calculation' in schema
-        Each dictionary is a new calculation, with 'calc' as the operation.
-        If not a dictionary, returns the appropriate field from 'tim' or 'action'"""
+    def calculate_action(self, action: str, action_dict):
+        "Given an action type (e.g. score_speaker), return the short-form name used in auto_pims (e.g. speaker)"
+        # Iterate through possible action types
+        # Return the short-form name if the full name matches
+        for full_name, new_name in action_dict.items():
+            if action == full_name:
+                return new_name
 
-        if calculation == "action":
-            # Return the original action
-            return action
-        elif isinstance(calculation, str):
-            # Strings return that datapoint from tim
-            return tim[calculation]
-        elif not isinstance(calculation, dict):
-            log.fatal(f"Auto_pim: {calculation} is not a string or dictionary")
-            raise TypeError(f"Auto_pim: {calculation} is not a string or dictionary")
-        else:
-            calc = calculation["calc"]
-            if calc == "value":
-                # Returns 'value'
-                return calculation["value"]
-            elif calc == "dict":
-                # Get the value of 'dict' at 'key'
-                return self.calculate_action(action, calculation["dict"], tim)[
-                    self.calculate_action(action, calculation["key"], tim)
-                ]
-            elif calc == "list":
-                # Get the value of 'list' at 'index'
-                return self.calculate_action(action, calculation["list"], tim)[
-                    self.calculate_action(action, calculation["index"], tim)
-                ]
-            # No calculation was executed
-            log.fatal(f"Auto_pim: {calc} is not a valid calculation type")
-            raise NotImplementedError(f"Auto_pim: {calc} is not a valid calculation type")
+        # Log if action type is invalid
+        log.fatal(f"auto_pims: {action} is not a valid action type")
+        return "none"
 
     def calculate_auto_pims(self, tims: List[dict]) -> List[dict]:
         """Calculates auto data for the given tims, which looks like
