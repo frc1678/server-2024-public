@@ -74,7 +74,6 @@ class TestSubjTeamCalcs:
                 "quickness_score": 2,
                 "field_awareness_score": 1,
                 "alliance_color_is_red": True,
-                "auto_pieces_start_position": [2, 2, 2, 2],
             },
             {
                 "match_number": 1,
@@ -82,7 +81,6 @@ class TestSubjTeamCalcs:
                 "quickness_score": 1,
                 "field_awareness_score": 2,
                 "alliance_color_is_red": True,
-                "auto_pieces_start_position": [1, 1, 0, 0],
             },
             {
                 "match_number": 1,
@@ -90,7 +88,6 @@ class TestSubjTeamCalcs:
                 "quickness_score": 3,
                 "field_awareness_score": 3,
                 "alliance_color_is_red": True,
-                "auto_pieces_start_position": [1, 1, 0, 0],
             },
             {
                 "match_number": 2,
@@ -98,7 +95,6 @@ class TestSubjTeamCalcs:
                 "quickness_score": 2,
                 "field_awareness_score": 1,
                 "alliance_color_is_red": True,
-                "auto_pieces_start_position": [2, 2, 2, 2],
             },
             {
                 "match_number": 2,
@@ -106,7 +102,6 @@ class TestSubjTeamCalcs:
                 "quickness_score": 3,
                 "field_awareness_score": 3,
                 "alliance_color_is_red": True,
-                "auto_pieces_start_position": [1, 1, 1, 1],
             },
             {
                 "match_number": 2,
@@ -114,7 +109,6 @@ class TestSubjTeamCalcs:
                 "quickness_score": 1,
                 "field_awareness_score": 2,
                 "alliance_color_is_red": True,
-                "auto_pieces_start_position": [0, 0, 0, 0],
             },
             {
                 "match_number": 3,
@@ -122,7 +116,6 @@ class TestSubjTeamCalcs:
                 "quickness_score": 1,
                 "field_awareness_score": 3,
                 "alliance_color_is_red": False,
-                "auto_pieces_start_position": [0, 0, 1, 1],
             },
             {
                 "match_number": 3,
@@ -130,7 +123,6 @@ class TestSubjTeamCalcs:
                 "quickness_score": 2,
                 "field_awareness_score": 2,
                 "alliance_color_is_red": False,
-                "auto_pieces_start_position": [1, 1, 0, 1],
             },
             {
                 "match_number": 3,
@@ -138,7 +130,6 @@ class TestSubjTeamCalcs:
                 "quickness_score": 1,
                 "field_awareness_score": 3,
                 "alliance_color_is_red": False,
-                "auto_pieces_start_position": [0, 1, 0, 0],
             },
         ]
         self.test_server.db.delete_data("subj_tim")
@@ -162,7 +153,6 @@ class TestSubjTeamCalcs:
             "driver_field_awareness": 0.9259,
             "driver_quickness": 0.55555,
             "driver_ability": -1.3439,
-            "auto_pieces_start_position": [0, 0, 1, 1],
         }
         assert dict_near(expected_robonauts, robonauts, 0.01)
         expected_citrus = {
@@ -170,7 +160,6 @@ class TestSubjTeamCalcs:
             "driver_field_awareness": 1.296,
             "driver_quickness": 0.666667,
             "driver_ability": 1.053327,
-            "auto_pieces_start_position": [1, 1, 0.333333, 0.66],
         }
         assert dict_near(expected_citrus, citrus, 0.01)
         expected_chezy = {
@@ -178,6 +167,5 @@ class TestSubjTeamCalcs:
             "driver_field_awareness": 1.481,
             "driver_quickness": 0.555555,
             "driver_ability": 0.29057,
-            "auto_pieces_start_position": [0.333333, 0.666666, 0, 0],
         }
         assert dict_near(expected_chezy, chezy, 0.01)
