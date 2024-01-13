@@ -20,14 +20,14 @@ TEST_DATA = [
         "match_number": 1,
         "score_breakdown": {
             "blue": {
-                "mobilityRobot1": "Yes",
-                "mobilityRobot2": "Yes",
-                "mobilityRobot3": "Yes",
+                "leaveRobot1": "Yes",
+                "leaveRobot2": "Yes",
+                "leaveRobot3": "Yes",
             },
             "red": {
-                "mobilityRobot1": "Yes",
-                "mobilityRobot2": "Yes",
-                "mobilityRobot3": "No",
+                "leaveRobot1": "Yes",
+                "leaveRobot2": "Yes",
+                "leaveRobot3": "No",
             },
         },
     },
@@ -44,14 +44,14 @@ TEST_DATA = [
         "match_number": 2,
         "score_breakdown": {
             "blue": {
-                "mobilityRobot1": "Yes",
-                "mobilityRobot2": "Yes",
-                "mobilityRobot3": "Yes",
+                "leaveRobot1": "Yes",
+                "leaveRobot2": "Yes",
+                "leaveRobot3": "Yes",
             },
             "red": {
-                "mobilityRobot1": "Yes",
-                "mobilityRobot2": "Yes",
-                "mobilityRobot3": "Yes",
+                "leaveRobot1": "Yes",
+                "leaveRobot2": "Yes",
+                "leaveRobot3": "Yes",
             },
         },
     },
@@ -61,62 +61,62 @@ TIMS = [
     {
         "team_number": "254",
         "match_number": 1,
-        "mobility": False,
+        "leave": False,
     },
     {
         "team_number": "973",
         "match_number": 1,
-        "mobility": True,
+        "leave": True,
     },
     {
         "team_number": "34",
         "match_number": 1,
-        "mobility": False,
+        "leave": False,
     },
     {
         "team_number": "33",
         "match_number": 1,
-        "mobility": False,
+        "leave": False,
     },
     {
         "team_number": "25",
         "match_number": 1,
-        "mobility": False,
+        "leave": False,
     },
     {
         "team_number": "257",
         "match_number": 1,
-        "mobility": False,
+        "leave": False,
     },
     {
         "team_number": "97",
         "match_number": 2,
-        "mobility": True,
+        "leave": True,
     },
     {
         "team_number": "3",
         "match_number": 2,
-        "mobility": True,
+        "leave": True,
     },
     {
         "team_number": "37",
         "match_number": 2,
-        "mobility": True,
+        "leave": True,
     },
     {
         "team_number": "47",
         "match_number": 2,
-        "mobility": True,
+        "leave": True,
     },
     {
         "team_number": "57",
         "match_number": 2,
-        "mobility": True,
+        "leave": True,
     },
     {
         "team_number": "67",
         "match_number": 2,
-        "mobility": True,
+        "leave": True,
     },
 ]
 
@@ -139,21 +139,21 @@ class TestTBATimCalc:
         match_data = {
             "score_breakdown": {
                 "blue": {
-                    "mobilityRobot1": "Yes",
-                    "mobilityRobot2": "Yes",
-                    "mobilityRobot3": "Yes",
+                    "leaveRobot1": "Yes",
+                    "leaveRobot2": "Yes",
+                    "leaveRobot3": "Yes",
                 },
                 "red": {
-                    "mobilityRobot1": "Yes",
-                    "mobilityRobot2": "No",
-                    "mobilityRobot3": "Yes",
+                    "leaveRobot1": "Yes",
+                    "leaveRobot2": "No",
+                    "leaveRobot3": "Yes",
                 },
             }
         }
 
         # Tests calc_tba_bool() using the example match data above
-        assert tba_tims.TBATIMCalc.calc_tba_bool(match_data, "blue", {"mobilityRobot1": "Yes"})
-        assert not tba_tims.TBATIMCalc.calc_tba_bool(match_data, "red", {"mobilityRobot2": "Yes"})
+        assert tba_tims.TBATIMCalc.calc_tba_bool(match_data, "blue", {"leaveRobot1": "Yes"})
+        assert not tba_tims.TBATIMCalc.calc_tba_bool(match_data, "red", {"leaveRobot2": "Yes"})
 
     def test_get_robot_number_and_alliance(self):
         # Generates example team keys to test get_robot_number_and_alliance()
@@ -202,7 +202,7 @@ class TestTBATimCalc:
                 assert isinstance(calc, dict)
                 assert isinstance(calc["team_number"], str)
                 assert isinstance(calc["match_number"], int)
-                assert isinstance(calc["mobility"], bool)
+                assert isinstance(calc["leave"], bool)
 
     def test_run(self):
         entries = self.test_calc.entries_since_last()

@@ -63,8 +63,8 @@ class TestTBATeamCalc:
                             "blue": {"team_keys": ["frc973", "frc3478"]},
                         },
                         "score_breakdown": {
-                            "red": {"foulPoints": 13, "linkPoints": 10},
-                            "blue": {"foulPoints": 10, "linkPoints": 15},
+                            "red": {"foulPoints": 13},
+                            "blue": {"foulPoints": 10},
                         },
                     },
                     {
@@ -73,8 +73,8 @@ class TestTBATeamCalc:
                             "blue": {"team_keys": ["frc973", "frc1577"]},
                         },
                         "score_breakdown": {
-                            "red": {"foulPoints": 15, "linkPoints": 5},
-                            "blue": {"foulPoints": 7, "linkPoints": 20},
+                            "red": {"foulPoints": 15},
+                            "blue": {"foulPoints": 7},
                         },
                     },
                 ],
@@ -204,102 +204,102 @@ class TestTBATeamCalc:
         ]
         tba_tims = [
             {
-                "mobility": False,
+                "leave": False,
                 "match_number": 1,
                 "team_number": "973",
             },
             {
-                "mobility": False,
+                "leave": False,
                 "match_number": 2,
                 "team_number": "973",
             },
             {
-                "mobility": True,
+                "leave": True,
                 "match_number": 3,
                 "team_number": "973",
             },
             {
-                "mobility": True,
+                "leave": True,
                 "match_number": 4,
                 "team_number": "973",
             },
             {
-                "mobility": True,
+                "leave": True,
                 "match_number": 5,
                 "team_number": "973",
             },
             {
-                "mobility": True,
+                "leave": True,
                 "match_number": 1,
                 "team_number": "1678",
             },
             {
-                "mobility": False,
+                "leave": False,
                 "match_number": 2,
                 "team_number": "1678",
             },
             {
-                "mobility": True,
+                "leave": True,
                 "match_number": 3,
                 "team_number": "1678",
             },
             {
-                "mobility": True,
+                "leave": True,
                 "match_number": 4,
                 "team_number": "1678",
             },
             {
-                "mobility": True,
+                "leave": True,
                 "match_number": 5,
                 "team_number": "1678",
             },
             {
-                "mobility": True,
+                "leave": True,
                 "match_number": 1,
                 "team_number": "3478",
             },
             {
-                "mobility": False,
+                "leave": False,
                 "match_number": 2,
                 "team_number": "3478",
             },
             {
-                "mobility": True,
+                "leave": True,
                 "match_number": 3,
                 "team_number": "3478",
             },
             {
-                "mobility": True,
+                "leave": True,
                 "match_number": 4,
                 "team_number": "3478",
             },
             {
-                "mobility": True,
+                "leave": True,
                 "match_number": 5,
                 "team_number": "3478",
             },
             {
-                "mobility": True,
+                "leave": True,
                 "match_number": 1,
                 "team_number": "1577",
             },
             {
-                "mobility": False,
+                "leave": False,
                 "match_number": 2,
                 "team_number": "1577",
             },
             {
-                "mobility": True,
+                "leave": True,
                 "match_number": 3,
                 "team_number": "1577",
             },
             {
-                "mobility": True,
+                "leave": True,
                 "match_number": 4,
                 "team_number": "1577",
             },
             {
-                "mobility": True,
+                "leave": True,
                 "match_number": 5,
                 "team_number": "1577",
             },
@@ -308,38 +308,34 @@ class TestTBATeamCalc:
             # Team A
             {
                 "team_number": "973",
-                "mobility_successes": 3,
-                "lfm_mobility_successes": 3,
-                "team_name": "Greybots",
                 "foul_cc": 8.0,
-                "link_cc": 10.0,
+                "leave_successes": 3,
+                "lfm_leave_successes": 3,
+                "team_name": "Greybots",
             },
             # Team B
             {
                 "team_number": "1678",
-                "mobility_successes": 4,
-                "lfm_mobility_successes": 3,
-                "team_name": "Citrus Circuits",
                 "foul_cc": 2.0,
-                "link_cc": 0.0,
+                "leave_successes": 4,
+                "lfm_leave_successes": 3,
+                "team_name": "Citrus Circuits",
             },
             # Team C
             {
                 "team_number": "3478",
-                "mobility_successes": 4,
-                "lfm_mobility_successes": 3,
-                "team_name": "LamBot",
                 "foul_cc": 5.0,
-                "link_cc": 5.0,
+                "leave_successes": 4,
+                "lfm_leave_successes": 3,
+                "team_name": "LamBot",
             },
             # Team D
             {
                 "team_number": "1577",
-                "mobility_successes": 4,
-                "lfm_mobility_successes": 3,
-                "team_name": "Steampunk",
                 "foul_cc": 7.0,
-                "link_cc": 10.0,
+                "leave_successes": 4,
+                "lfm_leave_successes": 3,
+                "team_name": "Steampunk",
             },
         ]
         self.test_server.db.insert_documents("tba_cache", tba_cache)

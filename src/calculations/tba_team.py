@@ -43,7 +43,7 @@ class TBATeamCalc(base_calculations.BaseCalculations):
             for match in matches.values():
                 # Check for TBA TIM and objective TIM fields in the match
                 # Skip match if either field is missing to avoid inaccurate data
-                if not ("mobility" in match):
+                if not ("leave" in match):
                     continue
                 for key, value in schema_entry.items():
                     # Handle `not` field
@@ -90,8 +90,8 @@ class TBATeamCalc(base_calculations.BaseCalculations):
         if matches_resp is None:
             matches_resp = {"data": tba_communicator.tba_request(matches_endpoint)}
         tba_matches = matches_resp.get("data", [])
+        cc_aims: List[CCEvent] = []
         if cc_type == "foul":
-            cc_aims: List[CCEvent] = []
             # For each AIM, add the foul points for the other alliance in a dictionary
             # with the team numbers and foul points contributed
             for match in tba_matches:
@@ -109,29 +109,7 @@ class TBATeamCalc(base_calculations.BaseCalculations):
                         "value": match["score_breakdown"]["red"]["foulPoints"],
                     }
                 )
-
-            solved = cc(cc_aims)
-        if cc_type == "link":
-            cc_aims: List[CCEvent] = []
-            # For each AIM, add the link points for the other alliance in a dictionary
-            # with the team numbers and link points contributed
-            for match in tba_matches:
-                if match.get("score_breakdown", None) is None:
-                    continue
-                cc_aims.append(
-                    {
-                        "parties": utils.get_teams_in_match(match, "red"),
-                        "value": match["score_breakdown"]["red"]["linkPoints"],
-                    }
-                )
-                cc_aims.append(
-                    {
-                        "parties": utils.get_teams_in_match(match, "blue"),
-                        "value": match["score_breakdown"]["blue"]["linkPoints"],
-                    }
-                )
-
-            solved = cc(cc_aims)
+        solved = cc(cc_aims)
         return solved
 
     def update_team_calcs(self, teams: list) -> list:
