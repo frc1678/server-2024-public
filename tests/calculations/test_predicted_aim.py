@@ -73,9 +73,7 @@ class TestPredictedAimCalc:
                 "actual_rp1": 0.0,
                 "actual_rp2": 1.0,
                 "won_match": True,
-                "predicted_score": 280.83333,
-                "predicted_rp1": 0.25,
-                "predicted_rp2": 1.0,
+                "predicted_score": 206.4,
                 "team_numbers": ["1678", "1533", "7229"],
             },
             {
@@ -86,9 +84,7 @@ class TestPredictedAimCalc:
                 "actual_rp1": 1.0,
                 "actual_rp2": 1.0,
                 "won_match": False,
-                "predicted_score": 279.33333,
-                "predicted_rp1": 0.25,
-                "predicted_rp2": 1.0,
+                "predicted_score": 223.4,
                 "team_numbers": ["1678", "1533", "2468"],
             },
             {
@@ -99,9 +95,7 @@ class TestPredictedAimCalc:
                 "actual_rp1": 0.0,
                 "actual_rp2": 0.0,
                 "won_match": False,
-                "predicted_score": 279.33333,
-                "predicted_rp1": 0.25,
-                "predicted_rp2": 1.0,
+                "predicted_score": 223.4,
                 "team_numbers": ["1678", "1533", "2468"],
             },
             {
@@ -112,9 +106,7 @@ class TestPredictedAimCalc:
                 "actual_rp1": 0.0,
                 "actual_rp2": 0.0,
                 "won_match": False,
-                "predicted_score": 280.83333,
-                "predicted_rp1": 0.25,
-                "predicted_rp2": 1.0,
+                "predicted_score": 206.4,
                 "team_numbers": ["1678", "1533", "7229"],
             },
         ]
@@ -122,29 +114,26 @@ class TestPredictedAimCalc:
             {
                 "alliance_num": 1,
                 "picks": ["1678", "1533", "7229"],
-                "predicted_score": 280.83333,
-                "predicted_auto_score": 61.2,
-                "predicted_tele_score": 219.63333,
-                "predicted_grid_score": 250.3,
-                "predicted_charge_score": 22.0,
+                "predicted_score": 206.4,
+                "predicted_auto_score": 59.8,
+                "predicted_tele_score": 146.6,
+                "predicted_stage_score": None,
             },
             {
                 "alliance_num": 9,
                 "picks": ["1678", "1533", "7229"],
-                "predicted_score": 280.83333,
-                "predicted_auto_score": 61.2,
-                "predicted_tele_score": 219.63333,
-                "predicted_grid_score": 250.3,
-                "predicted_charge_score": 22.0,
+                "predicted_score": 206.4,
+                "predicted_auto_score": 59.8,
+                "predicted_tele_score": 146.6,
+                "predicted_stage_score": None,
             },
             {
                 "alliance_num": 17,
                 "picks": ["1678", "1533", "7229"],
-                "predicted_score": 280.83333,
-                "predicted_auto_score": 61.2,
-                "predicted_tele_score": 219.63333,
-                "predicted_grid_score": 250.3,
-                "predicted_charge_score": 22.0,
+                "predicted_score": 206.4,
+                "predicted_auto_score": 59.8,
+                "predicted_tele_score": 146.6,
+                "predicted_stage_score": None,
             },
         ]
         self.expected_results = [
@@ -156,10 +145,8 @@ class TestPredictedAimCalc:
                 "actual_rp1": 0.0,
                 "actual_rp2": 1.0,
                 "won_match": True,
-                "predicted_score": 280.83333,
-                "predicted_rp1": 0.25,
-                "predicted_rp2": 1.0,
-                "win_chance": 0.96789,
+                "predicted_score": 206.4,
+                "win_chance": 0.99966,
                 "team_numbers": ["1678", "1533", "7229"],
             },
             {
@@ -170,10 +157,8 @@ class TestPredictedAimCalc:
                 "actual_rp1": 1.0,
                 "actual_rp2": 1.0,
                 "won_match": False,
-                "predicted_score": 279.33333,
-                "predicted_rp1": 0.25,
-                "predicted_rp2": 1.0,
-                "win_chance": 1 - 0.96789,
+                "predicted_score": 223.4,
+                "win_chance": 0.00034,
                 "team_numbers": ["1678", "1533", "2468"],
             },
             {
@@ -184,10 +169,8 @@ class TestPredictedAimCalc:
                 "actual_rp1": 0.0,
                 "actual_rp2": 0.0,
                 "won_match": False,
-                "predicted_score": 279.33333,
-                "predicted_rp1": 0.25,
-                "predicted_rp2": 1.0,
-                "win_chance": 1 - 0.96789,
+                "predicted_score": 223.4,
+                "win_chance": 0.00034,
                 "team_numbers": ["1678", "1533", "2468"],
             },
             {
@@ -198,10 +181,8 @@ class TestPredictedAimCalc:
                 "actual_rp1": 0.0,
                 "actual_rp2": 0.0,
                 "won_match": False,
-                "predicted_score": 280.83333,
-                "predicted_rp1": 0.25,
-                "predicted_rp2": 1.0,
-                "win_chance": 0.96789,
+                "predicted_score": 206.4,
+                "win_chance": 0.99966,
                 "team_numbers": ["1678", "1533", "7229"],
             },
         ]
@@ -211,205 +192,82 @@ class TestPredictedAimCalc:
             {"alliance_num": 17, "picks": ["1678", "1533", "7229"]},
         ]
         self.full_predicted_values = predicted_aim.PredictedAimScores(
-            auto_dock_successes=0.5,
-            auto_engage_successes=0.5,
-            tele_engage_successes=1.5,
-            tele_dock_successes=0.5,
-            link=5,
+            tele_park_successes=1.5,
+            tele_onstage_successes=0.5,
         )
         self.blank_predicted_values = predicted_aim.PredictedAimScores()
         self.obj_team = [
             {
                 "team_number": "1678",
                 "matches_played": 5,
-                "auto_avg_cube_low": 1.0,
-                "auto_avg_cone_low": 2.5,
-                "auto_avg_cube_mid": 4.5,
-                "auto_avg_cone_mid": 3.5,
-                "auto_avg_cube_high": 7.5,
-                "auto_avg_cone_high": 6.0,
-                "auto_avg_cube_total": 13.0,
-                "auto_avg_cone_total": 12.0,
-                "tele_avg_cube_low": 3.3,
-                "tele_avg_cone_low": 2.3,
-                "tele_avg_cube_mid": 3.5,
-                "tele_avg_cone_mid": 2.5,
-                "tele_avg_cube_high": 2.2,
-                "tele_avg_cone_high": 4.3,
-                "tele_avg_cube_total": 9.0,
-                "tele_avg_cone_total": 8.1,
-                "auto_charge_attempts": 1,
-                "auto_dock_successes": 1,
-                "auto_dock_percent_success": 1.0,
-                "auto_dock_only_percent_success": 1.0,
-                "auto_engage_successes": 0,
-                "auto_engage_percent_success": 0.0,
-                "tele_charge_attempts": 2,
-                "tele_dock_successes": 1,
-                "tele_dock_percent_success": 0.5,
-                "tele_dock_only_percent_success": 0.5,
-                "tele_engage_successes": 1,
-                "tele_engage_percent_success": 0.5,
-                "tele_park_successes": 0,
-                "tele_park_percent_success": 0.0,
+                "auto_avg_speaker": 4.0,
+                "auto_avg_amp": 0.5,
+                "tele_avg_speaker": 0.0,
+                "tele_avg_speaker_amped": 11.2,
+                "tele_avg_amp": 2.0,
+                "avg_trap": 1.0,
             },
             {
                 "team_number": "1533",
                 "matches_played": 5,
-                "auto_avg_cube_low": 1.1,
-                "auto_avg_cone_low": 2.6,
-                "auto_avg_cube_mid": 4.6,
-                "auto_avg_cone_mid": 3.6,
-                "auto_avg_cube_high": 7.6,
-                "auto_avg_cone_high": 6.1,
-                "auto_avg_cube_total": 13.3,
-                "auto_avg_cone_total": 12.3,
-                "tele_avg_cube_low": 3.4,
-                "tele_avg_cone_low": 2.4,
-                "tele_avg_cube_mid": 3.6,
-                "tele_avg_cone_mid": 2.6,
-                "tele_avg_cube_high": 2.3,
-                "tele_avg_cone_high": 4.4,
-                "tele_avg_cube_total": 9.3,
-                "tele_avg_cone_total": 8.4,
-                "auto_charge_attempts": 1,
-                "auto_dock_successes": 0,
-                "auto_dock_percent_success": 0.0,
-                "auto_dock_only_percent_success": 0.0,
-                "auto_engage_successes": 1,
-                "auto_engage_percent_success": 1.0,
-                "tele_charge_attempts": 2,
-                "tele_dock_successes": 0,
-                "tele_dock_percent_success": 0.0,
-                "tele_dock_only_percent_success": 0.0,
-                "tele_engage_successes": 1,
-                "tele_engage_percent_success": 0.5,
-                "tele_park_successes": 1,
-                "tele_park_percent_success": 0.5,
+                "auto_avg_speaker": 2.6,
+                "auto_avg_amp": 0.8,
+                "tele_avg_speaker": 0.5,
+                "tele_avg_speaker_amped": 8.2,
+                "tele_avg_amp": 3.6,
+                "avg_trap": 0.2,
             },
             {
                 "team_number": "7229",
                 "matches_played": 5,
-                "auto_avg_cube_low": 1.2,
-                "auto_avg_cone_low": 2.7,
-                "auto_avg_cube_mid": 4.7,
-                "auto_avg_cone_mid": 3.7,
-                "auto_avg_cube_high": 7.7,
-                "auto_avg_cone_high": 6.2,
-                "auto_avg_cube_total": 13.6,
-                "auto_avg_cone_total": 12.6,
-                "tele_avg_cube_low": 3.5,
-                "tele_avg_cone_low": 2.5,
-                "tele_avg_cube_mid": 3.7,
-                "tele_avg_cone_mid": 2.7,
-                "tele_avg_cube_high": 2.4,
-                "tele_avg_cone_high": 4.5,
-                "tele_avg_cube_total": 9.6,
-                "tele_avg_cone_total": 8.7,
-                "auto_charge_attempts": 2,
-                "auto_dock_successes": 1,
-                "auto_dock_percent_success": 0.5,
-                "auto_dock_only_percent_success": 0.5,
-                "auto_engage_successes": 1,
-                "auto_engage_percent_success": 0.5,
-                "tele_charge_attempts": 2,
-                "tele_dock_successes": 1,
-                "tele_dock_percent_success": 0.5,
-                "tele_dock_only_percent_success": 0.5,
-                "tele_engage_successes": 0,
-                "tele_engage_percent_success": 0.0,
-                "tele_park_successes": 1,
-                "tele_park_percent_success": 0.5,
+                "auto_avg_speaker": 3.4,
+                "auto_avg_amp": 1.2,
+                "tele_avg_speaker": 4.4,
+                "tele_avg_speaker_amped": 4.4,
+                "tele_avg_amp": 3.2,
+                "avg_trap": 0.6,
             },
             {
                 "team_number": "2468",
                 "matches_played": 5,
-                "auto_avg_cube_low": 1.1,
-                "auto_avg_cone_low": 2.7,
-                "auto_avg_cube_mid": 4.6,
-                "auto_avg_cone_mid": 3.7,
-                "auto_avg_cube_high": 7.6,
-                "auto_avg_cone_high": 6.2,
-                "auto_avg_cube_total": 13.3,
-                "auto_avg_cone_total": 12.6,
-                "tele_avg_cube_low": 3.4,
-                "tele_avg_cone_low": 2.5,
-                "tele_avg_cube_mid": 3.6,
-                "tele_avg_cone_mid": 2.7,
-                "tele_avg_cube_high": 2.3,
-                "tele_avg_cone_high": 4.5,
-                "tele_avg_cube_total": 9.3,
-                "tele_avg_cone_total": 8.7,
-                "auto_charge_attempts": 1,
-                "auto_dock_successes": 0,
-                "auto_dock_percent_success": 0.0,
-                "auto_dock_only_percent_success": 0.0,
-                "auto_engage_successes": 0,
-                "auto_engage_percent_success": 0.0,
-                "tele_charge_attempts": 2,
-                "tele_dock_successes": 0,
-                "tele_dock_percent_success": 0.0,
-                "tele_dock_only_percent_success": 0.0,
-                "tele_engage_successes": 0,
-                "tele_engage_percent_success": 0.0,
-                "tele_park_successes": 1,
-                "tele_park_percent_success": 0.5,
+                "auto_avg_speaker": 3.6,
+                "auto_avg_amp": 1.4,
+                "tele_avg_speaker": 2.4,
+                "tele_avg_speaker_amped": 8.6,
+                "tele_avg_amp": 2.2,
+                "avg_trap": 0.6,
             },
             {
                 "team_number": "1000",
                 "matches_played": 5,
-                "auto_avg_cube_low": 0.0,
-                "auto_avg_cone_low": 0.0,
-                "auto_avg_cube_mid": 0.0,
-                "auto_avg_cone_mid": 0.0,
-                "auto_avg_cube_high": 0.0,
-                "auto_avg_cone_high": 0.0,
-                "auto_avg_cube_total": 0.0,
-                "auto_avg_cone_total": 0.0,
-                "tele_avg_cube_low": 0.0,
-                "tele_avg_cone_low": 0.0,
-                "tele_avg_cube_mid": 0.0,
-                "tele_avg_cone_mid": 0.0,
-                "tele_avg_cube_high": 0.0,
-                "tele_avg_cone_high": 0.0,
-                "tele_avg_cube_total": 0.0,
-                "tele_avg_cone_total": 0.0,
-                "auto_charge_attempts": 0,
-                "auto_dock_successes": 0,
-                "auto_dock_percent_success": 0.0,
-                "auto_dock_only_percent_success": 0.0,
-                "auto_engage_successes": 0,
-                "auto_engage_percent_success": 0.0,
-                "tele_charge_attempts": 0,
-                "tele_dock_successes": 0,
-                "tele_dock_percent_success": 0.0,
-                "tele_dock_only_percent_success": 0.0,
-                "tele_engage_successes": 0,
-                "tele_engage_percent_success": 0.0,
-                "tele_park_successes": 0,
-                "tele_park_percent_success": 0.0,
+                "auto_avg_speaker": 0.0,
+                "auto_avg_amp": 0.0,
+                "tele_avg_speaker": 0.0,
+                "tele_avg_speaker_amped": 0.0,
+                "tele_avg_amp": 0.0,
+                "avg_trap": 0.0,
             },
         ]
         self.tba_team = [
             {
                 "team_number": "1678",
-                "mobility_successes": 5,
+                "leave_successes": 5,
             },
             {
                 "team_number": "1533",
-                "mobility_successes": 4,
+                "leave_successes": 4,
             },
             {
                 "team_number": "7229",
-                "mobility_successes": 3,
+                "leave_successes": 3,
             },
             {
                 "team_number": "2468",
-                "mobility_successes": 2,
+                "leave_successes": 2,
             },
             {
                 "team_number": "1000",
-                "mobility_successes": 1,
+                "leave_successes": 1,
             },
         ]
         self.tba_match_data = [
@@ -418,13 +276,13 @@ class TestPredictedAimCalc:
                 "comp_level": "qm",
                 "score_breakdown": {
                     "blue": {
-                        "activationBonusAchieved": True,
-                        "sustainabilityBonusAchieved": True,
+                        "melodyBonusAchieved": True,
+                        "ensembleBonusAchieved": True,
                         "totalPoints": 278,
                     },
                     "red": {
-                        "activationBonusAchieved": False,
-                        "sustainabilityBonusAchieved": True,
+                        "melodyBonusAchieved": False,
+                        "ensembleBonusAchieved": True,
                         "totalPoints": 320,
                     },
                 },
@@ -436,13 +294,13 @@ class TestPredictedAimCalc:
                 "comp_level": "qf",
                 "score_breakdown": {
                     "blue": {
-                        "activationBonusAchieved": True,
-                        "sustainabilityBonusAchieved": True,
+                        "melodyBonusAchieved": True,
+                        "ensembleBonusAchieved": True,
                         "totalPoints": 300,
                     },
                     "red": {
-                        "activationBonusAchieved": True,
-                        "sustainabilityBonusAchieved": True,
+                        "melodyBonusAchieved": True,
+                        "ensembleBonusAchieved": True,
                         "totalPoints": 400,
                     },
                 },
@@ -478,100 +336,8 @@ class TestPredictedAimCalc:
         assert self.test_calc.watched_collections == ["obj_team", "tba_team"]
         assert self.test_calc.server == self.test_server
 
-    def test_calculate_predicted_link_score(self):
-        """Test if the number of links is calculated correctly"""
-        self.test_calc.calculate_predicted_grid_score(self.blank_predicted_values, self.obj_team[4])
-        self.test_calc.calculate_predicted_link_score(self.blank_predicted_values, self.obj_team)
-        assert near(self.blank_predicted_values.link, 0)
-
-        self.test_calc.calculate_predicted_grid_score(self.blank_predicted_values, self.obj_team[1])
-        self.test_calc.calculate_predicted_grid_score(self.blank_predicted_values, self.obj_team[2])
-        self.test_calc.calculate_predicted_link_score(self.blank_predicted_values, self.obj_team)
-        assert near(self.blank_predicted_values.link, 9)
-
-    def test_calculate_predicted_grid_score(self):
-        """Test if the grid obj_team values are added to the total predicted_values correctly"""
-        self.test_calc.calculate_predicted_grid_score(self.blank_predicted_values, self.obj_team[0])
-        assert near(self.blank_predicted_values.auto_gamepieces_low, 3.5)
-        assert near(self.blank_predicted_values.auto_cube_mid, 4.5)
-        assert near(self.blank_predicted_values.auto_cone_mid, 3.5)
-        assert near(self.blank_predicted_values.auto_cube_high, 7.5)
-        assert near(self.blank_predicted_values.auto_cone_high, 6.0)
-        assert near(self.blank_predicted_values.tele_gamepieces_low, 5.6)
-        assert near(self.blank_predicted_values.tele_cube_mid, 3.5)
-        assert near(self.blank_predicted_values.tele_cone_mid, 2.5)
-        assert near(self.blank_predicted_values.tele_cube_high, 2.2)
-        assert near(self.blank_predicted_values.tele_cone_high, 4.3)
-
-        self.test_calc.calculate_predicted_grid_score(self.blank_predicted_values, self.obj_team[1])
-        assert near(self.blank_predicted_values.auto_gamepieces_low, 7.2)
-        assert near(self.blank_predicted_values.auto_cube_mid, 9.1)
-        assert near(self.blank_predicted_values.auto_cone_mid, 7.1)
-        assert near(self.blank_predicted_values.auto_cube_high, 15.1)
-        assert near(self.blank_predicted_values.auto_cone_high, 12.1)
-        assert near(self.blank_predicted_values.tele_gamepieces_low, 11.4)
-        assert near(self.blank_predicted_values.tele_cube_mid, 7.1)
-        assert near(self.blank_predicted_values.tele_cone_mid, 5.1)
-        assert near(self.blank_predicted_values.tele_cube_high, 4.5)
-        assert near(self.blank_predicted_values.tele_cone_high, 8.7)
-
-        self.test_calc.calculate_predicted_grid_score(self.blank_predicted_values, self.obj_team[2])
-        assert near(self.blank_predicted_values.auto_gamepieces_low, 11.1)
-        assert near(self.blank_predicted_values.auto_cube_mid, 13.8)
-        assert near(self.blank_predicted_values.auto_cone_mid, 10.8)
-        assert near(self.blank_predicted_values.auto_cube_high, 22.8)
-        assert near(self.blank_predicted_values.auto_cone_high, 18.3)
-        assert near(self.blank_predicted_values.tele_gamepieces_low, 17.4)
-        assert near(self.blank_predicted_values.tele_cube_mid, 10.8)
-        assert near(self.blank_predicted_values.tele_cone_mid, 7.8)
-        assert near(self.blank_predicted_values.tele_cube_high, 6.9)
-        assert near(self.blank_predicted_values.tele_cone_high, 13.2)
-
-    def test_calculate_predicted_alliance_grid(self):
-        """Check that the final predicted grid is made possible (i.e. no more than 6 high cones)"""
-        for team in self.obj_team[:3]:
-            self.test_calc.calculate_predicted_grid_score(self.blank_predicted_values, team)
-        self.test_calc.calculate_predicted_alliance_grid(self.blank_predicted_values)
-        assert near(self.blank_predicted_values.auto_cone_high, 6)
-        assert near(self.blank_predicted_values.auto_cone_mid, 0)
-        assert near(self.blank_predicted_values.auto_cube_high, 1)
-        assert near(self.blank_predicted_values.auto_cube_mid, 0)
-        assert near(self.blank_predicted_values.auto_gamepieces_low, 0)
-        assert near(self.blank_predicted_values.tele_cone_high, 0)
-        assert near(self.blank_predicted_values.tele_cone_mid, 6)
-        assert near(self.blank_predicted_values.tele_cube_high, 2)
-        assert near(self.blank_predicted_values.tele_cube_mid, 3)
-        assert near(self.blank_predicted_values.tele_gamepieces_low, 9)
-        assert near(self.blank_predicted_values.supercharge, 36.1)
-
-    def test_calculate_predicted_charge_success_rate(self):
-        """Test that the predicted charge success rates are calculated correctly each time a team is added"""
-        self.test_calc.calculate_predicted_charge_success_rate(
-            self.blank_predicted_values, self.obj_team[0]
-        )
-        assert near(self.blank_predicted_values.auto_dock_successes, 1)
-        assert near(self.blank_predicted_values.auto_engage_successes, 0)
-        assert near(self.blank_predicted_values.tele_dock_successes, 0.5)
-        assert near(self.blank_predicted_values.tele_engage_successes, 0.5)
-        assert near(self.blank_predicted_values.tele_park_successes, 0)
-
-        self.test_calc.calculate_predicted_charge_success_rate(
-            self.blank_predicted_values, self.obj_team[1]
-        )
-        assert near(self.blank_predicted_values.auto_dock_successes, 0)
-        assert near(self.blank_predicted_values.auto_engage_successes, 1)
-        assert near(self.blank_predicted_values.tele_dock_successes, 0.5)
-        assert near(self.blank_predicted_values.tele_engage_successes, 1)
-        assert near(self.blank_predicted_values.tele_park_successes, 0.5)
-
-        self.test_calc.calculate_predicted_charge_success_rate(
-            self.blank_predicted_values, self.obj_team[2]
-        )
-        assert near(self.blank_predicted_values.auto_dock_successes, 0)
-        assert near(self.blank_predicted_values.auto_engage_successes, 1)
-        assert near(self.blank_predicted_values.tele_dock_successes, 1)
-        assert near(self.blank_predicted_values.tele_engage_successes, 1)
-        assert near(self.blank_predicted_values.tele_park_successes, 1)
+    def test_calculate_predicted_stage_success_rate(self):
+        pass
 
     def test_calculate_predicted_alliance_score(self):
         """Test the total predicted_score is correct"""
@@ -582,7 +348,7 @@ class TestPredictedAimCalc:
                 self.tba_team,
                 ["1678", "1533", "7229"],
             ),
-            280.83333,
+            206.40000,
         )
         # Make sure there are no errors with no data
         try:
@@ -601,25 +367,11 @@ class TestPredictedAimCalc:
         ):
             assert self.test_calc.get_playoffs_alliances() == self.expected_playoffs_alliances
 
-    def test_calculate_predicted_link_rp(self):
-        """Test that the chance of getting the link rp is calculated correctly"""
-        assert self.test_calc.calculate_predicted_link_rp(self.blank_predicted_values) == 0
-        assert self.test_calc.calculate_predicted_link_rp(self.full_predicted_values) == 0.75
+    def test_calculate_predicted_ensemble_rp(self):
+        pass
 
-    def test_calculate_predicted_charge_rp(self):
-        """Thest that the chance of getting the charge rp is calculated correctly"""
-        assert (
-            self.test_calc.calculate_predicted_charge_rp(
-                self.blank_predicted_values, self.obj_team, ["1000", "1000", "1000"]
-            )
-            == 0
-        )
-        assert (
-            self.test_calc.calculate_predicted_charge_rp(
-                self.full_predicted_values, self.obj_team, ["1678", "1533", "7229"]
-            )
-            == 0.25
-        )
+    def test_calculate_predicted_melody_rp(self):
+        pass
 
     def test_get_actual_values(self):
         """Test getting actual values from TBA"""
