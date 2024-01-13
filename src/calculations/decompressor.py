@@ -348,15 +348,6 @@ class Decompressor(base_calculations.BaseCalculations):
                     log.warning(
                         f"Both pit scouts collected data for team: {team_num} for the field: {name} and came up with different values"
                     )
-                elif name == "drivetrain_motor_type":
-                    if value != "no_data":
-                        continue
-                    if current_document[name] != "no_data":
-                        decompressed_data.update({name: current_document[name]})
-                        continue
-                    log.warning(
-                        f"Both pit scouts collected data for team: {team_num} for the field: {name} and came up with different values"
-                    )
         return decompressed_data
 
     def check_scout_ids(self):
@@ -400,6 +391,7 @@ class Decompressor(base_calculations.BaseCalculations):
             entry["o"] for entry in self.entries_since_last() if not entry["o"]["blocklisted"]
         ]
         decompressed_qrs = self.decompress_qrs(new_qrs)
+        print(decompressed_qrs)
 
         # Checks if two subjective scouts scouted the same alliance in a match
         # If so, delete one of the qrs
@@ -419,4 +411,6 @@ class Decompressor(base_calculations.BaseCalculations):
                 # Prevent duplicates when calculating all data by deleting data before inserting
                 # Updating doesn't work because unconsolidated_obj_tim doesn't have unique keys
                 self.server.db.delete_data(collection)
+            print(collection)
+            print(decompressed_qrs[collection])
             self.server.db.insert_documents(collection, decompressed_qrs[collection])

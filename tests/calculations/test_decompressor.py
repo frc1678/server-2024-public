@@ -21,28 +21,27 @@ class TestDecompressor:
     def test_convert_data_type(self):
         # List of compressed names and decompressed names of enums
         action_type_dict = {
-            "score_cone_high": "AA",
-            "score_cone_mid": "AB",
-            "score_cone_low": "AC",
-            "score_cube_high": "AD",
-            "score_cube_mid": "AE",
-            "score_cube_low": "AF",
-            "intake_ground": "AG",
-            "intake_double": "AH",
-            "intake_low_row": "AI",
-            "intake_mid_row": "AJ",
-            "intake_high_row": "AK",
-            "start_incap": "AL",
-            "end_incap": "AM",
-            "charge_attempt": "AN",
-            "to_teleop": "AO",
-            "auto_intake_one": "AP",
-            "auto_intake_two": "AQ",
-            "auto_intake_three": "AR",
-            "auto_intake_four": "AS",
-            "score_fail": "AT",
-            "intake_single": "AU",
-            "supercharge": "AV",
+            "score_speaker": "AA",
+            "score_amp": "AB",
+            "score_trap": "AC",
+            "start_incap": "AD",
+            "end_incap": "AE",
+            "auto_intake_spike_1": "AF",
+            "auto_intake_spike_2": "AG",
+            "auto_intake_spike_3": "AH",
+            "auto_intake_center_1": "AI",
+            "auto_intake_center_2": "AJ",
+            "auto_intake_center_3": "AK",
+            "auto_intake_center_4": "AL",
+            "auto_intake_center_5": "AM",
+            "intake_amp": "AN",
+            "intake_poach": "AO",
+            "intake_center": "AP",
+            "intake_far": "AQ",
+            "shoot_other": "AR",
+            "score_fail": "AS",
+            "amplified": "AT",
+            "to_teleop": "AU",
         }
         # Test a few values for each type to make sure they make sense
         assert 5 == self.test_decompressor.convert_data_type("5", "int")
@@ -94,13 +93,11 @@ class TestDecompressor:
         assert "field_awareness_score" == self.test_decompressor.get_decompressed_name(
             "C", "subjective_aim"
         )
-        assert "score_cone_high" == self.test_decompressor.get_decompressed_name(
-            "AA", "action_type"
+        assert "score_speaker" == self.test_decompressor.get_decompressed_name("AA", "action_type")
+        assert "auto_intake_spike_1" == self.test_decompressor.get_decompressed_name(
+            "AF", "action_type"
         )
-        assert "score_cube_low" == self.test_decompressor.get_decompressed_name("AF", "action_type")
-        assert "auto_charge_level" == self.test_decompressor.get_decompressed_name(
-            "V", "objective_tim"
-        )
+        assert "stage_level" == self.test_decompressor.get_decompressed_name("V", "objective_tim")
         with pytest.raises(ValueError) as excinfo:
             self.test_decompressor.get_decompressed_name("#", "generic_data")
         assert "Retrieving Variable Name # from generic_data failed." in str(excinfo)
@@ -127,7 +124,7 @@ class TestDecompressor:
         )
         # Test timeline decompression
         assert {
-            "timeline": [{"action_type": "score_cone_high", "time": 51, "in_teleop": False}]
+            "timeline": [{"action_type": "score_speaker", "time": 51, "in_teleop": False}]
         } == self.test_decompressor.decompress_data(["W051AA"], "objective_tim")
         # Test using list with internal separators
         assert {
@@ -161,10 +158,10 @@ class TestDecompressor:
         assert "Invalid timeline -- Timeline length invalid: ['abcdefg']" in str(excinfo)
         # Test timeline decompression
         assert [
-            {"time": 59, "action_type": "score_cube_high", "in_teleop": False},
+            {"time": 59, "action_type": "score_speaker", "in_teleop": False},
             {"time": 60, "action_type": "to_teleop", "in_teleop": True},
-            {"time": 61, "action_type": "score_cube_mid", "in_teleop": True},
-        ] == self.test_decompressor.decompress_timeline("059AD060AO061AE")
+            {"time": 61, "action_type": "score_amp", "in_teleop": True},
+        ] == self.test_decompressor.decompress_timeline("059AA060AU061AB")
         # Should return empty list if passed an empty string
         assert [] == self.test_decompressor.decompress_timeline("")
 
@@ -182,12 +179,11 @@ class TestDecompressor:
                 "scout_id": 14,
                 "start_position": "3",
                 "timeline": [
-                    {"time": 60, "action_type": "score_cube_high", "in_teleop": False},
-                    {"time": 61, "action_type": "score_cube_mid", "in_teleop": False},
+                    {"time": 60, "action_type": "score_speaker", "in_teleop": False},
+                    {"time": 61, "action_type": "score_amp", "in_teleop": False},
                 ],
-                "tele_charge_level": "E",
-                "preloaded_gamepiece": "O",
-                "auto_charge_level": "N",
+                "stage_level": "O",
+                "has_preload": True,
             }
         ]
         # Expected decompressed subjective qr
@@ -226,7 +222,7 @@ class TestDecompressor:
         ]
         # Test objective qr decompression
         assert expected_objective == self.test_decompressor.decompress_single_qr(
-            f"A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B34$C1230$Dv1.3$EName$FFALSE%Z1678$Y14$X3$UE$TO$W060AD061AE$VN",
+            f"A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B34$C1230$Dv1.3$EName$FFALSE%Z1678$Y14$X3$W060AA061AB$VO$UTRUE",
             decompressor.QRType.OBJECTIVE,
         )
         # Test subjective qr decompression
@@ -237,7 +233,7 @@ class TestDecompressor:
         # Test error raising for objective and subjective using incomplete qrs
         with pytest.raises(ValueError) as excinfo:
             self.test_decompressor.decompress_single_qr(
-                f"A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B34$C1230$Dv1.3$EName$FTRUE%Z1678$Y14",
+                f"A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B34$C1230$Dv1.3$EName$FTRUE%Z1678$Y14$VO$UTRUE",
                 decompressor.QRType.OBJECTIVE,
             )
         assert "QR missing data fields" in str(excinfo)
@@ -277,18 +273,17 @@ class TestDecompressor:
                     "timeline": [
                         {
                             "time": 60,
-                            "action_type": "score_cube_high",
+                            "action_type": "start_incap",
                             "in_teleop": False,
                         },
                         {
                             "time": 61,
-                            "action_type": "score_cube_mid",
+                            "action_type": "end_incap",
                             "in_teleop": False,
                         },
                     ],
-                    "auto_charge_level": "N",
-                    "tele_charge_level": "N",
-                    "preloaded_gamepiece": "N",
+                    "stage_level": "N",
+                    "has_preload": False,
                     "ulid": "01GWSXQYKYQQ963QMT77A3NPBZ",
                 }
             ],
@@ -346,7 +341,7 @@ class TestDecompressor:
         assert expected_output == self.test_decompressor.decompress_qrs(
             [
                 {
-                    "data": f"+A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B34$C1230$Dv1.3$EName$FTRUE%Z1678$Y14$X4$W060AD061AE$VN$UN$TN",
+                    "data": f"+A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B34$C1230$Dv1.3$EName$FTRUE%Z1678$Y14$X4$W060AD061AE$VN$UFALSE",
                     "override": {},
                     "ulid": "01GWSXQYKYQQ963QMT77A3NPBZ",
                 },
@@ -361,107 +356,75 @@ class TestDecompressor:
     def test_decompress_pit_data(self):
         raw_obj_pit = {
             "team_number": "3448",
-            "drivetrain": 2,
-            "drivetrain_motors": 4,
-            "drivetrain_motor_type": 3,
-            "has_vision": False,
-            "has_communication_device": True,
-            "is_forkable": False,
+            "drivetrain": 0,
+            "has_auto_vision": True,
+            "has_vision_assisted_shot": True,
+            "has_hp_indicator": False,
+            "can_climb": True,
             "has_ground_intake": False,
-            "weight": 3.9524,
-            "length": 3.9524,
-            "width": 3.2931,
         }
         expected_obj_pit = {
             "team_number": "3448",
-            "drivetrain": "swerve",
-            "drivetrain_motors": 4,
-            "drivetrain_motor_type": "falcon",
-            "is_forkable": False,
+            "has_auto_vision": True,
+            "drivetrain": "tank",
+            "has_vision_assisted_shot": True,
             "has_ground_intake": False,
-            "has_vision": False,
-            "has_communication_device": True,
-            "weight": 3.9524,
-            "length": 3.9524,
-            "width": 3.2931,
+            "has_hp_indicator": False,
+            "can_climb": True,
         }
         citrus_seal = {
             "team_number": "3448",
             "drivetrain": 0,
-            "drivetrain_motors": 0,
-            "drivetrain_motor_type": 0,
-            "has_vision": False,
-            "has_communication_device": False,
-            "is_forkable": True,
+            "has_auto_vision": False,
+            "has_vision_assisted_shot": True,
+            "has_hp_indicator": False,
+            "can_climb": False,
             "has_ground_intake": True,
-            "weight": 0,
-            "length": 0,
-            "width": 0,
         }
         new_expected_obj_pit = {
             "team_number": "3448",
             "drivetrain": "tank",
-            "drivetrain_motors": 4,
-            "drivetrain_motor_type": "minicim",
-            "is_forkable": True,
+            "has_auto_vision": True,
+            "has_vision_assisted_shot": True,
             "has_ground_intake": True,
-            "has_vision": False,
-            "has_communication_device": True,
-            "weight": 3.9524,
-            "length": 3.9524,
-            "width": 3.2931,
+            "has_hp_indicator": False,
+            "can_climb": True,
         }
         raw2_obj_pit = {
             "team_number": "1678",
             "drivetrain": 2,
-            "drivetrain_motors": 4,
-            "drivetrain_motor_type": 3,
-            "has_vision": False,
-            "has_communication_device": True,
-            "is_forkable": False,
+            "has_auto_vision": False,
+            "has_vision_assisted_shot": True,
+            "has_hp_indicator": False,
+            "can_climb": True,
             "has_ground_intake": False,
-            "weight": 3.9524,
-            "length": 3.9524,
-            "width": 3.2931,
         }
         expected2_obj_pit = {
             "team_number": "1678",
             "drivetrain": "swerve",
-            "drivetrain_motors": 4,
-            "drivetrain_motor_type": "falcon",
-            "is_forkable": True,
+            "has_auto_vision": True,
+            "has_vision_assisted_shot": True,
             "has_ground_intake": True,
-            "has_vision": False,
-            "has_communication_device": True,
-            "weight": 3.9524,
-            "length": 3.9524,
-            "width": 3.2931,
+            "has_hp_indicator": False,
+            "can_climb": True,
         }
         citrus2_seal = {
             "team_number": "1678",
             "drivetrain": 0,
-            "drivetrain_motors": 0,
-            "drivetrain_motor_type": 0,
-            "has_vision": False,
-            "has_communication_device": False,
-            "is_forkable": True,
+            "has_auto_vision": True,
+            "has_vision_assisted_shot": True,
+            "has_hp_indicator": False,
+            "can_climb": False,
             "has_ground_intake": True,
-            "weight": 0,
-            "length": 0,
-            "width": 0,
         }
         new2_expected_obj_pit = {
             "team_number": "1678",
             "drivetrain": "tank",
-            "drivetrain_motors": 0,
-            "drivetrain_motor_type": "minicim",
-            "is_forkable": True,
+            "has_auto_vision": True,
+            "has_vision_assisted_shot": True,
             "has_ground_intake": True,
-            "has_vision": False,
-            "has_communication_device": False,
-            "weight": 0,
-            "length": 0,
-            "width": 0,
+            "has_hp_indicator": False,
+            "can_climb": False,
         }
 
         assert (
@@ -496,17 +459,16 @@ class TestDecompressor:
             "scout_id": 13,
             "start_position": "1",
             "timeline": [
-                {"time": 0, "action_type": "score_cone_high", "in_teleop": False},
-                {"time": 1, "action_type": "score_cone_mid", "in_teleop": False},
-                {"time": 2, "action_type": "score_cone_low", "in_teleop": False},
+                {"time": 0, "action_type": "score_speaker", "in_teleop": False},
+                {"time": 1, "action_type": "score_amp", "in_teleop": False},
+                {"time": 2, "action_type": "score_trap", "in_teleop": False},
                 {"time": 5, "action_type": "to_teleop", "in_teleop": True},
-                {"time": 6, "action_type": "score_cone_mid", "in_teleop": True},
-                {"time": 7, "action_type": "score_cube_high", "in_teleop": True},
-                {"time": 8, "action_type": "score_cube_mid", "in_teleop": True},
+                {"time": 6, "action_type": "score_amp", "in_teleop": True},
+                {"time": 7, "action_type": "start_incap", "in_teleop": True},
+                {"time": 8, "action_type": "end_incap", "in_teleop": True},
             ],
-            "auto_charge_level": "N",
-            "tele_charge_level": "N",
-            "preloaded_gamepiece": "N",
+            "has_preload": True,
+            "stage_level": "N",
             "ulid": "01GWSYJHR5EC6PAKCS79YZAF3Z",
         }
         expected_sbj = [
@@ -564,14 +526,14 @@ class TestDecompressor:
             "raw_qr",
             [
                 {
-                    "data": f"+A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B51$C9321$Dv1.3$EXvfaPcSrgJw25VKrcsphdbyEVjmHrH1V$FFALSE%Z3603$Y13$X2$W000AA001AB002AC005AO006AB007AD008AE$VN$UN$TN",
+                    "data": f"+A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B51$C9321$Dv1.3$EXvfaPcSrgJw25VKrcsphdbyEVjmHrH1V$FFALSE%Z3603$Y13$X2$W000AA001AB002AC005AU006AB007AD008AE$VN$UTRUE",
                     "blocklisted": False,
                     "override": {"start_position": "1", "doesnt_exist": 5},
                     "ulid": "01GWSYJHR5EC6PAKCS79YZAF3Z",
                     "readable_time": "2023-03-30 19:05:38.821000+00:00",
                 },
                 {
-                    "data": f"+A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B51$C9321$Dv1.3$EXvfaPcSrgJw25VKrcsphdbyEVjmHrH1V$FFALSE%Z3603$Y13$X2$W000AA001AB002AC005AO006AB007AD008AE$VN$UN$TN",
+                    "data": f"+A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B51$C9321$Dv1.3$EXvfaPcSrgJw25VKrcsphdbyEVjmHrH1V$FFALSE%Z3603$Y13$X2$W000AA001AB002AC005AO006AB007AD008AE$VN$UTRUE",
                     "blocklisted": True,
                     "override": {"start_position": "1", "doesnt_exist": 5},
                     "ulid": "01GWSYKDZDM45M1K4ZBHN6G97H",
