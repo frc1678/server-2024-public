@@ -172,7 +172,7 @@ class AutoPIMCalc(BaseCalculations):
             )
             tim.update(self.create_auto_fields(tim))
             # Data that is later updated by auto_paths
-            tim.update({"matches_played": [], "path_number": 0})
+            tim.update({"match_numbers_played": [], "num_matches_ran": 0, "path_number": 0})
 
             calculated_pims.append(tim)
         return calculated_pims

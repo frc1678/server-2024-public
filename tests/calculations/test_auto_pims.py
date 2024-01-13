@@ -275,8 +275,9 @@ class TestAutoPIMCalc:
                 {"in_teleop": False, "time": 149, "action_type": "auto_intake_spike_1"},
                 {"in_teleop": False, "time": 150, "action_type": "score_speaker"},
             ][::-1],
-            "matches_played": [],
+            "match_numbers_played": [],
             "path_number": 0,
+            "num_matches_ran": 0,
         }
     ]
 
