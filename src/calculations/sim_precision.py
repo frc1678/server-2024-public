@@ -31,7 +31,7 @@ class SimPrecisionCalc(BaseCalculations):
 
         scout_document = scout_data[0]
         total_score = 0
-        for datapoint, schema in required.items():
+        for datapoint, weight in required.items():
             # split using . to get rid of collection name
             collection, datapoint = datapoint.split(".")
             # Check if the collection is valid
@@ -40,7 +40,7 @@ class SimPrecisionCalc(BaseCalculations):
                     f"Getting data from {collection} is not implemented. Only uncosolidated_totals."
                 )
                 raise NotImplementedError
-            total_score += scout_document[datapoint] * schema["weight"]
+            total_score += scout_document[datapoint] * weight
         return total_score
 
     def get_aim_scout_scores(
@@ -125,9 +125,11 @@ class SimPrecisionCalc(BaseCalculations):
                 tba_match_data = match["score_breakdown"][alliance_color]
 
         total = 0
+        count = 0
+        scores = ["auto_speaker", "auto_amp", "tele_speaker_amped", "tele_speaker", "tele_amp"]
         for datapoint in required.values():
-            calculation = datapoint["calculation"]
-            total += self.get_tba_datapoint_value(tba_match_data, calculation)
+            total += datapoint * tba_match_data[scores[count]]
+            count += 1
         return total
 
     def calc_sim_precision(self, sim, tba_match_data: List[dict]):
@@ -179,44 +181,6 @@ class SimPrecisionCalc(BaseCalculations):
                     sim_errors.append(error_difference)
             calculations[calculation] = self.avg(sim_errors)
         return calculations
-
-    def get_tba_datapoint_value(self, data, calculation: List[str]) -> int:
-        """Given a schema calculation of how to get a datapoint from tba data, return that calculated datapoint.
-        This is a recursive function. Each list in the calculation list is a different value to be summed.
-        Each part in the item is the next step to execute. Parts that don't start with +/- are
-        used as the next key in the dictionary. Parts with +/- are an added/subtracted calculation.
-        +%weight%*count=%value% returns the +/-%weight% times the amount of items matching %value%.
-        +%weight%*value returns the +/-%weight%*value. +%weight%*constant returns the +/-%weight%"""
-        # If the calculation is a list, assume all calculations are a list and split up and sum values of each list
-        # Ex: [["a", "+1*value"], ["b", "c", "+2*value"]] will return data["a"] + 2*data["b"]["c"]
-        if isinstance(calculation[0], list):
-            value = 0
-            for calc in calculation:
-                value += self.get_tba_datapoint_value(data, calc)
-            return value
-        else:
-            # Go to the next step, ex: ["a", "b", "+1*value"] will become data["a"]["b"]
-            if calculation[0][0] not in ["+", "-"]:
-                return self.get_tba_datapoint_value(data[calculation[0]], calculation[1:])
-            else:
-                # Get the weight and calculation to be done, ex: "-2*value" -> weight = "-2", command = "value"
-                weight, command = calculation[0].split("*")
-                weight = int(weight)
-                if command == "value":
-                    # Return the actual value of data, should be an int
-                    if not isinstance(data, int):
-                        log.fatal(f"{data} is not an int")
-                        raise ValueError
-                    return weight * data
-                elif command == "constant":
-                    return weight
-                elif "=" in command and (s := command.split("="))[0] == "count":
-                    # Count the amount of items matching the count in the data, should be list
-                    if not isinstance(data, list):
-                        log.fatal(f"{data} is not a list")
-                        raise ValueError
-                    match_value = s[1]
-                    return weight * sum([int(item == match_value) for item in data])
 
     def update_sim_precision_calcs(self, unconsolidated_sims):
         """Creates scout-in-match precision updates"""
