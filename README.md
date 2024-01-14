@@ -1,4 +1,4 @@
-# 1678 Server 2022
+# 1678 Server 2024
 
 ![pytest](https://github.com/frc1678/server/workflows/pytest/badge.svg)
 ![lint](https://github.com/frc1678/server/workflows/lint/badge.svg)
