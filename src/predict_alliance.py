@@ -19,9 +19,8 @@ def predict_alliance(team1, team2, team3, server, obj_team_data, tba_team_data):
     output["predicted_score"] = calc.calculate_predicted_alliance_score(
         predicted_values, obj_team_data, tba_team_data, team_numbers
     )
-    output["predicted_grid_score"] = calc.calculate_predicted_alliance_grid_score(predicted_values)
     output["predicted_auto_score"] = calc.calculate_predicted_alliance_auto_score(predicted_values)
-    output["predicted_charge_score"] = calc.calculate_predicted_alliance_charge_score(
+    output["predicted_stage_score"] = calc.calculate_predicted_alliance_stage_score(
         predicted_values
     )
     output["predicted_tele_score"] = calc.calculate_predicted_alliance_tele_score(predicted_values)
