@@ -156,55 +156,23 @@ class OBJTeamCalc(base_calculations.BaseCalculations):
         self,
         tim_action_counts,
         lfm_tim_action_counts,
-        tim_action_categories,
-        lfm_tim_action_categories,
     ):
         """Creates a dictionary of extreme values, called team_info,
         where the keys are the names of the calculations, and the values are the results
         """
         team_info = {}
         for calculation, schema in self.SCHEMA["extrema"].items():
-            # Strings need to be handled differently
-            if schema["type"] == "str":
-                categorical_action = schema["tim_fields"][0].split(".")
-                if (
-                    categorical_action[0] == "obj_tim"
-                    and categorical_action[1] in self.TIM_SCHEMA["categorical_actions"]
-                ):
-                    categorical_actions = list(
-                        self.TIM_SCHEMA["categorical_actions"][categorical_action[1]]["list"]
-                    )
-                    # Translates categorical action as strings into a list as ints
-                    # Only uses latest 4 matches if it's an lfm datapoint
-                    if "lfm" in calculation:
-                        int_levels = [
-                            categorical_actions.index(str_level)
-                            for str_level in lfm_tim_action_categories[schema["tim_fields"][0]]
-                        ]
-                    else:
-                        int_levels = [
-                            categorical_actions.index(str_level)
-                            for str_level in tim_action_categories[schema["tim_fields"][0]]
-                        ]
-                    # Converts max categorical action back into a string
-                    team_info[calculation] = categorical_actions[max(int_levels)]
+            tim_field = schema["tim_fields"][0]
+            if schema["extrema_type"] == "max":
+                if "lfm" in calculation:
+                    team_info[calculation] = max(lfm_tim_action_counts[tim_field])
                 else:
-                    raise KeyError(
-                        f"{calculation} cannot be calculated. {categorical_action[1]} not found in calc_obj_tim_schema categorical_actions"
-                    )
-            # All other extrema are ints
-            else:
-                tim_field = schema["tim_fields"][0]
-                if schema["extrema_type"] == "max":
-                    if "lfm" in calculation:
-                        team_info[calculation] = max(lfm_tim_action_counts[tim_field])
-                    else:
-                        team_info[calculation] = max(tim_action_counts[tim_field])
-                if schema["extrema_type"] == "min":
-                    if "lfm" in calculation:
-                        team_info[calculation] = min(lfm_tim_action_counts[tim_field])
-                    else:
-                        team_info[calculation] = min(tim_action_counts[tim_field])
+                    team_info[calculation] = max(tim_action_counts[tim_field])
+            if schema["extrema_type"] == "min":
+                if "lfm" in calculation:
+                    team_info[calculation] = min(lfm_tim_action_counts[tim_field])
+                else:
+                    team_info[calculation] = min(tim_action_counts[tim_field])
         return team_info
 
     def calculate_medians(self, tim_action_sum, lfm_tim_action_sum):
@@ -279,10 +247,8 @@ class OBJTeamCalc(base_calculations.BaseCalculations):
                 team_info[calculation] = 0
         return team_info
 
-    def calculate_average_points(self, team_data):
-        """Creates a dictionary of average of weighted data, called team_info
-        where the keys are the names of the calculations, and the values are the results
-        """
+    # Not used in Crescendo
+    """def calculate_average_points(self, team_data):
         team_info = {}
         for calculation, schema in self.SCHEMA["average_points"].items():
             total_successes = 0
@@ -296,7 +262,7 @@ class OBJTeamCalc(base_calculations.BaseCalculations):
                 team_info[calculation] = total_points / total_successes
             else:
                 team_info[calculation] = 0
-        return team_info
+        return team_info"""
 
     def calculate_sums(self, team_data, tims: List[Dict], lfm_tims: List[Dict]):
         """Creates a dictionary of sum of weighted data, called team_info
@@ -306,10 +272,10 @@ class OBJTeamCalc(base_calculations.BaseCalculations):
         for calculation, schema in self.SCHEMA["sums"].items():
             # incap has no point values
             if calculation == "total_incap":
-                team_info[calculation] = sum(tim["incap"] for tim in tims)
+                team_info[calculation] = sum(tim["incap_time"] for tim in tims)
             elif calculation == "lfm_total_incap":
                 # Use lfm_tims instead of tims, also this is the only lfm sum
-                team_info[calculation] = sum([tim["incap"] for tim in lfm_tims])
+                team_info[calculation] = sum([tim["incap_time"] for tim in lfm_tims])
             else:
                 total_points = 0
                 for field, value in schema.items():
@@ -357,14 +323,12 @@ class OBJTeamCalc(base_calculations.BaseCalculations):
                 self.calculate_extrema(
                     tim_action_counts,
                     lfm_tim_action_counts,
-                    tim_action_categories,
-                    lfm_tim_action_categories,
                 )
             )
             team_data.update(self.calculate_modes(tim_action_categories, lfm_tim_action_categories))
             team_data.update(self.calculate_medians(tim_action_sum, lfm_tim_action_sum))
             team_data.update(self.calculate_success_rates(team_data))
-            team_data.update(self.calculate_average_points(team_data))
+            # team_data.update(self.calculate_average_points(team_data))
             team_data.update(self.calculate_sums(team_data, obj_tims, obj_lfm_tims))
             obj_team_updates[team] = team_data
         return list(obj_team_updates.values())
