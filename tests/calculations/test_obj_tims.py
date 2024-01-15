@@ -194,7 +194,7 @@ class TestObjTIMCalcs:
                 {"in_teleop": True, "time": 94, "action_type": "intake_center"},
                 {"in_teleop": True, "time": 105, "action_type": "intake_far"},
                 {"in_teleop": True, "time": 110, "action_type": "shoot_other"},
-                {"in_teleop": True, "time": 117, "action_type": "score_fail"},
+                {"in_teleop": True, "time": 117, "action_type": "score_fail_speaker"},
                 {"in_teleop": True, "time": 125, "action_type": "amplified"},
                 {"in_teleop": True, "time": 130, "action_type": "end_incap"},
                 {"in_teleop": True, "time": 132, "action_type": "start_incap"},
@@ -237,7 +237,7 @@ class TestObjTIMCalcs:
                 {"in_teleop": True, "time": 94, "action_type": "intake_center"},
                 {"in_teleop": True, "time": 105, "action_type": "intake_far"},
                 {"in_teleop": True, "time": 110, "action_type": "shoot_other"},
-                {"in_teleop": True, "time": 117, "action_type": "score_fail"},
+                {"in_teleop": True, "time": 117, "action_type": "score_fail_speaker"},
                 {"in_teleop": True, "time": 125, "action_type": "amplified"},
                 {"in_teleop": True, "time": 130, "action_type": "end_incap"},
                 {"in_teleop": True, "time": 132, "action_type": "start_incap"},
@@ -280,7 +280,7 @@ class TestObjTIMCalcs:
                 {"in_teleop": True, "time": 94, "action_type": "intake_center"},
                 {"in_teleop": True, "time": 105, "action_type": "intake_far"},
                 {"in_teleop": True, "time": 110, "action_type": "shoot_other"},
-                {"in_teleop": True, "time": 117, "action_type": "score_fail"},
+                {"in_teleop": True, "time": 117, "action_type": "score_fail_speaker"},
                 {"in_teleop": True, "time": 125, "action_type": "amplified"},
                 {"in_teleop": True, "time": 130, "action_type": "end_incap"},
                 {"in_teleop": True, "time": 132, "action_type": "start_incap"},
@@ -346,7 +346,7 @@ class TestObjTIMCalcs:
             {"in_teleop": True, "time": 94, "action_type": "intake_center"},
             {"in_teleop": True, "time": 105, "action_type": "intake_far"},
             {"in_teleop": True, "time": 110, "action_type": "shoot_other"},
-            {"in_teleop": True, "time": 117, "action_type": "score_fail"},
+            {"in_teleop": True, "time": 117, "action_type": "score_fail_speaker"},
             {"in_teleop": True, "time": 125, "action_type": "amplified"},
             {"in_teleop": True, "time": 130, "action_type": "end_incap"},
             {"in_teleop": True, "time": 132, "action_type": "start_incap"},
@@ -373,6 +373,17 @@ class TestObjTIMCalcs:
         assert total_time(self.unconsolidated_tims[0], "start_incap", "end_incap", 8) == 33
         assert total_time(self.unconsolidated_tims[2], "start_incap", "end_incap", 8) == 43
 
+    def test_calculate_cycle_times(self):
+        calculated_tim = self.test_calculator.calculate_tim_times(self.unconsolidated_tims)
+        assert calculated_tim["cycle_time_from_amp_to_amp"] == 7
+        assert calculated_tim["cycle_time_from_amp_to_speaker"] == 24
+        assert calculated_tim["cycle_time_from_poach_to_amp"] == 13
+        assert calculated_tim["cycle_time_from_poach_to_speaker"] == 30
+        assert calculated_tim["cycle_time_from_center_to_amp"] == 26
+        assert calculated_tim["cycle_time_from_center_to_speaker"] == 43
+        assert calculated_tim["cycle_time_from_far_to_amp"] == 37
+        assert calculated_tim["cycle_time_from_far_to_speaker"] == 54
+
     def test_run_consolidation(self):
         self.test_server.db.insert_documents("unconsolidated_obj_tim", self.unconsolidated_tims)
         with patch("data_transfer.tba_communicator.tba_request", return_value=self.tba_test_data):
@@ -392,7 +403,7 @@ class TestObjTIMCalcs:
         assert calculated_tim["total_pieces"] == 4
         assert calculated_tim["start_position"] == "1"
         assert calculated_tim["has_preload"] == False
-        assert calculated_tim["failed_score"] == 1
+        assert calculated_tim["failed_score_speaker"] == 1
 
     @mock.patch.object(
         obj_tims.ObjTIMCalcs,
