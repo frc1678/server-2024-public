@@ -119,6 +119,7 @@ class AutoPathCalc(BaseCalculations):
 
     def is_updated_path(self, new_path, old_path):
         "Checks if new_path is an updated version of old_path. Used in calculate_auto_paths() below."
+        # Check if old path is a subset of new path
         if new_path["team_number"] == old_path["team_number"]:
             if set(old_path["match_numbers_played"]).issubset(
                 set(new_path["match_numbers_played"])
