@@ -265,8 +265,10 @@ class TestAutoPIMCalc:
             "score_3": "speaker",
             "intake_position_3": "none",
             "intake_position_4": "none",
+            "intake_position_5": "none",
             "score_4": "none",
             "score_5": "none",
+            "score_6": "none",
             "leave": True,
             "auto_timeline": [
                 {"in_teleop": False, "time": 146, "action_type": "score_speaker"},
@@ -339,8 +341,10 @@ class TestAutoPIMCalc:
             "score_3": "none",
             "intake_position_3": "none",
             "intake_position_4": "none",
+            "intake_position_5": "none",
             "score_4": "none",
             "score_5": "none",
+            "score_6": "none",
         }
 
         assert self.test_calculator.create_auto_fields(
@@ -365,7 +369,9 @@ class TestAutoPIMCalc:
             "score_4": "speaker",
             "intake_position_3": "none",
             "intake_position_4": "none",
+            "intake_position_5": "none",
             "score_5": "none",
+            "score_6": "none",
         }
 
         assert self.test_calculator.create_auto_fields(
@@ -378,8 +384,10 @@ class TestAutoPIMCalc:
             "score_3": "none",
             "intake_position_3": "none",
             "intake_position_4": "none",
+            "intake_position_5": "none",
             "score_4": "none",
             "score_5": "none",
+            "score_6": "none",
         }
 
     def test_calculate_auto_pim(self):

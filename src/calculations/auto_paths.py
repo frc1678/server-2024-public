@@ -54,8 +54,8 @@ class AutoPathCalc(BaseCalculations):
             if self.is_same_path(pim, document):
                 # Set path values to pim
                 for field in self.schema["--path_groups"]["exact_match"]:
-                    # Don't update if empty or failed score
-                    if pim[field] != "fail" and pim[field] != "none":
+                    # Don't update if failed score unless old path doesn't have any info there
+                    if pim[field] != "fail" or document[field] == "none":
                         path[field] = pim[field]
                     else:
                         path[field] = document[field]
