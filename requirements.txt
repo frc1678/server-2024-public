@@ -8,3 +8,4 @@ numpy==1.24.1
 rich==13.3.1
 python-ulid==1.1.0
 statbotics==2.0.1
+pyfakefs==5.3.2
