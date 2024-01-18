@@ -29,6 +29,7 @@ class Decompressor(base_calculations.BaseCalculations):
 
     # Load latest match collection compression QR code schema
     SCHEMA = qr_state.SCHEMA
+    OBJ_TIM_SCHEMA = utils.read_schema("schema/calc_obj_tim_schema.yml")
     OBJ_PIT_SCHEMA = utils.read_schema("schema/obj_pit_collection_schema.yml")
     SUBJ_PIT_SCHEMA = utils.read_schema("schema/subj_pit_collection_schema.yml")
     _GENERIC_DATA_FIELDS = QRState._get_data_fields("generic_data")
@@ -197,7 +198,7 @@ class Decompressor(base_calculations.BaseCalculations):
             return QRType.SUBJECTIVE
         raise ValueError(f"QR type unknown - Invalid first character for QR: {first_char}")
 
-    def decompress_single_qr(self, qr_data, qr_type):
+    def decompress_single_qr(self, qr_data, qr_type, override: {}):
         """Decompress a full QR."""
         # Split into generic data and objective/subjective data
         qr_data = qr_data.split(self.SCHEMA["generic_data"]["_section_separator"])
@@ -246,6 +247,7 @@ class Decompressor(base_calculations.BaseCalculations):
             decompressed_data.append(decompressed_document)
             if set(decompressed_document.keys()) != self.OBJECTIVE_QR_FIELDS:
                 raise ValueError("QR missing data fields", qr_type)
+            decompressed_document.update({"override": override})
             log.info(
                 f'Match: {decompressed_document["match_number"]} '
                 f'Team: {decompressed_document["team_number"]} '
@@ -255,6 +257,7 @@ class Decompressor(base_calculations.BaseCalculations):
 
     def decompress_qrs(self, split_qrs):
         """Decompresses a list of QRs. Returns dict of decompressed QRs split by type."""
+        db = database.Database()
         output = {"unconsolidated_obj_tim": [], "subj_tim": []}
         log.info(f"Started decompression on qr batch")
         for qr in split_qrs:
@@ -262,28 +265,23 @@ class Decompressor(base_calculations.BaseCalculations):
             if qr_type is None:
                 continue
             decompressed_qr = utils.catch_function_errors(
-                self.decompress_single_qr, qr["data"][1:], qr_type
+                self.decompress_single_qr, qr["data"][1:], qr_type, qr["override"]
             )
             if decompressed_qr is None:
                 continue
-            # Check for overrides
+            # Override non-timeline datapoints at decompression
             for decompressed in decompressed_qr:
-                decompressed["ulid"] = qr["ulid"]
-                not_overriden = {}
-                for edited_datapoint in qr["override"]:
-                    if edited_datapoint in decompressed:
-                        decompressed[edited_datapoint] = qr["override"][edited_datapoint]
-                    else:
-                        not_overriden[edited_datapoint] = qr["override"][edited_datapoint]
+                # decompressed["ulid"] = qr["ulid"]
+                for override in qr["override"]:
+                    if override in decompressed and override not in list(
+                        self.OBJ_TIM_SCHEMA["timeline_counts"].keys()
+                    ):  # Checks that override is not a timeline datapoint
+                        decompressed[override] = qr["override"][override]
                 # If there were datapoints in override that weren't in decompressed data,
                 # add override to data for obj_tim calcs to handle
-                if qr_type == QRType.OBJECTIVE and not_overriden != {}:
-                    decompressed["override"] = not_overriden
             if qr_type == QRType.OBJECTIVE:
                 output["unconsolidated_obj_tim"].extend(decompressed_qr)
             elif qr_type == QRType.SUBJECTIVE:
-                if not_overriden != {}:
-                    utils.log_error(f"Couldn't override {not_overriden}")
                 output["subj_tim"].extend(decompressed_qr)
         log.info(f"Finished decompression on qr batch")
         return output

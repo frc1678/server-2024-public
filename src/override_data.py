@@ -15,12 +15,15 @@ import sys
 
 from data_transfer import database
 import utils
+import logging
+import console
 
 db = database.Database()
 
+log = logging.getLogger(__name__)
 # Takes user input to find which operation to do
 ROLLBACK_BLOCKLIST_OR_DATA = input(
-    "Rollback a match (0), blocklist specific qrs (1), or edit team data for a specific match (2)? (0,1,2): "
+    "Rollback a match (0), blocklist specific qrs (1), or edit scout data for a specific match (2)? (0,1,2): "
 )
 
 # If user doesn't enter a valid option, exit
@@ -30,19 +33,23 @@ if ROLLBACK_BLOCKLIST_OR_DATA not in ["0", "1", "2"]:
 
 # Find if the user wants to UNDO this action
 UNDO = input(
-    f"Do you want to {'UNDO blocklisting' if ROLLBACK_BLOCKLIST_OR_DATA != '2' else 'CLEAR overrides on'} this {['match', 'qr', 'team'][int(ROLLBACK_BLOCKLIST_OR_DATA)]}? (y/N)"
+    f"Do you want to {'UNDO blocklisting' if ROLLBACK_BLOCKLIST_OR_DATA != '2' else 'CLEAR overrides on'} this {['match', 'qr', 'qr'][int(ROLLBACK_BLOCKLIST_OR_DATA)]}? (y/N)"
+    # There's two occurences of 'qr' because that's what the code was written to handle and I wasn't about to change it when I could just add 'qr'
 )
 UNDO = UNDO.lower() == "y"
 
-print(
-    f"WARNING: data from matching QR codes will be {'un' if UNDO else ''}{'blocklisted' if ROLLBACK_BLOCKLIST_OR_DATA != '2' else 'overriden'}"
+
+log.warning(
+    f"Data from matching QR codes will be {'reset' if UNDO else 'blocklisted' if ROLLBACK_BLOCKLIST_OR_DATA != '2' else 'overriden at consolidation'}"
 )
 
 # User input for match to delete
-INVALID_MATCH = input("Enter the match to blocklist: ")
+MATCH = input(
+    f"Enter the match to {'blocklist' if ROLLBACK_BLOCKLIST_OR_DATA != '2' else 'edit'}: "
+)
 
 # If the user inputted match number is not a number, exit
-if not INVALID_MATCH.isnumeric():
+if not MATCH.isnumeric():
     print("Please enter a number")
     sys.exit()
 
@@ -52,7 +59,7 @@ SCHEMA = utils.read_schema("schema/match_collection_qr_schema.yml")
 # Stores all of the elements of the regex to be joined to a string later
 PATTERN_ELEMENTS = [
     ".*",  # Matches any character
-    SCHEMA["generic_data"]["match_number"][0] + INVALID_MATCH,  # Matches the match number
+    SCHEMA["generic_data"]["match_number"][0] + MATCH,  # Matches the match number
     "\\" + SCHEMA["generic_data"]["_separator"],  # Matches the generic separator
     ".*",  # Matches any character
 ]
@@ -60,19 +67,24 @@ PATTERN_ELEMENTS = [
 # If the user requests to blocklist a specific QR code
 if ROLLBACK_BLOCKLIST_OR_DATA == "1":
     # Takes user input for scout name
-    SCOUT_NAME = input("Enter the scout name of the QR code to blocklist: ")
+    SCOUT_NAME = input("Enter the scout name of the QR code to blocklist: ").upper()
     # Modifies the regex pattern elements to include the scout name
     PATTERN_ELEMENTS.insert(4, (SCHEMA["generic_data"]["scout_name"][0] + SCOUT_NAME + ".*"))
 elif ROLLBACK_BLOCKLIST_OR_DATA == "2":
-    # Takes user input for team name
-    TEAM_NAME = input("Enter the team number of the TIM data to edit: ")
-    PATTERN_ELEMENTS.insert(4, (SCHEMA["objective_tim"]["team_number"][0] + TEAM_NAME + ".*"))
+    # Takes user input for scout name
+    SCOUT_NAME = input("Enter the scout name of the QR to override: ").upper()
+    # Creates pattern used to check for the scout name surrounded by text on either side
+    PATTERN_ELEMENTS.insert(4, (SCHEMA["generic_data"]["scout_name"][0] + SCOUT_NAME + ".*"))
     # Takes user input for data point name
-    DATA_NAME = input(f"Enter the name of the TIM data point to edit for {TEAM_NAME}: ")
+    DATA_NAME = input(
+        f"Enter the name of the TIM data point to edit for {SCOUT_NAME} in match {MATCH}: "
+    )
     # Takes user input for the new value
     NEW_VALUE = input(
         f'Enter the new value for the data point {DATA_NAME} (input is converted to int/float/bool if possible unless in ""): '
     )
+
+    # Convert new value to correct type I think I didn't write this
     if NEW_VALUE.isdecimal():
         NEW_VALUE = int(NEW_VALUE)
     elif "." in NEW_VALUE and NEW_VALUE.replace(".", "0", 1).isdecimal():
@@ -99,6 +111,7 @@ for qr_code in db.find("raw_qr"):
     if (not UNDO) and qr_code in BLOCKLISTED_QRS:
         continue
     # Iterates through all regex pattern objects
+    # Regex patterns in PATTERN are used to find QRs with specified scout names or other strings
     for PATTERN in PATTERNS:
         if re.search(PATTERN, qr_code["data"]) is None:
             # If the pattern doesn't match, go to the next QR code
@@ -107,17 +120,16 @@ for qr_code in db.find("raw_qr"):
     else:
         if ROLLBACK_BLOCKLIST_OR_DATA == "2":
             # Uses the update_qr_data_override function to change the value of override[DATA_NAME] to NEW_VALUE
-            db.update_qr_data_override(
-                {"data": qr_code["data"]}, DATA_NAME, NEW_VALUE, clear=not UNDO
-            )
+            db.update_qr_data_override({"data": qr_code["data"]}, DATA_NAME, NEW_VALUE, clear=UNDO)
+            log.debug(f"Updated overrides for {SCOUT_NAME} in match {MATCH}")
         else:
             # Uses the update_qr_blocklist_status function to change the value of blocklisted to True, or False if undoing
             db.update_qr_blocklist_status({"data": qr_code["data"]}, blocklist=not UNDO)
         num_blocklisted += 1
 
 if num_blocklisted == 0:
-    print(f"No QR codes were {'Overriden' if ROLLBACK_BLOCKLIST_OR_DATA == '2' else 'Blocklisted'}")
-else:
-    print(
-        f"Successfully {'Overriden' if ROLLBACK_BLOCKLIST_OR_DATA == '2' else 'Blocklisted'} {num_blocklisted} QR codes"
+    log.warning(
+        f"No QR codes were {'overriden' if ROLLBACK_BLOCKLIST_OR_DATA == '2' else 'blocklisted'}"
     )
+else:
+    log.debug(f"Successfully updated {num_blocklisted} QR codes")

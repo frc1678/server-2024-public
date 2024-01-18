@@ -152,6 +152,7 @@ class Database:
         Lowers risk of data loss from using normal update."""
         if clear:
             self.db["raw_qr"].update_one(query, {"$set": {f"override": {}}})
+            log.debug(f"Cleared overrides for {query}")
         else:
             self.db["raw_qr"].update_one(query, {"$set": {f"override.{datapoint}": new_value}})
 

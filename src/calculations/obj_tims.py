@@ -167,7 +167,18 @@ class ObjTIMCalcs(BaseCalculations):
             filters_ = copy.deepcopy(filters)
             expected_type = filters_.pop("type")
             for tim in unconsolidated_tims:
-                new_count = self.count_timeline_actions(tim, **filters_)
+                # Override timeline counts at consolidation
+                if tim["override"] == {}:  # If no overrides
+                    new_count = self.count_timeline_actions(tim, **filters_)
+                else:
+                    for key in list(tim["override"].keys()):
+                        if (
+                            key == calculation
+                        ):  # If datapoint in overrides matches calculation being counted
+                            new_count = tim["override"][calculation]
+                            tim["override"] = {}
+                        else:  # To account for non-timeline overrides
+                            new_count = self.count_timeline_actions(tim, **filters_)
                 if not isinstance(new_count, self.type_check_dict[expected_type]):
                     raise TypeError(f"Expected {new_count} calculation to be a {expected_type}")
                 unconsolidated_counts.append(new_count)
@@ -242,16 +253,7 @@ class ObjTIMCalcs(BaseCalculations):
         calculated_tims = []
         for tim in tims:
             unconsolidated_obj_tims = self.server.db.find("unconsolidated_obj_tim", tim)
-            # Check for overriding datapoints
-            override = {}
-            for t in unconsolidated_obj_tims:
-                if "override" in t:
-                    override.update(t.pop("override"))
             calculated_tim = self.calculate_tim(unconsolidated_obj_tims)
-            if override != {}:
-                for edited_datapoint in override:
-                    if edited_datapoint in calculated_tim:
-                        calculated_tim[edited_datapoint] = override[edited_datapoint]
             calculated_tims.append(calculated_tim)
         return calculated_tims
 
