@@ -54,15 +54,22 @@ def test_compress_obj_tim():
         "timestamp": 1582994470,
         "match_collection_version_number": "1.0.2",
         "team_number": "9999",
-        "scout_name": "KEI R",
+        "scout_name": "JELLY K",
         "scout_id": 2,
-        "start_position": "FOUR",
+        "start_position": "3",
         "timeline": [
             {"time": 45, "action_type": "start_incap"},
             {"time": 7, "action_type": "end_incap"},
         ],
+        "has_preload": True,
+        "chain_amp": "O",
+        "chain_source": "N",
+        "chain_blind": "N",
+        "park": False,
     }
-    compressed_data = "+A1$B1$C1582994470$D1.0.2$EKEI R%Z9999$Y2$XFOUR$W045AD007AE"
+    compressed_data = (
+        "+A1$B1$C1582994470$D1.0.2$EJELLY K%Z9999$Y2$X3$W045AD007AE$VTRUE$UO$TN$SN$RFALSE"
+    )
     assert compression.compress_obj_tim(data) == compressed_data
 
 
