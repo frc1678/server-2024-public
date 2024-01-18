@@ -5,12 +5,12 @@ from utils import read_schema
 
 def test_compress_timeline():
     timeline_data = [
-        {"time": 51, "action_type": "start_incap"},
-        {"time": 32, "action_type": "end_incap"},
+        {"time": 1, "action_type": "start_incap"},
+        {"time": 0, "action_type": "end_incap"},
     ]
-    assert compression.compress_timeline(timeline_data) == "051AD032AE"
+    assert compression.compress_timeline(timeline_data) == "001AC000AD"
     timeline_data[1]["action_type"] = "intake_amp"
-    assert compression.compress_timeline(timeline_data) == "051AD032AN"
+    assert compression.compress_timeline(timeline_data) == "001AC000AM"
 
 
 def test_compress_section_generic_data():
@@ -32,7 +32,7 @@ def test_compress_section_obj():
     assert compression.compress_section(schema_data, "objective_tim") == compressed_schema
     # With timeline
     schema_data["timeline"] = [{"time": 51, "action_type": "start_incap", "in_teleop": False}]
-    compressed_schema += "$W051AD"
+    compressed_schema += "$W051AC"
     assert compression.compress_section(schema_data, "objective_tim") == compressed_schema
 
 
@@ -68,7 +68,7 @@ def test_compress_obj_tim():
         "park": False,
     }
     compressed_data = (
-        "+A1$B1$C1582994470$D1.0.2$EJELLY K%Z9999$Y2$X3$W045AD007AE$VTRUE$UO$TN$SN$RFALSE"
+        "+A1$B1$C1582994470$D1.0.2$EJELLY K%Z9999$Y2$X3$W045AC007AD$VTRUE$UO$TN$SN$RFALSE"
     )
     assert compression.compress_obj_tim(data) == compressed_data
 

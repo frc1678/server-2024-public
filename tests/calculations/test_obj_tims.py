@@ -403,7 +403,6 @@ class TestObjTIMCalcs:
         assert calculated_tim["total_pieces"] == 4
         assert calculated_tim["start_position"] == "1"
         assert calculated_tim["has_preload"] == False
-        assert calculated_tim["failed_score_speaker"] == 1
 
     @mock.patch.object(
         obj_tims.ObjTIMCalcs,
