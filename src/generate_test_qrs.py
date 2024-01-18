@@ -35,18 +35,15 @@ from send_device_jsons import get_team_list
 import json
 import numpy as np
 from calculations.generate_random_value import generate_random_value
+import argparse
+
+TEAM_LIST = get_team_list()  # List of team numbers
 
 # 1.1
 MC_SCHEMA = utils.read_schema("schema/match_collection_qr_schema.yml")
 # 1.2
 TEST_QR_SCHEMA = utils.read_schema("schema/generate_test_qrs_schema.yml")
 
-MATCH_SCHEDULE_LOCAL_PATH = f"data/{utils.TBA_EVENT_KEY}_match_schedule.json"
-TEAM_LIST = get_team_list()  # List of team numbers
-
-# 1.3
-with open(MATCH_SCHEDULE_LOCAL_PATH, "r") as match_schedule_json:
-    MATCH_SCHEDULE_DICT = dict(json.load(match_schedule_json))
 
 # 1.4
 # Assign each team a skill level from 0 to 1
@@ -101,18 +98,29 @@ def gen_data_from_schema(schema_section: list[dict], team_number: str, complete:
                 # If the variable is a str, pick a random item of the list
                 elif field_attrs["type"] == "str":
                     field_value += random.choice(field_attrs["values"])
+
+                # If the varible is a bool, pick a random bool. (getrandbits used for opimization purposes, randint or random.choice works fine too)
+                elif field_attrs["type"] == "bool":
+                    field_value += str(bool(random.getrandbits(1)))
             # If false, pick the value closest to skill_level * range
             elif field_attrs["is_random"] == False:
                 # If variable is an int, calculate the skill_level * range + min
                 if field_attrs["type"] == "int":
                     min = field_attrs["values"][0]
                     max = field_attrs["values"][1]
-                    field_value += round(TEAM_SKILL_LEVELS[team_number] * (max - min) + min)
+                    field_value += str(round(TEAM_SKILL_LEVELS[team_number] * (max - min) + min))
                 # If variable is a str, pick the value with the index closest to skill_level * last_index
                 elif field_attrs["type"] == "str":
                     field_value += field_attrs["values"][
                         round(TEAM_SKILL_LEVELS[team_number] * (len(field_attrs["values"]) - 1))
                     ]
+
+                elif field_attrs["type"] == "bool":
+                    if TEAM_SKILL_LEVELS[team_number] >= 0.5:
+                        field_value += str(field_attrs["values"])
+                    else:
+                        field_value += str(not field_attrs["values"])
+
             # Add new generated value to the list
             generated_values.append(field_value)
     # Sort the generated values so "A16" comes before "B9AQAY1EV7J" and so on
@@ -129,8 +137,8 @@ def gen_data_from_schema(schema_section: list[dict], team_number: str, complete:
 # 2.2
 def gen_generic_data(team_number: str, alliance_color: str, match_num: str) -> str:
     """Function that generates QR data from the generic_data section (ex. 'schema_version', 'serial_number', 'match_number', etc)
-    Returns a str containing the QR (ex. '+A16$BHA0Y2FCY$C1$D7346324158...')"""
-    qr = str(MC_SCHEMA["objective_tim"]["_start_character"])
+    Returns a str containing the QR (ex. 'A16$BHA0Y2FCY$C1$D7346324158...')"""
+    qr = ""
 
     # Generic schema shortcut
     generic_schema = TEST_QR_SCHEMA["generic_data"]
@@ -164,7 +172,6 @@ def gen_generic_data(team_number: str, alliance_color: str, match_num: str) -> s
     # Finish generating generic data and combine into a QR list
     qr_attrs.sort()
     qr += f"{generic_schema['_separator']}".join(qr_attrs)
-    qr += generic_schema["_section_separator"]
 
     return qr
 
@@ -232,10 +239,6 @@ def gen_timeline(team_number: str) -> str:
     tele_pieces_scored = 0
     just_scored = False
 
-    # Charging
-    auto_charged = False
-    tele_charged = False
-
     # Iterate through the match time
     for time in range(153, 0, -1):
         # Auto scoring
@@ -245,30 +248,25 @@ def gen_timeline(team_number: str) -> str:
                 # If their last action was a score, their next action must be an intake
                 if just_scored:
                     if random.randint(1, complement_count) == 1:
-                        timeline += f"{time}{action_types[random.choice(search('auto_intake'))]}"
+                        timeline += (
+                            f"{time:03d}{action_types[random.choice(search('auto_intake'))]}"
+                        )
                         just_scored == False
                 # Score a piece and add one to auto_pieces_scored
                 elif random.randint(1, complement_count) == 1:
-                    timeline += f"{time}{action_types[random.choice(search('score'))]}"
+                    timeline += f"{time:03d}{action_types[random.choice(search('score'))]}"
                     auto_pieces_scored += 1
                     # just scored
                     just_scored = True
-            # else:
-            #     continue
-        # Auto charging
-        elif time > 135:
-            # Check if team has charged already
-            if not auto_charged:
-                # Add charge action and set auto_charged to false
-                if random.randint(1, complement_count) == 1:
-                    timeline += f"{time}{action_types[random.choice(search('charge_attempt'))]}"
-                    auto_charged = True
             else:
                 continue
+        # Auto charging
+        elif time > 135:
+            continue
         # To teleop
         elif time == 135:
             # Add to_teleop action
-            timeline += f"{time}{action_types[random.choice(search('to_teleop'))]}"
+            timeline += f"{time:03d}{action_types[random.choice(search('to_teleop'))]}"
         # Teleop scoring
         elif time > 15:
             # Check if team hasn't reached the max they can score
@@ -276,11 +274,11 @@ def gen_timeline(team_number: str) -> str:
                 # If their last action was a score, their next action must be an intake
                 if just_scored:
                     if random.randint(1, complement_count) == 1:
-                        timeline += f"{time}{action_types[random.choice(list(filter(lambda x: 'auto' not in x, search('intake'))))]}"
+                        timeline += f"{time:03d}{action_types[random.choice(list(filter(lambda x: 'auto' not in x, search('intake'))))]}"
                         just_scored == False
                 # Score a piece and add one to tele_pieces_scored
                 elif random.randint(1, complement_count) == 1:
-                    timeline += f"{time}{action_types[random.choice(search('score'))]}"
+                    timeline += f"{time:03d}{action_types[random.choice(search('score'))]}"
                     tele_pieces_scored += 1
                     # just scored
                     just_scored = True
@@ -288,12 +286,7 @@ def gen_timeline(team_number: str) -> str:
                 continue
         # Endgame charge
         else:
-            if not tele_charged:
-                if random.randint(1, complement_count) == 1:
-                    timeline += f"{time}{action_types[random.choice(search('charge_attempt'))]}"
-                    tele_charged = True
-            else:
-                continue
+            continue
     return timeline
 
 
@@ -318,6 +311,75 @@ def gen_obj_tim(team_number: str) -> str:
     return f"{objective_tim['_separator']}".join(qr_attrs)
 
 
+def gen_subj_aim(team_number: str) -> str:
+    qr_attrs = []
+
+    # Subjective_aim schema shortcut
+    subjective_aim = TEST_QR_SCHEMA["subjective_aim"]
+
+    # Generate Generatable data
+    qr_attrs = gen_data_from_schema(subjective_aim, team_number, False)
+
+    # Add team number
+    qr_attrs.append(f"{TEST_QR_SCHEMA['subjective_aim']['team_number']['symbol']}{team_number}")
+
+    # Finish generating subjective_aim data and return QR string
+    qr_attrs.sort()
+    return f"{subjective_aim['_separator']}".join(qr_attrs)
+
+
+# Creates a single objective tim qr
+def create_single_obj_qr(
+    team_num: str, alliance_color: str, match_num: str, single: bool = False
+) -> str:
+    qr = str(TEST_QR_SCHEMA["objective_tim"]["_start_character"])
+
+    # Generate generic data
+    qr += gen_generic_data(team_num, alliance_color, match_num)
+
+    # add separator
+    qr += str(TEST_QR_SCHEMA["generic_data"]["_section_separator"])
+
+    # Generate objective data
+    qr += gen_obj_tim(team_num)
+
+    if single:
+        raw_qrs.append(qr)
+    else:
+        return qr
+
+
+# Creates a single subjective aim qr
+def create_single_subj_qr(
+    team_nums: list, alliance_color: str, match_num: str, single: bool = False
+) -> str:
+    qr = str(TEST_QR_SCHEMA["subjective_aim"]["_start_character"])
+
+    # Generate generic data
+    qr += gen_generic_data(team_nums, alliance_color, match_num)
+
+    # add separator
+    qr += str(TEST_QR_SCHEMA["generic_data"]["_section_separator"])
+
+    # loop through all three teams
+    for team in team_nums:
+        qr_part = ""
+        # Generate subjective data for 1 team
+        qr_part += gen_subj_aim(team)
+        # Add alliance separator
+        qr_part += str(TEST_QR_SCHEMA["subjective_aim"]["_team_separator"])
+        qr += qr_part
+
+    # Cut off extra alliance separator
+    qr = qr[:-1]
+    # Add in alliance data seperator
+    qr += TEST_QR_SCHEMA["subjective_aim"]["_alliance_data_separator"]
+    if single:
+        raw_qrs.append(qr)
+    else:
+        return qr
+
+
 # 3
 def create_obj_qrs(match_schedule: dict) -> None:
     for match_num, teams in match_schedule.items():
@@ -325,21 +387,105 @@ def create_obj_qrs(match_schedule: dict) -> None:
             team_number = team["number"]
             alliance_color = team["color"]
 
-            qr = ""
+            raw_qrs.append(create_single_obj_qr(team_number, alliance_color, match_num))
 
-            # Generate generic data
-            qr += gen_generic_data(team_number, alliance_color, match_num)
 
-            # Generate objective data
-            qr += gen_obj_tim(team_number)
+def create_subj_qrs(match_schedule: dict) -> None:
+    for match_num, teams in match_schedule.items():
 
-            raw_qrs.append(qr)
+        # Gets all blue teams
+        blue_teams = [team["number"] for team in teams["teams"] if team["color"] == "blue"]
+        # Gets all red teams
+        red_teams = [team["number"] for team in teams["teams"] if team["color"] == "red"]
+
+        raw_qrs.append(create_single_subj_qr(blue_teams, "blue", match_num))
+        raw_qrs.append(create_single_subj_qr(red_teams, "red", match_num))
+
+
+def parser():
+    """
+    Defines the argument options when running the file from the command line
+
+    --subj_aim | Will generate a subjective_aim qr instead of objective_tim
+    """
+    parse = argparse.ArgumentParser()
+    parse.add_argument(
+        "--subj_aim", help="Should create a subjective QR", default=False, action="store_true"
+    )
+
+    parse.add_argument("--single", help="Creates a single qr", default=False, action="store_true")
+
+    parse.add_argument(
+        "--print",
+        help="Will print to the command line instead of in test_qrs.txt, only works if -used with --single",
+        default=False,
+        action="store_true",
+    )
+
+    # Removed for now, but could be implemented later if more control is wanted
+    """parse.add_argument(
+        "--team_num", 
+        help="Lets you define a team to use for single qrs, otherwise it will be randomly generated. Up to 1 for objective and up to 3 for subjective", 
+        default=None, 
+        action="extend")"""
+    return parse.parse_args()
 
 
 # 4
-create_obj_qrs(MATCH_SCHEDULE_DICT)
+if __name__ == "__main__":
 
-# 5
-with open("test_qrs.txt", "w") as qr_file:
-    for qr in raw_qrs:
-        qr_file.write(f"{qr}\n")
+    # Get arguments
+    args = parser()
+
+    # Get Match Schedule
+    MATCH_SCHEDULE_LOCAL_PATH = (
+        f"/home/lowpolypenguin/Citrus/server/data/2023cada_match_schedule.json"
+    )
+    # f"data/{utils.TBA_EVENT_KEY}_match_schedule.json"
+
+    with open(MATCH_SCHEDULE_LOCAL_PATH, "r") as match_schedule_json:
+        MATCH_SCHEDULE_DICT = dict(json.load(match_schedule_json))
+
+    # Generate a random alliance/a random team
+    random_match_num = random.choice(list(MATCH_SCHEDULE_DICT.keys()))
+    RANDOM_MATCH = MATCH_SCHEDULE_DICT[random_match_num]
+
+    random_alliance_color = random.choice(["red", "blue"])
+    RANDOM_ALLIANCE = [
+        team["number"] for team in RANDOM_MATCH["teams"] if team["color"] == random_alliance_color
+    ]
+
+    RANDOM_TEAM = random.choice(RANDOM_ALLIANCE)
+
+    if args.single == True:
+        if args.print == True:
+
+            # generating to command line
+            if args.subj_aim == True:
+                print(
+                    create_single_subj_qr(RANDOM_ALLIANCE, random_alliance_color, random_match_num)
+                )
+            else:
+                print(create_single_obj_qr(RANDOM_TEAM, random_alliance_color, random_match_num))
+
+        # generating in file
+        else:
+            if args.subj_aim == True:
+                create_single_subj_qr(
+                    RANDOM_ALLIANCE, random_alliance_color, random_match_num, single=True
+                )
+            else:
+                create_single_obj_qr(
+                    RANDOM_TEAM, random_alliance_color, random_match_num, single=True
+                )
+
+    # generating multiple
+    else:
+        if args.subj_aim == True:
+            create_subj_qrs(MATCH_SCHEDULE_DICT)
+        else:
+            create_obj_qrs(MATCH_SCHEDULE_DICT)
+
+    with open("test_qrs.txt", "w") as qr_file:
+        for qr in raw_qrs:
+            qr_file.write(f"{qr}\n")
