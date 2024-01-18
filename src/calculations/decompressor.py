@@ -206,7 +206,8 @@ class Decompressor(base_calculations.BaseCalculations):
         decompressed_data = []
         # Decompress subjective QR
         if qr_type == QRType.SUBJECTIVE:
-            none_generic_data = qr_data[1].split(
+            teams_data = qr_data[1].split(self.SCHEMA["subjective_aim"]["_team_separator"])
+            """none_generic_data = qr_data[1].split(
                 self.SCHEMA["subjective_aim"]["_alliance_data_separator"]
             )
             if len(none_generic_data) != 2:
@@ -217,6 +218,8 @@ class Decompressor(base_calculations.BaseCalculations):
             alliance_data = none_generic_data[1].split(
                 self.SCHEMA["subjective_aim"]["_alliance_data_separator"]
             )
+            """
+
             if len(teams_data) != 3:
                 raise IndexError("Incorrect number of teams in Subjective QR")
             for team in teams_data:
@@ -231,15 +234,20 @@ class Decompressor(base_calculations.BaseCalculations):
                     continue
 
                 decompressed_document = self.decompress_generic_qr(qr_data[0])
+                """
                 subjective_data = team.split(self.SCHEMA["subjective_aim"]["_separator"]) + (
                     alliance_data if alliance_data != [""] else []
                 )
+                decompressed_data.append(decompressed_document)
+                """
+                subjective_data = team.split(self.SCHEMA["subjective_aim"]["_separator"])
                 decompressed_document.update(
                     self.decompress_data(subjective_data, "subjective_aim")
                 )
-                decompressed_data.append(decompressed_document)
+
                 if set(decompressed_document.keys()) != self.SUBJECTIVE_QR_FIELDS:
                     raise ValueError("QR missing data fields", qr_type)
+                decompressed_data.append(decompressed_document)
         elif qr_type == QRType.OBJECTIVE:  # Decompress objective QR
             objective_data = qr_data[1].split(self.SCHEMA["objective_tim"]["_separator"])
             decompressed_document = self.decompress_generic_qr(qr_data[0])
@@ -389,7 +397,6 @@ class Decompressor(base_calculations.BaseCalculations):
             entry["o"] for entry in self.entries_since_last() if not entry["o"]["blocklisted"]
         ]
         decompressed_qrs = self.decompress_qrs(new_qrs)
-        print(decompressed_qrs)
 
         # Checks if two subjective scouts scouted the same alliance in a match
         # If so, delete one of the qrs
@@ -409,6 +416,4 @@ class Decompressor(base_calculations.BaseCalculations):
                 # Prevent duplicates when calculating all data by deleting data before inserting
                 # Updating doesn't work because unconsolidated_obj_tim doesn't have unique keys
                 self.server.db.delete_data(collection)
-            print(collection)
-            print(decompressed_qrs[collection])
             self.server.db.insert_documents(collection, decompressed_qrs[collection])

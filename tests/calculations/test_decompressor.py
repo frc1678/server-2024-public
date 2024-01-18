@@ -40,8 +40,11 @@ class TestDecompressor:
             "intake_far": "AQ",
             "shoot_other": "AR",
             "score_fail": "AS",
-            "amplified": "AT",
+            "score_speaker_amped": "AT",
             "to_teleop": "AU",
+            "to_endgame": "BD",
+            "ferry": "BG",
+            "drop": "BH",
         }
         # Test a few values for each type to make sure they make sense
         assert 5 == self.test_decompressor.convert_data_type("5", "int")
@@ -97,7 +100,7 @@ class TestDecompressor:
         assert "auto_intake_spike_1" == self.test_decompressor.get_decompressed_name(
             "AF", "action_type"
         )
-        assert "stage_level" == self.test_decompressor.get_decompressed_name("V", "objective_tim")
+        assert "has_preload" == self.test_decompressor.get_decompressed_name("V", "objective_tim")
         with pytest.raises(ValueError) as excinfo:
             self.test_decompressor.get_decompressed_name("#", "generic_data")
         assert "Retrieving Variable Name # from generic_data failed." in str(excinfo)
@@ -182,7 +185,10 @@ class TestDecompressor:
                     {"time": 60, "action_type": "score_speaker", "in_teleop": False},
                     {"time": 61, "action_type": "score_amp", "in_teleop": False},
                 ],
-                "stage_level": "O",
+                "chain_amp": "O",
+                "chain_source": "N",
+                "chain_blind": "N",
+                "park": False,
                 "has_preload": True,
             }
         ]
@@ -200,9 +206,8 @@ class TestDecompressor:
                 "quickness_score": 1,
                 "field_awareness_score": 2,
                 "was_tippy": True,
-                "auto_pieces_start_position": [0, 0, 0, 0],
                 "played_defense": False,
-                "defense_timestamp": 291,
+                "climb_after": True,
             },
             {
                 "schema_version": decompressor.Decompressor.SCHEMA["schema_file"]["version"],
@@ -215,43 +220,36 @@ class TestDecompressor:
                 "quickness_score": 3,
                 "field_awareness_score": 1,
                 "was_tippy": True,
-                "auto_pieces_start_position": [0, 0, 0, 0],
                 "played_defense": False,
-                "defense_timestamp": 195,
+                "climb_after": False,
             },
         ]
         # Test objective qr decompression
         assert expected_objective == self.test_decompressor.decompress_single_qr(
-            f"A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B34$C1230$Dv1.3$EName$FFALSE%Z1678$Y14$X3$W060AA061AB$VO$UTRUE",
+            f"A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B34$C1230$Dv1.3$EName$FFALSE%Z1678$Y14$X3$W060AA061AB$VTRUE$UO$TN$SN$RFALSE",
             decompressor.QRType.OBJECTIVE,
         )
         # Test subjective qr decompression
         assert expected_subjective == self.test_decompressor.decompress_single_qr(
-            f"A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B34$C1230$Dv1.3$EName$FTRUE%A1678$FFALSE$B1$C2$DTRUE$G291#A254$B4$C1$DFALSE$FTRUE$G826#A1323$B3$C1$DTRUE$FFALSE$G195^E0000",
+            f"A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B34$C1230$Dv1.3$EName$FTRUE%A1678$B1$C2$DTRUE$ETRUE$FFALSE#A254$B4$C1$DFALSE$EFALSE$FTRUE#A1323$B3$C1$DTRUE$EFALSE$FFALSE",
             decompressor.QRType.SUBJECTIVE,
         )
         # Test error raising for objective and subjective using incomplete qrs
         with pytest.raises(ValueError) as excinfo:
             self.test_decompressor.decompress_single_qr(
-                f"A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B34$C1230$Dv1.3$EName$FTRUE%Z1678$Y14$VO$UTRUE",
+                f"A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B34$C1230$Dv1.3$EName$FTRUE%Z1678$Y14$VTRUE$UO",
                 decompressor.QRType.OBJECTIVE,
             )
         assert "QR missing data fields" in str(excinfo)
         with pytest.raises(IndexError) as excinfo:
             self.test_decompressor.decompress_single_qr(
-                f"A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B34$C1230$Dv1.3$EName$FTRUE%A1678$ETRUE$B1$C2$DTRUE#A254$B2$C1$DFALSE$ETRUE#A1323$B3$C1$DTRUE$ETRUE",
-                decompressor.QRType.SUBJECTIVE,
-            )
-        assert "Subjective QR missing whole-alliance data" in str(excinfo)
-        with pytest.raises(IndexError) as excinfo:
-            self.test_decompressor.decompress_single_qr(
-                f"A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B34$C1230$Dv1.3$EName$FFALSE%A1678$B1$C2$D3$EFALSE^E0000",
+                f"A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B34$C1230$Dv1.3$EName$FFALSE%A1678$B1$C2$D3$EFALSE",
                 decompressor.QRType.SUBJECTIVE,
             )
         assert "Incorrect number of teams in Subjective QR" in str(excinfo)
         with pytest.raises(ValueError) as excinfo:
             self.test_decompressor.decompress_single_qr(
-                f"A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B34$C1230$Dv1.3$ENameFTRUE%A1678$B1$C2#A254#A1323^",
+                f"A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B34$C1230$Dv1.3$ENameFTRUE%A1678$B1$C2#A254#A1323",
                 decompressor.QRType.SUBJECTIVE,
             )
         assert "QR missing data fields" in str(excinfo)
@@ -282,7 +280,10 @@ class TestDecompressor:
                             "in_teleop": False,
                         },
                     ],
-                    "stage_level": "N",
+                    "chain_amp": "N",
+                    "chain_source": "O",
+                    "chain_blind": "N",
+                    "park": False,
                     "has_preload": False,
                     "ulid": "01GWSXQYKYQQ963QMT77A3NPBZ",
                 }
@@ -294,14 +295,13 @@ class TestDecompressor:
                     "timestamp": 1230,
                     "match_collection_version_number": "v1.3",
                     "scout_name": "Name",
-                    "alliance_color_is_red": False,
+                    "alliance_color_is_red": True,
                     "team_number": "1678",
                     "quickness_score": 1,
                     "field_awareness_score": 2,
-                    "was_tippy": False,
-                    "auto_pieces_start_position": [1, 1, 0, 0],
-                    "played_defense": True,
-                    "defense_timestamp": 196,
+                    "was_tippy": True,
+                    "played_defense": False,
+                    "climb_after": True,
                     "ulid": "01GWSXSNSF93BQZ2GRG0C4E7AC",
                 },
                 {
@@ -310,14 +310,13 @@ class TestDecompressor:
                     "timestamp": 1230,
                     "match_collection_version_number": "v1.3",
                     "scout_name": "Name",
-                    "alliance_color_is_red": False,
+                    "alliance_color_is_red": True,
                     "team_number": "254",
                     "quickness_score": 2,
-                    "field_awareness_score": 2,
+                    "field_awareness_score": 1,
                     "was_tippy": False,
-                    "auto_pieces_start_position": [1, 1, 0, 0],
-                    "played_defense": False,
-                    "defense_timestamp": 373,
+                    "played_defense": True,
+                    "climb_after": False,
                     "ulid": "01GWSXSNSF93BQZ2GRG0C4E7AC",
                 },
                 {
@@ -326,14 +325,13 @@ class TestDecompressor:
                     "timestamp": 1230,
                     "match_collection_version_number": "v1.3",
                     "scout_name": "Name",
-                    "alliance_color_is_red": False,
+                    "alliance_color_is_red": True,
                     "team_number": "1323",
                     "quickness_score": 3,
-                    "field_awareness_score": 3,
+                    "field_awareness_score": 1,
                     "was_tippy": True,
-                    "auto_pieces_start_position": [1, 1, 0, 0],
                     "played_defense": False,
-                    "defense_timestamp": 746,
+                    "climb_after": False,
                     "ulid": "01GWSXSNSF93BQZ2GRG0C4E7AC",
                 },
             ],
@@ -341,12 +339,12 @@ class TestDecompressor:
         assert expected_output == self.test_decompressor.decompress_qrs(
             [
                 {
-                    "data": f"+A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B34$C1230$Dv1.3$EName$FTRUE%Z1678$Y14$X4$W060AD061AE$VN$UFALSE",
+                    "data": f"+A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B34$C1230$Dv1.3$EName$FTRUE%Z1678$Y14$X4$W060AD061AE$VFALSE$UN$TO$SN$RFALSE",
                     "override": {},
                     "ulid": "01GWSXQYKYQQ963QMT77A3NPBZ",
                 },
                 {
-                    "data": f"*A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B34$C1230$Dv1.3$EName$FFALSE%A1678$B1$C2$DFALSE$FTRUE$G196#A254$B2$C2$DFALSE$FFALSE$G373#A1323$B3$C3$DTRUE$FFALSE$G746^E1100",
+                    "data": f"*A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B34$C1230$Dv1.3$EName$FTRUE%A1678$B1$C2$DTRUE$ETRUE$FFALSE#A254$B2$C1$DFALSE$EFALSE$FTRUE#A1323$B3$C1$DTRUE$EFALSE$FFALSE",
                     "override": {},
                     "ulid": "01GWSXSNSF93BQZ2GRG0C4E7AC",
                 },
@@ -467,8 +465,11 @@ class TestDecompressor:
                 {"time": 7, "action_type": "start_incap", "in_teleop": True},
                 {"time": 8, "action_type": "end_incap", "in_teleop": True},
             ],
+            "chain_amp": "N",
+            "chain_source": "O",
+            "chain_blind": "N",
+            "park": False,
             "has_preload": True,
-            "stage_level": "N",
             "ulid": "01GWSYJHR5EC6PAKCS79YZAF3Z",
         }
         expected_sbj = [
@@ -480,13 +481,12 @@ class TestDecompressor:
                 "scout_name": "Name",
                 "alliance_color_is_red": False,
                 "team_number": "1678",
-                "quickness_score": 1,
+                "quickness_score": 2,
                 "field_awareness_score": 2,
                 "was_tippy": False,
-                "auto_pieces_start_position": [1, 0, 1, 0],
                 "played_defense": False,
-                "defense_timestamp": 277,
-                "ulid": "01GWSYM2JP9JMDFCRVCX49PNY0",
+                "climb_after": True,
+                "ulid": "01GWSYMT48K5P3BFF183GXB9C0",
             },
             {
                 "schema_version": decompressor.Decompressor.SCHEMA["schema_file"]["version"],
@@ -497,12 +497,11 @@ class TestDecompressor:
                 "alliance_color_is_red": False,
                 "team_number": "254",
                 "quickness_score": 2,
-                "field_awareness_score": 2,
+                "field_awareness_score": 3,
                 "was_tippy": False,
-                "auto_pieces_start_position": [1, 0, 1, 0],
                 "played_defense": False,
-                "defense_timestamp": 219,
-                "ulid": "01GWSYM2JP9JMDFCRVCX49PNY0",
+                "climb_after": True,
+                "ulid": "01GWSYMT48K5P3BFF183GXB9C0",
             },
             {
                 "schema_version": decompressor.Decompressor.SCHEMA["schema_file"]["version"],
@@ -513,12 +512,11 @@ class TestDecompressor:
                 "alliance_color_is_red": False,
                 "team_number": "1323",
                 "quickness_score": 3,
-                "field_awareness_score": 3,
-                "was_tippy": True,
-                "auto_pieces_start_position": [1, 0, 1, 0],
+                "field_awareness_score": 1,
+                "was_tippy": False,
                 "played_defense": False,
-                "defense_timestamp": 420,
-                "ulid": "01GWSYM2JP9JMDFCRVCX49PNY0",
+                "climb_after": True,
+                "ulid": "01GWSYMT48K5P3BFF183GXB9C0",
             },
         ]
 
@@ -526,28 +524,28 @@ class TestDecompressor:
             "raw_qr",
             [
                 {
-                    "data": f"+A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B51$C9321$Dv1.3$EXvfaPcSrgJw25VKrcsphdbyEVjmHrH1V$FFALSE%Z3603$Y13$X2$W000AA001AB002AC005AU006AB007AD008AE$VN$UTRUE",
+                    "data": f"+A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B51$C9321$Dv1.3$EXvfaPcSrgJw25VKrcsphdbyEVjmHrH1V$FFALSE%Z3603$Y13$X2$W000AA001AB002AC005AU006AB007AD008AE$VTRUE$UN$TO$SN$RFALSE",
                     "blocklisted": False,
                     "override": {"start_position": "1", "doesnt_exist": 5},
                     "ulid": "01GWSYJHR5EC6PAKCS79YZAF3Z",
                     "readable_time": "2023-03-30 19:05:38.821000+00:00",
                 },
                 {
-                    "data": f"+A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B51$C9321$Dv1.3$EXvfaPcSrgJw25VKrcsphdbyEVjmHrH1V$FFALSE%Z3603$Y13$X2$W000AA001AB002AC005AO006AB007AD008AE$VN$UTRUE",
+                    "data": f"+A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B51$C9321$Dv1.3$EXvfaPcSrgJw25VKrcsphdbyEVjmHrH1V$FFALSE%Z3603$Y13$X2$W000AA001AB002AC005AO006AB007AD008AE$VTRUE$UN$TO$SN$RFALSE",
                     "blocklisted": True,
                     "override": {"start_position": "1", "doesnt_exist": 5},
                     "ulid": "01GWSYKDZDM45M1K4ZBHN6G97H",
                     "readable_time": "2023-03-30 19:06:07.725000+00:00",
                 },
                 {
-                    "data": f"*A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B34$C1230$Dv1.3$EName$FFALSE%A1678$B1$C2$DFALSE$FFALSE$G277#A254$B2$C2$DFALSE$FFALSE$G219#A1323$B3$C3$DTRUE$FFALSE$G420^E1010",
+                    "data": f"*A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B34$C1230$Dv1.3$EName$FFALSE%A1678$B2$C2$DFALSE$ETRUE$FFALSE#A254$B2$C3$DFALSE$ETRUE$FFALSE$#A1323$B3$C1$DTRUE$ETRUE$FFALSE",
                     "blocklisted": False,
                     "override": {},
                     "ulid": "01GWSYM2JP9JMDFCRVCX49PNY0",
                     "readable_time": "2023-03-30 19:06:28.822000+00:00",
                 },
                 {
-                    "data": f"*A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B34$C1230$Dv1.3$EName$FFALSE%A1678$B2$C2$DFALSE$FFALSE$G277#A254$B3$C2$DFALSE$FFALSE$G219#A1323$B1$C3$DTRUE$FFALSE$G420^E1110",
+                    "data": f"*A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B34$C1230$Dv1.3$EName$FFALSE%A1678$B2$C2$DFALSE$ETRUE$FFALSE#A254$B2$C3$DFALSE$ETRUE$FFALSE#A1323$B3$C1$DFALSE$ETRUE$FFALSE",
                     "blocklisted": False,
                     "override": {},
                     "ulid": "01GWSYMT48K5P3BFF183GXB9C0",
@@ -563,9 +561,9 @@ class TestDecompressor:
         result_obj = result_obj[0]
         result_obj.pop("_id")
         assert result_obj == expected_obj
-        for result in result_sbj:
+        for i, result in enumerate(result_sbj):
             result.pop("_id")
-            assert result in expected_sbj
+            assert result == expected_sbj[i]
 
     def test_get_qr_type(self):
         # Test when QRType.OBJECTIVE returns when first character is '+'
