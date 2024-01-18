@@ -16,6 +16,12 @@
 - import_path: calculations.unconsolidated_totals
   class_name: UnconsolidatedTotals
 
+- import_path: calculations.sim_precision
+  class_name: SimPrecisionCalc
+  
+- import_path: calculations.scout_precision
+  class_name: ScoutPrecisionCalc
+
 - import_path: calculations.obj_tims
   class_name: ObjTIMCalcs
 
@@ -45,9 +51,3 @@
 
 - import_path: calculations.predicted_team
   class_name: PredictedTeamCalc
-
-- import_path: calculations.sim_precision
-  class_name: SimPrecisionCalc
-
-- import_path: calculations.scout_precision
-  class_name: ScoutPrecisionCalc
