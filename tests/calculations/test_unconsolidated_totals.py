@@ -1,4 +1,4 @@
-# Copyright (c) 2023 FRC Team 1678: Citrus Circuits
+# Copyright (c) 2024 FRC Team 1678: Citrus Circuits
 
 from unittest import mock
 
@@ -193,7 +193,8 @@ class TestUnconsolidatedTotals:
                 {"in_teleop": True, "time": 105, "action_type": "score_speaker"},
                 {"in_teleop": True, "time": 110, "action_type": "score_speaker"},
                 {"in_teleop": True, "time": 117, "action_type": "score_speaker"},
-                {"in_teleop": True, "time": 125, "action_type": "score_speaker"},
+                {"in_teleop": True, "time": 125, "action_type": "score_fail"},
+                {"in_teleop": True, "time": 126, "action_type": "score_speaker"},
                 {"in_teleop": True, "time": 130, "action_type": "end_incap"},
                 {"in_teleop": True, "time": 132, "action_type": "start_incap"},
                 {"in_teleop": False, "time": 138, "action_type": "score_speaker"},
@@ -228,7 +229,8 @@ class TestUnconsolidatedTotals:
                 {"in_teleop": True, "time": 105, "action_type": "score_speaker"},
                 {"in_teleop": True, "time": 110, "action_type": "score_speaker"},
                 {"in_teleop": True, "time": 117, "action_type": "score_speaker"},
-                {"in_teleop": True, "time": 125, "action_type": "score_speaker"},
+                {"in_teleop": True, "time": 125, "action_type": "score_fail"},
+                {"in_teleop": True, "time": 126, "action_type": "score_speaker"},
                 {"in_teleop": True, "time": 130, "action_type": "end_incap"},
                 {"in_teleop": True, "time": 132, "action_type": "start_incap"},
                 {"in_teleop": False, "time": 138, "action_type": "score_speaker"},
@@ -263,7 +265,8 @@ class TestUnconsolidatedTotals:
                 {"in_teleop": True, "time": 105, "action_type": "score_speaker"},
                 {"in_teleop": True, "time": 110, "action_type": "score_speaker"},
                 {"in_teleop": True, "time": 117, "action_type": "score_speaker"},
-                {"in_teleop": True, "time": 125, "action_type": "score_speaker"},
+                {"in_teleop": True, "time": 125, "action_type": "score_fail"},
+                {"in_teleop": True, "time": 126, "action_type": "score_speaker"},
                 {"in_teleop": True, "time": 130, "action_type": "end_incap"},
                 {"in_teleop": True, "time": 132, "action_type": "start_incap"},
                 {"in_teleop": False, "time": 138, "action_type": "score_speaker"},
@@ -300,7 +303,8 @@ class TestUnconsolidatedTotals:
             {"in_teleop": True, "time": 105, "action_type": "score_speaker"},
             {"in_teleop": True, "time": 110, "action_type": "score_speaker"},
             {"in_teleop": True, "time": 117, "action_type": "score_speaker"},
-            {"in_teleop": True, "time": 125, "action_type": "score_speaker"},
+            {"in_teleop": True, "time": 125, "action_type": "score_fail"},
+            {"in_teleop": True, "time": 126, "action_type": "score_speaker"},
             {"in_teleop": True, "time": 130, "action_type": "end_incap"},
             {"in_teleop": True, "time": 132, "action_type": "start_incap"},
             {"in_teleop": False, "time": 138, "action_type": "score_speaker"},
@@ -314,7 +318,7 @@ class TestUnconsolidatedTotals:
 
     def test_count_timeline_actions(self):
         action_num = self.test_calculator.count_timeline_actions(self.unconsolidated_tims[0])
-        assert action_num == 19
+        assert action_num == 20
 
     def test_calculate_unconsolidated_tims(self):
         self.test_server.db.insert_documents("unconsolidated_obj_tim", self.unconsolidated_tims)
@@ -333,18 +337,17 @@ class TestUnconsolidatedTotals:
             "auto_speaker": 6,
             "auto_total_pieces": 7,
             "auto_total_intakes": 0,
-            "tele_speaker": 4,
+            "dropped_pieces": 0,
+            "tele_speaker": 3,
             "tele_speaker_amped": 2,
             "tele_amp": 2,
-            "tele_total_pieces": 8,
+            "tele_total_pieces": 7,
             "tele_total_intakes": 0,
             "total_intakes": 0,
-            "total_pieces": 15,
+            "total_pieces": 14,
             "stage_level": "O",
             "trap": 0,
-            "failed_score_amp": 0,
-            "failed_score_speaker": 0,
-            "failed_score_trap": 0,
+            "failed_score": 1,
             "start_position": "3",
             "has_preload": True,
             "tele_intakes_amp": 0,

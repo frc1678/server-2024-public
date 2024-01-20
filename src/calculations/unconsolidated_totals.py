@@ -1,4 +1,4 @@
-# Copyright (c) 2023 FRC Team 1678: Citrus Circuits
+# Copyright (c) 2024 FRC Team 1678: Citrus Circuits
 
 import copy
 import utils
@@ -46,18 +46,24 @@ class UnconsolidatedTotals(BaseCalculations):
             return {}
 
         for num_1, tim in enumerate(unconsolidated_tims):
-            alliance = "blue"
-            if tim["alliance_color_is_red"]:
-                alliance = "red"
-
-            if self.grid_status[tim["match_number"]][alliance] == False:
-                timeline = tim["timeline"]
-                for num, action_dict in enumerate(timeline):
-                    if action_dict["action_type"] == "supercharge":
+            timeline = tim["timeline"]
+            # Collects the data for score_fails for amp, and speaker.
+            for num, action_dict in enumerate(timeline):
+                if action_dict["action_type"] == "score_fail":
+                    if (
+                        unconsolidated_tims[num_1]["timeline"][num + 1]["action_type"]
+                        == "score_speaker"
+                    ):
                         unconsolidated_tims[num_1]["timeline"][num + 1][
                             "action_type"
-                        ] = "score_fail"
-
+                        ] = "score_fail_speaker"
+                    if (
+                        unconsolidated_tims[num_1]["timeline"][num + 1]["action_type"]
+                        == "score_amp"
+                    ):
+                        unconsolidated_tims[num_1]["timeline"][num + 1][
+                            "action_type"
+                        ] = "score_fail_amp"
         unconsolidated_totals = []
         # Calculates unconsolidated tim counts
         for tim in unconsolidated_tims:

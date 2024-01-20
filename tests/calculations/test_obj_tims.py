@@ -1,4 +1,4 @@
-# Copyright (c) 2023 FRC Team 1678: Citrus Circuits
+# Copyright (c) 2024 FRC Team 1678: Citrus Circuits
 
 from unittest import mock
 
@@ -187,6 +187,8 @@ class TestObjTIMCalcs:
                 {"in_teleop": True, "time": 2, "action_type": "end_incap"},
                 {"in_teleop": True, "time": 35, "action_type": "start_incap"},
                 {"in_teleop": True, "time": 51, "action_type": "score_speaker"},
+                {"in_teleop": True, "time": 60, "action_type": "failed_score"},
+                {"in_teleop": True, "time": 61, "action_type": "score_speaker"},
                 {"in_teleop": True, "time": 68, "action_type": "score_amp"},
                 {"in_teleop": True, "time": 70, "action_type": "score_trap"},
                 {"in_teleop": True, "time": 75, "action_type": "intake_amp"},
@@ -230,6 +232,8 @@ class TestObjTIMCalcs:
                 {"in_teleop": True, "time": 2, "action_type": "end_incap"},
                 {"in_teleop": True, "time": 35, "action_type": "start_incap"},
                 {"in_teleop": True, "time": 51, "action_type": "score_speaker"},
+                {"in_teleop": True, "time": 60, "action_type": "failed_score"},
+                {"in_teleop": True, "time": 61, "action_type": "score_speaker"},
                 {"in_teleop": True, "time": 68, "action_type": "score_amp"},
                 {"in_teleop": True, "time": 70, "action_type": "score_trap"},
                 {"in_teleop": True, "time": 75, "action_type": "intake_amp"},
@@ -273,6 +277,8 @@ class TestObjTIMCalcs:
                 {"in_teleop": True, "time": 2, "action_type": "end_incap"},
                 {"in_teleop": True, "time": 45, "action_type": "start_incap"},
                 {"in_teleop": True, "time": 51, "action_type": "score_speaker"},
+                {"in_teleop": True, "time": 60, "action_type": "failed_score"},
+                {"in_teleop": True, "time": 61, "action_type": "score_speaker"},
                 {"in_teleop": True, "time": 68, "action_type": "score_amp"},
                 {"in_teleop": True, "time": 70, "action_type": "score_trap"},
                 {"in_teleop": True, "time": 75, "action_type": "intake_amp"},
@@ -339,6 +345,8 @@ class TestObjTIMCalcs:
             {"in_teleop": True, "time": 2, "action_type": "end_incap"},
             {"in_teleop": True, "time": 35, "action_type": "start_incap"},
             {"in_teleop": True, "time": 51, "action_type": "score_speaker"},
+            {"in_teleop": True, "time": 60, "action_type": "failed_score"},
+            {"in_teleop": True, "time": 61, "action_type": "score_speaker"},
             {"in_teleop": True, "time": 68, "action_type": "score_amp"},
             {"in_teleop": True, "time": 70, "action_type": "score_trap"},
             {"in_teleop": True, "time": 75, "action_type": "intake_amp"},
@@ -366,7 +374,7 @@ class TestObjTIMCalcs:
 
     def test_count_timeline_actions(self):
         action_num = self.test_calculator.count_timeline_actions(self.unconsolidated_tims[0])
-        assert action_num == 26
+        assert action_num == 28
 
     def test_total_time_between_actions(self):
         total_time = self.test_calculator.total_time_between_actions
@@ -398,9 +406,9 @@ class TestObjTIMCalcs:
         assert calculated_tim["auto_total_intakes"] == 8
         assert calculated_tim["auto_total_pieces"] == 2
         assert calculated_tim["tele_total_intakes"] == 4
-        assert calculated_tim["tele_total_pieces"] == 2
+        assert calculated_tim["tele_total_pieces"] == 3
         assert calculated_tim["total_intakes"] == 12
-        assert calculated_tim["total_pieces"] == 4
+        assert calculated_tim["total_pieces"] == 5
         assert calculated_tim["start_position"] == "1"
         assert calculated_tim["has_preload"] == False
 

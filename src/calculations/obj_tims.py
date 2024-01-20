@@ -144,23 +144,31 @@ class ObjTIMCalcs(BaseCalculations):
                     total_time += start["time"] - end["time"]
             return total_time
 
+    def score_fail_type(self, unconsolidated_tims: List[Dict]):
+        for num_1, tim in enumerate(unconsolidated_tims):
+            timeline = tim["timeline"]
+            # Collects the data for score_fails for amp, and speaker.
+            for num, action_dict in enumerate(timeline):
+                if action_dict["action_type"] == "score_fail":
+                    if (
+                        unconsolidated_tims[num_1]["timeline"][num + 1]["action_type"]
+                        == "score_speaker"
+                    ):
+                        unconsolidated_tims[num_1]["timeline"][num + 1][
+                            "action_type"
+                        ] = "score_fail_speaker"
+                    if (
+                        unconsolidated_tims[num_1]["timeline"][num + 1]["action_type"]
+                        == "score_amp"
+                    ):
+                        unconsolidated_tims[num_1]["timeline"][num + 1][
+                            "action_type"
+                        ] = "score_fail_amp"
+
     def calculate_tim_counts(self, unconsolidated_tims: List[Dict]) -> dict:
         """Given a list of unconsolidated TIMs, returns the calculated count based data fields"""
         calculated_tim = {}
-
-        for num_1, tim in enumerate(unconsolidated_tims):
-            alliance = "blue"
-            if tim["alliance_color_is_red"]:
-                alliance = "red"
-
-            if self.grid_status[tim["match_number"]][alliance] == False:
-                timeline = tim["timeline"]
-                for num, action_dict in enumerate(timeline):
-                    if action_dict["action_type"] == "supercharge":
-                        unconsolidated_tims[num_1]["timeline"][num + 1][
-                            "action_type"
-                        ] = "score_fail"
-
+        self.score_fail_type(unconsolidated_tims)
         for calculation, filters in self.schema["timeline_counts"].items():
             unconsolidated_counts = []
             # Variable type of a calculation is in the schema, but it's not a filter
@@ -257,29 +265,12 @@ class ObjTIMCalcs(BaseCalculations):
             calculated_tims.append(calculated_tim)
         return calculated_tims
 
-    def get_grid_status(self, matches):
-        grid_status = {}
-        for match in matches:
-            alliance_status = {}
-            if match["score_breakdown"] is not None and match["comp_level"] == "qm":
-                for alliance in ["red", "blue"]:
-                    alliance_status[alliance] = True
-                    for row in match["score_breakdown"][alliance]["teleopCommunity"].values():
-                        if "None" in row:
-                            alliance_status[alliance] = False
-
-                    grid_status[match["match_number"]] = alliance_status
-
-        return grid_status
-
     def run(self):
         """Executes the OBJ TIM calculations"""
 
         tba_match_data: List[dict] = tba_communicator.tba_request(
             f"event/{utils.TBA_EVENT_KEY}/matches"
         )
-
-        self.grid_status = self.get_grid_status(tba_match_data)
 
         # Get oplog entries
         tims = []
