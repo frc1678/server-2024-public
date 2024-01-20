@@ -244,7 +244,6 @@ class Decompressor(base_calculations.BaseCalculations):
                 decompressed_document.update(
                     self.decompress_data(subjective_data, "subjective_aim")
                 )
-
                 if set(decompressed_document.keys()) != self.SUBJECTIVE_QR_FIELDS:
                     raise ValueError("QR missing data fields", qr_type)
                 decompressed_data.append(decompressed_document)
@@ -279,7 +278,7 @@ class Decompressor(base_calculations.BaseCalculations):
                 continue
             # Override non-timeline datapoints at decompression
             for decompressed in decompressed_qr:
-                # decompressed["ulid"] = qr["ulid"]
+                decompressed["ulid"] = qr["ulid"]
                 for override in qr["override"]:
                     if override in decompressed and override not in list(
                         self.OBJ_TIM_SCHEMA["timeline_counts"].keys()

@@ -23,28 +23,26 @@ class TestDecompressor:
         action_type_dict = {
             "score_speaker": "AA",
             "score_amp": "AB",
-            "score_trap": "AC",
-            "start_incap": "AD",
-            "end_incap": "AE",
-            "auto_intake_spike_1": "AF",
-            "auto_intake_spike_2": "AG",
-            "auto_intake_spike_3": "AH",
-            "auto_intake_center_1": "AI",
-            "auto_intake_center_2": "AJ",
-            "auto_intake_center_3": "AK",
-            "auto_intake_center_4": "AL",
-            "auto_intake_center_5": "AM",
-            "intake_amp": "AN",
-            "intake_poach": "AO",
-            "intake_center": "AP",
-            "intake_far": "AQ",
-            "shoot_other": "AR",
-            "score_fail": "AS",
-            "score_speaker_amped": "AT",
+            "start_incap": "AC",
+            "end_incap": "AD",
+            "auto_intake_spike_1": "AE",
+            "auto_intake_spike_2": "AF",
+            "auto_intake_spike_3": "AG",
+            "auto_intake_center_1": "AH",
+            "auto_intake_center_2": "AI",
+            "auto_intake_center_3": "AJ",
+            "auto_intake_center_4": "AK",
+            "auto_intake_center_5": "AL",
+            "intake_amp": "AM",
+            "intake_poach": "AN",
+            "intake_center": "AO",
+            "intake_far": "AP",
+            "score_amplify": "AQ",
+            "drop": "AR",
+            "ferry": "AS",
+            "fail": "AT",
             "to_teleop": "AU",
-            "to_endgame": "BD",
-            "ferry": "BG",
-            "drop": "BH",
+            "to_endgame": "AV",
         }
         # Test a few values for each type to make sure they make sense
         assert 5 == self.test_decompressor.convert_data_type("5", "int")
@@ -98,7 +96,7 @@ class TestDecompressor:
         )
         assert "score_speaker" == self.test_decompressor.get_decompressed_name("AA", "action_type")
         assert "auto_intake_spike_1" == self.test_decompressor.get_decompressed_name(
-            "AF", "action_type"
+            "AE", "action_type"
         )
         assert "has_preload" == self.test_decompressor.get_decompressed_name("V", "objective_tim")
         with pytest.raises(ValueError) as excinfo:
@@ -174,6 +172,7 @@ class TestDecompressor:
             {
                 "schema_version": decompressor.Decompressor.SCHEMA["schema_file"]["version"],
                 "match_number": 34,
+                "override": {},
                 "timestamp": 1230,
                 "match_collection_version_number": "v1.3",
                 "scout_name": "Name",
@@ -190,6 +189,7 @@ class TestDecompressor:
                 "chain_blind": "N",
                 "park": False,
                 "has_preload": True,
+                "trap": "F",
             }
         ]
         # Expected decompressed subjective qr
@@ -226,31 +226,36 @@ class TestDecompressor:
         ]
         # Test objective qr decompression
         assert expected_objective == self.test_decompressor.decompress_single_qr(
-            f"A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B34$C1230$Dv1.3$EName$FFALSE%Z1678$Y14$X3$W060AA061AB$VTRUE$UO$TN$SN$RFALSE",
+            f"A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B34$C1230$Dv1.3$EName$FFALSE%Z1678$Y14$X3$W060AA061AB$VTRUE$UO$TN$SN$RFALSE$QF",
             decompressor.QRType.OBJECTIVE,
+            {},
         )
         # Test subjective qr decompression
         assert expected_subjective == self.test_decompressor.decompress_single_qr(
             f"A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B34$C1230$Dv1.3$EName$FTRUE%A1678$B1$C2$DTRUE$ETRUE$FFALSE#A254$B4$C1$DFALSE$EFALSE$FTRUE#A1323$B3$C1$DTRUE$EFALSE$FFALSE",
             decompressor.QRType.SUBJECTIVE,
+            {},
         )
         # Test error raising for objective and subjective using incomplete qrs
         with pytest.raises(ValueError) as excinfo:
             self.test_decompressor.decompress_single_qr(
                 f"A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B34$C1230$Dv1.3$EName$FTRUE%Z1678$Y14$VTRUE$UO",
                 decompressor.QRType.OBJECTIVE,
+                {},
             )
         assert "QR missing data fields" in str(excinfo)
         with pytest.raises(IndexError) as excinfo:
             self.test_decompressor.decompress_single_qr(
                 f"A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B34$C1230$Dv1.3$EName$FFALSE%A1678$B1$C2$D3$EFALSE",
                 decompressor.QRType.SUBJECTIVE,
+                {},
             )
         assert "Incorrect number of teams in Subjective QR" in str(excinfo)
         with pytest.raises(ValueError) as excinfo:
             self.test_decompressor.decompress_single_qr(
                 f"A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B34$C1230$Dv1.3$ENameFTRUE%A1678$B1$C2#A254#A1323",
                 decompressor.QRType.SUBJECTIVE,
+                {},
             )
         assert "QR missing data fields" in str(excinfo)
 
@@ -267,6 +272,7 @@ class TestDecompressor:
                     "alliance_color_is_red": True,
                     "team_number": "1678",
                     "scout_id": 14,
+                    "override": {},
                     "start_position": "4",
                     "timeline": [
                         {
@@ -283,8 +289,9 @@ class TestDecompressor:
                     "chain_amp": "N",
                     "chain_source": "O",
                     "chain_blind": "N",
-                    "park": False,
                     "has_preload": False,
+                    "park": False,
+                    "trap": "F",
                     "ulid": "01GWSXQYKYQQ963QMT77A3NPBZ",
                 }
             ],
@@ -300,8 +307,8 @@ class TestDecompressor:
                     "quickness_score": 1,
                     "field_awareness_score": 2,
                     "was_tippy": True,
-                    "played_defense": False,
-                    "climb_after": True,
+                    "climb_after": False,
+                    "played_defense": True,
                     "ulid": "01GWSXSNSF93BQZ2GRG0C4E7AC",
                 },
                 {
@@ -315,8 +322,8 @@ class TestDecompressor:
                     "quickness_score": 2,
                     "field_awareness_score": 1,
                     "was_tippy": False,
-                    "played_defense": True,
-                    "climb_after": False,
+                    "climb_after": True,
+                    "played_defense": False,
                     "ulid": "01GWSXSNSF93BQZ2GRG0C4E7AC",
                 },
                 {
@@ -330,8 +337,8 @@ class TestDecompressor:
                     "quickness_score": 3,
                     "field_awareness_score": 1,
                     "was_tippy": True,
-                    "played_defense": False,
                     "climb_after": False,
+                    "played_defense": False,
                     "ulid": "01GWSXSNSF93BQZ2GRG0C4E7AC",
                 },
             ],
@@ -339,14 +346,14 @@ class TestDecompressor:
         assert expected_output == self.test_decompressor.decompress_qrs(
             [
                 {
-                    "data": f"+A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B34$C1230$Dv1.3$EName$FTRUE%Z1678$Y14$X4$W060AD061AE$VFALSE$UN$TO$SN$RFALSE",
-                    "override": {},
+                    "data": f"+A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B34$C1230$Dv1.3$EName$FTRUE%Z1678$Y14$X4$W060AC061AD$VFALSE$UN$TO$SN$RFALSE$QF",
                     "ulid": "01GWSXQYKYQQ963QMT77A3NPBZ",
+                    "override": {},
                 },
                 {
-                    "data": f"*A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B34$C1230$Dv1.3$EName$FTRUE%A1678$B1$C2$DTRUE$ETRUE$FFALSE#A254$B2$C1$DFALSE$EFALSE$FTRUE#A1323$B3$C1$DTRUE$EFALSE$FFALSE",
-                    "override": {},
+                    "data": f"*A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B34$C1230$Dv1.3$EName$FTRUE%A1678$B1$C2$DTRUE$EFALSE$FTRUE#A254$B2$C1$DFALSE$ETRUE$FFALSE#A1323$B3$C1$DTRUE$EFALSE$FFALSE",
                     "ulid": "01GWSXSNSF93BQZ2GRG0C4E7AC",
+                    "override": {},
                 },
             ]
         )
@@ -447,7 +454,7 @@ class TestDecompressor:
     def test_run(self):
         expected_obj = {
             "schema_version": decompressor.Decompressor.SCHEMA["schema_file"]["version"],
-            "override": {"doesnt_exist": 5},
+            "override": {"doesnt_exist": 5, "start_position": "1"},
             "match_number": 51,
             "timestamp": 9321,
             "match_collection_version_number": "v1.3",
@@ -459,17 +466,17 @@ class TestDecompressor:
             "timeline": [
                 {"time": 0, "action_type": "score_speaker", "in_teleop": False},
                 {"time": 1, "action_type": "score_amp", "in_teleop": False},
-                {"time": 2, "action_type": "score_trap", "in_teleop": False},
                 {"time": 5, "action_type": "to_teleop", "in_teleop": True},
                 {"time": 6, "action_type": "score_amp", "in_teleop": True},
                 {"time": 7, "action_type": "start_incap", "in_teleop": True},
                 {"time": 8, "action_type": "end_incap", "in_teleop": True},
             ],
-            "chain_amp": "N",
-            "chain_source": "O",
+            "chain_amp": "O",
+            "chain_source": "N",
             "chain_blind": "N",
             "park": False,
             "has_preload": True,
+            "trap": "F",
             "ulid": "01GWSYJHR5EC6PAKCS79YZAF3Z",
         }
         expected_sbj = [
@@ -524,22 +531,22 @@ class TestDecompressor:
             "raw_qr",
             [
                 {
-                    "data": f"+A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B51$C9321$Dv1.3$EXvfaPcSrgJw25VKrcsphdbyEVjmHrH1V$FFALSE%Z3603$Y13$X2$W000AA001AB002AC005AU006AB007AD008AE$VTRUE$UN$TO$SN$RFALSE",
+                    "data": f"+A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B51$C9321$Dv1.3$EXvfaPcSrgJw25VKrcsphdbyEVjmHrH1V$FFALSE%Z3603$Y13$X2$W000AA001AB005AU006AB007AC008AD$VTRUE$UO$TN$SN$RFALSE$QF",
                     "blocklisted": False,
                     "override": {"start_position": "1", "doesnt_exist": 5},
                     "ulid": "01GWSYJHR5EC6PAKCS79YZAF3Z",
                     "readable_time": "2023-03-30 19:05:38.821000+00:00",
                 },
                 {
-                    "data": f"+A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B51$C9321$Dv1.3$EXvfaPcSrgJw25VKrcsphdbyEVjmHrH1V$FFALSE%Z3603$Y13$X2$W000AA001AB002AC005AO006AB007AD008AE$VTRUE$UN$TO$SN$RFALSE",
+                    "data": f"+A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B51$C9321$Dv1.3$EXvfaPcSrgJw25VKrcsphdbyEVjmHrH1V$FFALSE%Z3603$Y13$X2$W000AA001AB002AC005AO006AB007AD008AE$VTRUE$UN$TO$SN$RFALSE$QF",
                     "blocklisted": True,
                     "override": {"start_position": "1", "doesnt_exist": 5},
                     "ulid": "01GWSYKDZDM45M1K4ZBHN6G97H",
                     "readable_time": "2023-03-30 19:06:07.725000+00:00",
                 },
                 {
-                    "data": f"*A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B34$C1230$Dv1.3$EName$FFALSE%A1678$B2$C2$DFALSE$ETRUE$FFALSE#A254$B2$C3$DFALSE$ETRUE$FFALSE$#A1323$B3$C1$DTRUE$ETRUE$FFALSE",
-                    "blocklisted": False,
+                    "data": f"*A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B34$C1230$Dv1.3$EName$FFALSE%A1678$B2$C2$DFALSE$ETRUE$FFALSE#A254$B2$C3$DFALSE$ETRUE$FFALSE#A1323$B3$C1$DTRUE$ETRUE$FFALSE",
+                    "blocklisted": True,
                     "override": {},
                     "ulid": "01GWSYM2JP9JMDFCRVCX49PNY0",
                     "readable_time": "2023-03-30 19:06:28.822000+00:00",
