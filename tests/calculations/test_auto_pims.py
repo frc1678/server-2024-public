@@ -266,9 +266,15 @@ class TestAutoPIMCalc:
             "intake_position_3": "none",
             "intake_position_4": "none",
             "intake_position_5": "none",
+            "intake_position_6": "none",
+            "intake_position_7": "none",
+            "intake_position_8": "none",
             "score_4": "none",
             "score_5": "none",
             "score_6": "none",
+            "score_7": "none",
+            "score_8": "none",
+            "score_9": "none",
             "leave": True,
             "auto_timeline": [
                 {"in_teleop": False, "time": 146, "action_type": "score_speaker"},
@@ -342,9 +348,15 @@ class TestAutoPIMCalc:
             "intake_position_3": "none",
             "intake_position_4": "none",
             "intake_position_5": "none",
+            "intake_position_6": "none",
+            "intake_position_7": "none",
+            "intake_position_8": "none",
             "score_4": "none",
             "score_5": "none",
             "score_6": "none",
+            "score_7": "none",
+            "score_8": "none",
+            "score_9": "none",
         }
 
         assert self.test_calculator.create_auto_fields(
@@ -353,8 +365,8 @@ class TestAutoPIMCalc:
                 "team_number": "1678",
                 "auto_timeline": [
                     {"in_teleop": False, "time": 138, "action_type": "score_speaker"},
-                    {"in_teleop": False, "time": 139, "action_type": "score_speaker"},
-                    {"in_teleop": False, "time": 138, "action_type": "score_speaker"},
+                    {"in_teleop": False, "time": 139, "action_type": "score_fail_speaker"},
+                    {"in_teleop": False, "time": 138, "action_type": "score_fail_amp"},
                     {"in_teleop": False, "time": 139, "action_type": "score_speaker"},
                 ][::-1],
                 "has_preload": True,
@@ -363,15 +375,21 @@ class TestAutoPIMCalc:
         ) == {
             "score_1": "speaker",
             "intake_position_1": "none",
-            "score_2": "speaker",
+            "score_2": "fail_amp",
             "intake_position_2": "none",
-            "score_3": "speaker",
+            "score_3": "fail_speaker",
             "score_4": "speaker",
             "intake_position_3": "none",
             "intake_position_4": "none",
             "intake_position_5": "none",
+            "intake_position_6": "none",
+            "intake_position_7": "none",
+            "intake_position_8": "none",
             "score_5": "none",
             "score_6": "none",
+            "score_7": "none",
+            "score_8": "none",
+            "score_9": "none",
         }
 
         assert self.test_calculator.create_auto_fields(
@@ -385,9 +403,15 @@ class TestAutoPIMCalc:
             "intake_position_3": "none",
             "intake_position_4": "none",
             "intake_position_5": "none",
+            "intake_position_6": "none",
+            "intake_position_7": "none",
+            "intake_position_8": "none",
             "score_4": "none",
             "score_5": "none",
             "score_6": "none",
+            "score_7": "none",
+            "score_8": "none",
+            "score_9": "none",
         }
 
     def test_calculate_auto_pim(self):

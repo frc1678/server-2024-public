@@ -55,19 +55,20 @@ class AutoPathCalc(BaseCalculations):
                 # Set path values to pim
                 for field in self.schema["--path_groups"]["exact_match"]:
                     # Don't update if failed score unless old path doesn't have any info there
-                    if pim[field] != "fail" or document[field] == "none":
+                    if "fail" not in str(pim[field]) or document[field] == "none":
                         path[field] = pim[field]
                     else:
                         path[field] = document[field]
 
                 # Add number of score successes
                 for new_datapoint, count_datapoint in self.schema["path_increment"].items():
-                    # All conditions must be true to increment
+                    # Must have scored to increment
                     for name, values in count_datapoint.items():
-                        if pim[name] in values:
-                            path[new_datapoint] = document[new_datapoint] + 1
-                        else:
-                            path[new_datapoint] = document[new_datapoint]
+                        if name != "type":
+                            if pim[name] in values:
+                                path[new_datapoint] = document[new_datapoint] + 1
+                            else:
+                                path[new_datapoint] = document[new_datapoint]
 
                 # Increment all information
                 path["num_matches_ran"] = document["num_matches_ran"] + 1
@@ -87,10 +88,11 @@ class AutoPathCalc(BaseCalculations):
             for new_datapoint, count_datapoint in self.schema["path_increment"].items():
                 # All conditions must be true to increment
                 for name, values in count_datapoint.items():
-                    if pim[name] in values:
-                        path[new_datapoint] = 1
-                    else:
-                        path[new_datapoint] = 0
+                    if name != "type":
+                        if pim[name] in values:
+                            path[new_datapoint] = 1
+                        else:
+                            path[new_datapoint] = 0
 
         return path
 
@@ -101,8 +103,8 @@ class AutoPathCalc(BaseCalculations):
             # If score was fail, count it as the same
             if (
                 pim[datapoint] != document[datapoint]
-                and pim[datapoint] != "fail"
-                and document[datapoint] != "fail"
+                and "fail" not in str(pim[datapoint])
+                and "fail" not in str(document[datapoint])
             ):
                 return False
         return True
