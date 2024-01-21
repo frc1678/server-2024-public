@@ -211,14 +211,8 @@ def mongo_convert(sch):
             if datapoint in ["team_number", "match_number", "scout_name"]:
                 out["required"].append(datapoint)
             # Enums include their data type in brackets. Ex: Enum[int] is int.
-            if "Enum" in info["type"]:
-                datapoint_dict["bsonType"] = type_to_bson[info["type"][5:-1]]
-            elif "--" in info["type"]:
-                continue
-            else:
-                datapoint_dict["bsonType"] = type_to_bson[info["type"]]
-            # datapoint_dict["bsonType"] = type_to_bson[
-            #     t[5:-1] if "Enum" in (t := info["type"]) else t
-            # ]
+            datapoint_dict["bsonType"] = type_to_bson[
+                t[5:-1] if "Enum" in (t := info["type"]) else t
+            ]
             out["properties"].update({datapoint: datapoint_dict})
     return out
