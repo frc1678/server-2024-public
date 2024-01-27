@@ -100,9 +100,22 @@ class UnconsolidatedTotals(BaseCalculations):
         unconsolidated_totals = []
         for tim in tims:
             unconsolidated_obj_tims = self.server.db.find("unconsolidated_obj_tim", tim)
-            unconsolidated_totals.extend(
-                self.calculate_unconsolidated_tims(unconsolidated_obj_tims)
+            # check for overrides
+            override = {}
+            for t in unconsolidated_obj_tims:
+                if "override" in t:
+                    override.update(t.pop("override"))
+            calculated_unconsolidated_tim = self.calculate_unconsolidated_tims(
+                unconsolidated_obj_tims
             )
+            # implement overrides
+            if override != {}:
+                for edited_datapoint in override:
+                    if edited_datapoint in calculated_unconsolidated_tim[0]:
+                        calculated_unconsolidated_tim[0][edited_datapoint] = override[
+                            edited_datapoint
+                        ]
+            unconsolidated_totals.extend(calculated_unconsolidated_tim)
         return unconsolidated_totals
 
     def get_grid_status(self, matches):

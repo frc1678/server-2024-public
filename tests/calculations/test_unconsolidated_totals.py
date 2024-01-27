@@ -211,6 +211,7 @@ class TestUnconsolidatedTotals:
             "trap": 0,
             "start_position": "3",
             "has_preload": True,
+            "override": {"tele_intakes_amp": 1},
         },
         {
             "schema_version": 6,
@@ -365,7 +366,7 @@ class TestUnconsolidatedTotals:
             "failed_score": 1,
             "start_position": "3",
             "has_preload": True,
-            "tele_intakes_amp": 0,
+            "tele_intakes_amp": 1,
             "tele_intakes_poach": 0,
             "tele_intakes_center": 0,
             "tele_intakes_far": 0,
