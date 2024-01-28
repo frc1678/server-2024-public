@@ -81,7 +81,7 @@ def uninstall_app(device, app_name="com.frc1678.match_collection"):
         )
 
 
-def pull_device_files(local_file_path, tablet_file_path):
+def pull_device_files(local_file_path, tablet_file_path, devices=[]):
     """pull_device_files is a function for pulling data off tablets.
 
     pull_device_files is given a local path and a tablet path.
@@ -94,7 +94,8 @@ def pull_device_files(local_file_path, tablet_file_path):
     Usage:
     pull_device_files('/path/to/output/directory', '/path/to/tablet/data')
     """
-    devices = get_attached_devices()
+    if devices == []:
+        devices = get_attached_devices()
     # Wait for USB connection to initialize
     time.sleep(0.1)
     # List of devices that have been pulled from (finished)
@@ -139,19 +140,36 @@ def pull_device_data():
     """Pulls tablet data from attached tablets."""
     # Parses 'adb devices' to find num of devices so that don't try to pull from nothing
     devices = get_attached_devices()
+    db = database.Database()
+    # sorts stand strategist devices from others
+    ss_devices = []
+    for device in devices:
+        if device[:2] == "R8":
+            ss_devices.append(device)
+            devices.remove(device)
     data = {"qr": [], "raw_obj_pit": []}
-    if not devices:
+    if not ss_devices and devices:
         return data
 
     device_file_paths = []
-    device_file_path = utils.create_file_path("data/devices")
+    # Stand strategists file paths
+    ss_device_file_paths = []
+    device_file_path = utils.create_file_path("data/devices/")
     # Pull all files from the 'Download' folder on the device
-    pull_device_files(device_file_path, "/storage/emulated/0/Download")
+    pull_device_files(
+        device_file_path, "/storage/emulated/0/Documents/StandStrategist/profiles", ss_devices
+    )
+    pull_device_files(device_file_path, "/storage/emulated/0/Download", devices)
     # Iterates through the 'data' folder
     for device_dir in os.listdir(device_file_path):
         if device_dir in DEVICE_SERIAL_NUMBERS.keys():
-            device_file_paths.append(device_dir)
+            if device_dir[:1] == "R":
+                ss_device_file_paths.append(device_dir)
+            else:
+                device_file_paths.append(device_dir)
+
         # If the folder name is a device serial, it must be a tablet folder
+
     for device in device_file_paths:
         # Iterate through the downloads folder in the device folder
         download_directory = os.path.join(device_file_path, device)
@@ -166,9 +184,27 @@ def pull_device_data():
                             file_contents = json.load(data_file)
                         data[dataset].append(file_contents)
                         break  # Filename will only match one regex
+    # Pulls data from Stand Strategist (ss)
+    # Iterates through the 'data' folder
+    # Iterates through the devices
+    for device in ss_device_file_paths:
+        profiles_directory = os.path.join(device_file_path, device)
+        profiles = os.listdir(profiles_directory)
+
+        for profile in profiles:
+            with open(os.path.join(profiles_directory, profile, "team_data.json")) as f:
+                team_data = json.load(f)
+                db.update_document("ss_team", team_data, team_data)
+            with open(os.path.join(profiles_directory, profile, "tim_data.json")) as f:
+                tim_data = json.load(f)
+                db.update_document("ss_tim", tim_data, tim_data)
+
+        log.info(f"{len(team_data)} items uploaded to {team_data}")
+        log.info(f"{len(tim_data)} items uploaded to {tim_data}")
+
     # Add QRs to database and make sure that only QRs that should be decompressed are added to queue
     data["qr"] = qr_code_uploader.upload_qr_codes(data["qr"])
-    db = database.Database()
+
     # Only raw_obj_pit in the 2022 season, but other years also have raw_subj_pit which is why this iterates through datasets
     for dataset in ["raw_obj_pit"]:
         modified_data = []
