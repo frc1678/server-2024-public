@@ -148,7 +148,7 @@ def pull_device_data():
             ss_devices.append(device)
             devices.remove(device)
     data = {"qr": [], "raw_obj_pit": []}
-    if not ss_devices and devices:
+    if ss_devices == [] and devices == []:
         return data
 
     device_file_paths = []
