@@ -29,15 +29,18 @@ OBJECTIVE QRs
 """
 
 import random
-from calculations import compression
 import utils
-from send_device_jsons import get_team_list
 import json
 import numpy as np
-from calculations.generate_random_value import generate_random_value
 import argparse
 
-TEAM_LIST = get_team_list()  # List of team numbers
+if __name__ == "__main__":
+    from send_device_jsons import get_team_list
+
+    TEAM_LIST = get_team_list()  # List of team numbers
+    print("Created team list\n")
+else:
+    TEAM_LIST = ["1678"]
 
 # 1.1
 MC_SCHEMA = utils.read_schema("schema/match_collection_qr_schema.yml")
@@ -59,7 +62,7 @@ for num, team in enumerate(TEAM_LIST):
 raw_qrs = []
 
 # 2.1
-def gen_data_from_schema(schema_section: list[dict], team_number: str, complete: bool = True):
+def gen_data_from_schema(schema_section, team_number: str, complete: bool = True):
     """Takes a schema section (such as TEST_QR_SCHEMA['generic_data']),
     and generates random values for each attribute based on given criteria.
 
@@ -438,10 +441,7 @@ if __name__ == "__main__":
     args = parser()
 
     # Get Match Schedule
-    MATCH_SCHEDULE_LOCAL_PATH = (
-        f"/home/lowpolypenguin/Citrus/server/data/2023cada_match_schedule.json"
-    )
-    # f"data/{utils.TBA_EVENT_KEY}_match_schedule.json"
+    MATCH_SCHEDULE_LOCAL_PATH = f"data/{utils.TBA_EVENT_KEY}_match_schedule.json"
 
     with open(MATCH_SCHEDULE_LOCAL_PATH, "r") as match_schedule_json:
         MATCH_SCHEDULE_DICT = dict(json.load(match_schedule_json))
@@ -489,3 +489,5 @@ if __name__ == "__main__":
     with open("test_qrs.txt", "w") as qr_file:
         for qr in raw_qrs:
             qr_file.write(f"{qr}\n")
+
+    print("Wrote QRs to test_qrs.txt")

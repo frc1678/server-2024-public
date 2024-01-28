@@ -1,14 +1,9 @@
-import pytest
-from unittest.mock import patch, Mock, mock_open
+from unittest.mock import patch
 import server
 import utils
 from calculations import decompressor
-import sys
 import builtins
-
-# Patches send_device_jsons event key confirmation
-with patch("builtins.input", return_value=""):
-    import generate_test_qrs
+import generate_test_qrs
 
 # Get schema
 SCHEMA = utils.read_schema("schema/match_collection_qr_schema.yml")
