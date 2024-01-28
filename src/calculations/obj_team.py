@@ -109,16 +109,32 @@ class OBJTeamCalc(base_calculations.BaseCalculations):
                     else:
                         # not_field expects the output to be anything but the given filter
                         # not_value is the filter that not_field shouldn't have
-                        for not_field, not_value in value.items():
-                            # Checks that the TIMs in the 'not' field are anything other than the filter
-                            tims_that_meet_filter += len(
-                                list(
-                                    filter(
-                                        lambda tim: tim.get(not_field, not_value) != not_value,
-                                        tims,
+                        # checks if value is a list
+                        if isinstance(value, list):
+                            for val in value:
+                                for not_field, not_value in val.items():
+                                    # gets rid of obj_tim or subj_tim in front of datapoint
+                                    not_field = not_field.split(".")[1]
+                                    tims_that_meet_filter += len(
+                                        list(
+                                            # filter gets every item that meets the conditions of the lambda function in tims
+                                            filter(
+                                                lambda tim: tim.get(not_field, not_value)
+                                                != not_value,
+                                                tims,
+                                            )
+                                        )
+                                    )
+                        else:
+                            for not_field, not_value in value.items():
+                                tims_that_meet_filter += len(
+                                    list(
+                                        filter(
+                                            lambda tim: tim.get(not_field, not_value) != not_value,
+                                            tims,
+                                        )
                                     )
                                 )
-                            )
 
         return tims_that_meet_filter
 
