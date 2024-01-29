@@ -211,6 +211,7 @@ class TestUnconsolidatedTotals:
             "trap": 0,
             "start_position": "3",
             "has_preload": True,
+            "park": True,
             "override": {"tele_intakes_amp": 1},
         },
         {
@@ -251,6 +252,7 @@ class TestUnconsolidatedTotals:
             "trap": 0,
             "start_position": "3",
             "has_preload": True,
+            "park": True,
         },
         {
             "schema_version": 6,
@@ -290,6 +292,7 @@ class TestUnconsolidatedTotals:
             "trap": 0,
             "start_position": "1",
             "has_preload": False,
+            "park": True,
         },
     ]
 
@@ -366,6 +369,7 @@ class TestUnconsolidatedTotals:
             "failed_score": 1,
             "start_position": "3",
             "has_preload": True,
+            "park": True,
             "tele_intakes_amp": 1,
             "tele_intakes_poach": 0,
             "tele_intakes_center": 0,
