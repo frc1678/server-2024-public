@@ -64,6 +64,13 @@ class UnconsolidatedTotals(BaseCalculations):
                         unconsolidated_tims[num_1]["timeline"][num + 1][
                             "action_type"
                         ] = "score_fail_amp"
+                    if (
+                        unconsolidated_tims[num_1]["timeline"][num + 1]["action_type"]
+                        == "score_amplify"
+                    ):
+                        unconsolidated_tims[num_1]["timeline"][num + 1][
+                            "action_type"
+                        ] = "score_fail_amplify"
         unconsolidated_totals = []
         # Calculates unconsolidated tim counts
         for tim in unconsolidated_tims:
