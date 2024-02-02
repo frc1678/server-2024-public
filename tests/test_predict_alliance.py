@@ -17,6 +17,8 @@ def test_predict_alliance():
             "tele_avg_speaker_amped": 11.2,
             "tele_avg_amp": 2.0,
             "avg_trap": 1.0,
+            "trap_successes": 1,
+            "trap_fails": 3,
         },
         {
             "team_number": "1533",
@@ -27,6 +29,8 @@ def test_predict_alliance():
             "tele_avg_speaker_amped": 8.2,
             "tele_avg_amp": 3.6,
             "avg_trap": 0.2,
+            "trap_successes": 2,
+            "trap_fails": 1,
         },
         {
             "team_number": "7229",
@@ -37,6 +41,8 @@ def test_predict_alliance():
             "tele_avg_speaker_amped": 4.4,
             "tele_avg_amp": 3.2,
             "avg_trap": 0.6,
+            "trap_successes": 0,
+            "trap_fails": 3,
         },
     ]
     fake_tba_team_data = [
@@ -54,10 +60,10 @@ def test_predict_alliance():
         },
     ]
     expected_return = {
-        "predicted_score": 206.4,
+        "predicted_score": 197.4,
         "predicted_auto_score": 59.8,
-        "predicted_stage_score": None,
-        "predicted_tele_score": 146.6,
+        "predicted_stage_score": 0,
+        "predicted_tele_score": 137.6,
     }
     assert (
         predict_alliance(

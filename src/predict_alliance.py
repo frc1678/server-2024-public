@@ -16,14 +16,14 @@ def predict_alliance(team1, team2, team3, server, obj_team_data, tba_team_data):
     calc = PredictedAimCalc(server)
     predicted_values = PredictedAimScores()
     # obj_team_data is all the obj team data in server
-    output["predicted_score"] = calc.calculate_predicted_alliance_score(
+    output["predicted_score"] = calc.calc_alliance_score(
         predicted_values, obj_team_data, tba_team_data, team_numbers
     )
-    output["predicted_auto_score"] = calc.calculate_predicted_alliance_auto_score(predicted_values)
-    output["predicted_stage_score"] = calc.calculate_predicted_alliance_stage_score(
-        predicted_values
+    output["predicted_auto_score"] = calc.calc_alliance_auto_score(predicted_values)
+    output["predicted_stage_score"] = calc.calc_alliance_stage_score(
+        calc.calc_ensemble_rp(obj_team_data, team_numbers)
     )
-    output["predicted_tele_score"] = calc.calculate_predicted_alliance_tele_score(predicted_values)
+    output["predicted_tele_score"] = calc.calc_alliance_tele_score(predicted_values)
     return output
 
 

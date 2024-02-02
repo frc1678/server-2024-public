@@ -58,7 +58,7 @@ class PredictedAimCalc(BaseCalculations):
 
         predicted_values is a dataclass which stores the predicted number of notes scored and success rates.
 
-        calculate_predicted_alliance_auto_score must be run after predicted_values is populated.
+        calc_alliance_auto_score must be run after predicted_values is populated.
         """
         auto_score = 0
         # Uses dataclasses.asdict to create key: value pairs for predicted datapoints
@@ -207,7 +207,6 @@ class PredictedAimCalc(BaseCalculations):
         obj_team_data: obj_team data from the database
 
         team_numbers: teams in the alliance"""
-
         fields = self.schema["ensemble_rp"]
         alliance_data = []
 
@@ -264,7 +263,6 @@ class PredictedAimCalc(BaseCalculations):
         for order in orders:
             possible_combos.append(climb_trap_rates[order[0]][0] * climb_trap_rates[order[1]][0])
         prob_1 = max(possible_combos)
-
         # Method 2: harmony + climb
         # P2 = P(Ac)P(Bb)P(Cc)
         # TODO: get climb_after success rate. This can be done during consolidations as we collect if they climb or climb_after in the match.
@@ -283,7 +281,6 @@ class PredictedAimCalc(BaseCalculations):
                 * climb_buddy_rates[order[2]][1]
             )
         prob_2 = max(possible_combos)
-
         return round(max(prob_1, prob_2), 3)
 
     def calc_melody_rp(self, predicted_values):
