@@ -534,6 +534,85 @@ class TestOBJTeamCalc:
         }
         assert self.test_calc.calculate_counts(tims, lfm_tims) == expected_output
 
+    def test_special_counts(self):
+        """Tests calculate_special_counts function from src/calculations.obj_team.py"""
+        obj_tims = [
+            {
+                "match_number": 1,
+                "team_number": 99999,
+                "chain_amp": "O",
+                "chain_blind": "N",
+                "chain_source": "N",
+            },
+            {
+                "match_number": 2,
+                "team_number": 99999,
+                "chain_amp": "N",
+                "chain_blind": "O",
+                "chain_source": "N",
+            },
+            {
+                "match_number": 3,
+                "team_number": 99999,
+                "chain_amp": "O",
+                "chain_blind": "N",
+                "chain_source": "N",
+            },
+            {
+                "match_number": 4,
+                "team_number": 99999,
+                "chain_amp": "N",
+                "chain_blind": "N",
+                "chain_source": "O",
+            },
+            {
+                "match_number": 5,
+                "team_number": 99999,
+                "chain_amp": "N",
+                "chain_blind": "F",
+                "chain_source": "N",
+            },
+        ]
+        subj_tims = [
+            {
+                "match_number": 1,
+                "team_number": 99999,
+                "climb_after": True,
+            },
+            {
+                "match_number": 2,
+                "team_number": 99999,
+                "climb_after": False,
+            },
+            {
+                "match_number": 3,
+                "team_number": 99999,
+                "climb_after": True,
+            },
+            {
+                "match_number": 4,
+                "team_number": 99999,
+                "climb_after": True,
+            },
+            {
+                "match_number": 5,
+                "team_number": 99999,
+                "climb_after": True,
+            },
+        ]
+        expected_output = {
+            "climb_after_successes": 3,
+            "lfm_climb_after_successes": 2,
+        }
+        lfm_obj_tims = [tim for tim in obj_tims if tim["match_number"] > 1]
+        lfm_subj_tims = [tim for tim in subj_tims if tim["match_number"] > 1]
+        assert (
+            self.test_calc.calculate_special_counts(
+                obj_tims, subj_tims, lfm_obj_tims, lfm_subj_tims
+            )
+            == expected_output
+        )
+
     def test_super_counts(self):
         """Tests calculate_super_counts function from src/calculations.obj_team.py"""
         tims = [

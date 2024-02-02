@@ -151,6 +151,56 @@ class OBJTeamCalc(base_calculations.BaseCalculations):
             team_info[calculation] = tims_that_meet_filter
         return team_info
 
+    def calculate_special_counts(self, obj_tims, subj_tims, lfm_obj_tims, lfm_subj_tims):
+        """Calculates counts of datapoints collected by Objective and Subjective Scouts."""
+        team_info = {}
+        for calculation, schema in self.SCHEMA["special_counts"].items():
+            total = 0
+            obj_tims_that_meet_filter = []
+            subj_tims_that_meet_filter = []
+            if "lfm" in calculation:
+                for field in schema["tim_fields"]:
+                    for key, value in field.items():
+                        # Separates the datapoint into the obj/subj_tim part and the actual datapoint
+                        key, name = key.split(".")[1], key.split(".")[0]
+                        # Checks that the TIMs in their given field meet the filter
+                        if name == "obj_tim":
+                            # joins the two lists together
+                            # filter gets every item that meets the conditions of the lambda function in tims
+                            obj_tims_that_meet_filter = obj_tims_that_meet_filter + list(
+                                filter(lambda tim: tim.get(key, value) == value, lfm_obj_tims)
+                            )
+                        else:
+                            subj_tims_that_meet_filter = subj_tims_that_meet_filter + list(
+                                filter(lambda tim: tim.get(key, value) == value, lfm_subj_tims)
+                            )
+            else:
+                for field in schema["tim_fields"]:
+                    for key, value in field.items():
+                        # Separates the datapoint into the obj/subj_tim part and the actual datapoint
+                        key, name = key.split(".")[1], key.split(".")[0]
+                        # Checks that the TIMs in their given field meet the filter
+                        if name == "obj_tim":
+                            # joins the two lists together
+                            # filter gets every item that meets the conditions of the lambda function in tims
+                            obj_tims_that_meet_filter = obj_tims_that_meet_filter + list(
+                                filter(lambda tim: tim.get(key, value) == value, obj_tims)
+                            )
+                        else:
+                            subj_tims_that_meet_filter = subj_tims_that_meet_filter + list(
+                                filter(lambda tim: tim.get(key, value) == value, subj_tims)
+                            )
+            for tim in obj_tims_that_meet_filter:
+                for s_tim in subj_tims_that_meet_filter:
+                    if (
+                        tim["match_number"] == s_tim["match_number"]
+                        and tim["team_number"] == s_tim["team_number"]
+                    ):
+                        total += 1
+                        break
+            team_info[calculation] = total
+        return team_info
+
     def calculate_super_counts(self, tims, lfm_tims):
         """Calculates counts of datapoints collected by Super Scouts."""
         team_info = {}
@@ -320,7 +370,6 @@ class OBJTeamCalc(base_calculations.BaseCalculations):
             # Last 4 tims to calculate last 4 matches
             obj_lfm_tims = sorted(obj_tims, key=lambda tim: tim["match_number"])[-4:]
             subj_lfm_tims = sorted(subj_tims, key=lambda tim: tim["match_number"])[-4:]
-
             tim_action_counts = self.get_action_counts(obj_tims)
             lfm_tim_action_counts = self.get_action_counts(obj_lfm_tims)
             tim_action_categories = self.get_action_categories(obj_tims)
@@ -340,6 +389,9 @@ class OBJTeamCalc(base_calculations.BaseCalculations):
                     tim_action_counts,
                     lfm_tim_action_counts,
                 )
+            )
+            team_data.update(
+                self.calculate_special_counts(obj_tims, obj_lfm_tims, subj_tims, subj_lfm_tims)
             )
             team_data.update(self.calculate_modes(tim_action_categories, lfm_tim_action_categories))
             team_data.update(self.calculate_medians(tim_action_sum, lfm_tim_action_sum))
