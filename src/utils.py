@@ -118,8 +118,8 @@ def _inner_read_schema(schema_file_path: str) -> dict:
             return yaml.load(schema_file, yaml.Loader)
     except FileNotFoundError as e:
         # TODO - use logger (waiting on #544 for better logging)
-        print('server: Error: file "{schema_file_path}" not found.')
-        print("server: full info: {e}")
+        print(f'server: Error: file "{schema_file_path}" not found.')
+        print(f"server: full info: {e}")
         # Please check for None
         return None
 
