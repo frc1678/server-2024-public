@@ -2,8 +2,14 @@
 """Calculate subjective team data"""
 
 import utils
+import time
+import logging
 from calculations import base_calculations
 from typing import Dict, List
+
+log = logging.getLogger(__name__)
+server_log = logging.FileHandler("server.log")
+log.addHandler(server_log)
 
 
 class SubjTeamCalcs(base_calculations.BaseCalculations):
@@ -166,6 +172,8 @@ class SubjTeamCalcs(base_calculations.BaseCalculations):
     def run(self):
         """Gets oplog entries from watched collection and uses that to calculate subjective team
         info, then puts those calculations in the database"""
+        # Get calc start time
+        start_time = time.time()
         # Adjusted calcs have to be re-run on all teams that have competed
         # because team data changing for one team affects all teams that played with that team
         self.teams_that_have_competed = set()
@@ -194,3 +202,8 @@ class SubjTeamCalcs(base_calculations.BaseCalculations):
                 self.server.db.update_document(
                     "subj_team", driver_ability_calcs[team], {"team_number": team}
                 )
+        end_time = time.time()
+        # Get total calc time
+        total_time = end_time - start_time
+        # Write total calc time to log
+        log.info(f"subj_team calculation time: {total_time}")

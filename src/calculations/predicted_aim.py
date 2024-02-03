@@ -10,8 +10,11 @@ import warnings
 from calculations.base_calculations import BaseCalculations
 from data_transfer import tba_communicator
 import logging
+import time
 
 log = logging.getLogger(__name__)
+server_log = logging.FileHandler("server.log")
+log.addHandler(server_log)
 
 
 # Data class to score alliance scores, used in prediction calculations
@@ -663,6 +666,8 @@ class PredictedAimCalc(BaseCalculations):
         return updates
 
     def run(self):
+        # Get calc start time
+        start_time = time.time()
         match_schedule = self.get_aim_list()
         # Check if changes need to be made to teams
         teams = self.get_updated_teams()
@@ -692,3 +697,8 @@ class PredictedAimCalc(BaseCalculations):
             self.server.db.update_document(
                 "predicted_alliances", update, {"alliance_num": update["alliance_num"]}
             )
+        end_time = time.time()
+        # Get total calc time
+        total_time = end_time - start_time
+        # Write total calc time to log
+        log.info(f"predicted_aim calculation time: {total_time}")

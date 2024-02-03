@@ -9,8 +9,11 @@ from calculations.base_calculations import BaseCalculations
 from typing import List, Union, Dict
 import logging
 from data_transfer import tba_communicator
+import time
 
 log = logging.getLogger(__name__)
+server_log = logging.FileHandler("server.log")
+log.addHandler(server_log)
 
 
 class ObjTIMCalcs(BaseCalculations):
@@ -282,7 +285,8 @@ class ObjTIMCalcs(BaseCalculations):
 
     def run(self):
         """Executes the OBJ TIM calculations"""
-
+        # Get calc start time
+        start_time = time.time()
         tba_match_data: List[dict] = tba_communicator.tba_request(
             f"event/{utils.TBA_EVENT_KEY}/matches"
         )
@@ -322,3 +326,8 @@ class ObjTIMCalcs(BaseCalculations):
                         "match_number": update["match_number"],
                     },
                 )
+        end_time = time.time()
+        # Get total calc time
+        total_time = end_time - start_time
+        # Write total calc time to log
+        log.info(f"obj_tims calculation time: {total_time}")

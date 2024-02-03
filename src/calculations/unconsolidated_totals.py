@@ -6,8 +6,11 @@ from calculations.base_calculations import BaseCalculations
 from typing import List, Union, Dict
 import logging
 from data_transfer import tba_communicator
+import time
 
 log = logging.getLogger(__name__)
+server_log = logging.FileHandler("server.log")
+log.addHandler(server_log)
 
 
 class UnconsolidatedTotals(BaseCalculations):
@@ -130,7 +133,8 @@ class UnconsolidatedTotals(BaseCalculations):
 
     def run(self):
         """Executes the OBJ TIM calculations"""
-
+        # Get calc start time
+        start_time = time.time()
         tba_match_data: List[dict] = tba_communicator.tba_request(
             f"event/{utils.TBA_EVENT_KEY}/matches"
         )
@@ -172,3 +176,8 @@ class UnconsolidatedTotals(BaseCalculations):
                         "scout_name": document["scout_name"],
                     },
                 )
+        end_time = time.time()
+        # Get total calc time
+        total_time = end_time - start_time
+        # Write total calc time to log
+        log.info(f"unconsolidated_totals calculation time: {total_time}")

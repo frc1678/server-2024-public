@@ -3,10 +3,13 @@ from datetime import datetime
 from calculations.base_calculations import BaseCalculations
 from data_transfer import tba_communicator
 import utils
+import time
 import logging
 from typing import List, Dict, Union
 
 log = logging.getLogger(__name__)
+server_log = logging.FileHandler("server.log")
+log.addHandler(server_log)
 
 
 class SimPrecisionCalc(BaseCalculations):
@@ -211,6 +214,8 @@ class SimPrecisionCalc(BaseCalculations):
         return updates
 
     def run(self):
+        # Get calc start time
+        start_time = time.time()
         entries = self.entries_since_last()
         sims = []
         for entry in entries:
@@ -233,3 +238,8 @@ class SimPrecisionCalc(BaseCalculations):
                     "match_number": update["match_number"],
                 },
             )
+        end_time = time.time()
+        # Get total calc time
+        total_time = end_time - start_time
+        # Write total calc time to log
+        log.info(f"sim_precision calculation time: {total_time}")

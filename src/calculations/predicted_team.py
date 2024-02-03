@@ -5,8 +5,11 @@ import utils
 from data_transfer import tba_communicator
 from calculations.base_calculations import BaseCalculations
 import logging
+import time
 
 log = logging.getLogger(__name__)
+server_log = logging.FileHandler("server.log")
+log.addHandler(server_log)
 
 
 class PredictedTeamCalc(BaseCalculations):
@@ -135,6 +138,8 @@ class PredictedTeamCalc(BaseCalculations):
         return final_updates
 
     def run(self):
+        # Get calc start time
+        start_time = time.time()
         # Get oplog entries
         entries = self.entries_since_last()
         if entries != []:
@@ -144,3 +149,8 @@ class PredictedTeamCalc(BaseCalculations):
                 "predicted_team", self.update_predicted_team(predicted_aim)
             )
         self.update_timestamp()
+        end_time = time.time()
+        # Get total calc time
+        total_time = end_time - start_time
+        # Write total calc time to log
+        log.info(f"predicted_team calculation time: {total_time}")

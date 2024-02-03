@@ -1,8 +1,11 @@
 from calculations import base_calculations
 import utils
 import logging
+import time
 
 log = logging.getLogger(__name__)
+server_log = logging.FileHandler("server.log")
+log.addHandler(server_log)
 
 
 class PickabilityCalc(base_calculations.BaseCalculations):
@@ -76,7 +79,8 @@ class PickabilityCalc(base_calculations.BaseCalculations):
 
     def run(self) -> None:
         """Detects when and for which teams to calculate pickabilty"""
-
+        # Get calc start time
+        start_time = time.time()
         # Finds oplog entries in the watched collections
         entries = self.entries_since_last()
         if entries == []:
@@ -89,3 +93,8 @@ class PickabilityCalc(base_calculations.BaseCalculations):
             self.server.db.update_document(
                 "pickability", update, {"team_number": update["team_number"]}
             )
+        end_time = time.time()
+        # Get total calc time
+        total_time = end_time - start_time
+        # Write total calc time to log
+        log.info(f"pickability calculation time: {total_time}")

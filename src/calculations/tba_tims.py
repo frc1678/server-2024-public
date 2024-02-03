@@ -10,8 +10,11 @@ from data_transfer import tba_communicator
 import utils
 from server import Server
 import logging
+import time
 
 log = logging.getLogger(__name__)
+server_log = logging.FileHandler("server.log")
+log.addHandler(server_log)
 
 
 class TBATIMCalc(base_calculations.BaseCalculations):
@@ -122,6 +125,8 @@ class TBATIMCalc(base_calculations.BaseCalculations):
 
     def run(self):
         """Executes the TBA Team calculations"""
+        # Get calc start time
+        start_time = time.time()
         # Get the list of matches that have not been calculated, i.e. their
         # reference is not in the self.calculated
         entries = self.entries_since_last()
@@ -150,3 +155,8 @@ class TBATIMCalc(base_calculations.BaseCalculations):
                         "team_number": calculated_tim["team_number"],
                     },
                 )
+        end_time = time.time()
+        # Get total calc time
+        total_time = end_time - start_time
+        # Write total calc time to log
+        log.info(f"tba_tims calculation time: {total_time}")

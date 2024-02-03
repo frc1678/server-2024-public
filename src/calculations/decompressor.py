@@ -7,7 +7,7 @@ import os
 import re
 
 import yaml
-
+import time
 import utils
 from calculations import base_calculations
 from calculations import qr_state
@@ -16,6 +16,8 @@ import logging
 from data_transfer import database
 
 log = logging.getLogger(__name__)
+server_log = logging.FileHandler("server.log")
+log.addHandler(server_log)
 
 
 class QRType(enum.Enum):
@@ -392,6 +394,8 @@ class Decompressor(base_calculations.BaseCalculations):
                         log.warning(f"Scout ID {id_} missing from Match {match}")
 
     def run(self):
+        # Get calc start time
+        start_time = time.time()
         new_qrs = [
             entry["o"] for entry in self.entries_since_last() if not entry["o"]["blocklisted"]
         ]
@@ -416,3 +420,8 @@ class Decompressor(base_calculations.BaseCalculations):
                 # Updating doesn't work because unconsolidated_obj_tim doesn't have unique keys
                 self.server.db.delete_data(collection)
             self.server.db.insert_documents(collection, decompressed_qrs[collection])
+        end_time = time.time()
+        # Get total calc time
+        total_time = end_time - start_time
+        # Write total calc time to log
+        log.info(f"decompressor calculation time: {total_time}")

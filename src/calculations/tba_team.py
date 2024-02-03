@@ -11,8 +11,11 @@ import numpy as np
 import numpy.linalg as nl
 from cc import cc, CCEvent
 import logging
+import time
 
 log = logging.getLogger(__name__)
+server_log = logging.FileHandler("server.log")
+log.addHandler(server_log)
 
 
 class TBATeamCalc(base_calculations.BaseCalculations):
@@ -157,6 +160,8 @@ class TBATeamCalc(base_calculations.BaseCalculations):
 
     def run(self):
         """Executes the TBA Team calculations"""
+        # Get calc start time
+        start_time = time.time()
         # Delete and re-insert if updating all data
         if self.calc_all_data:
             self.server.db.delete_data("tba_team")
@@ -164,3 +169,8 @@ class TBATeamCalc(base_calculations.BaseCalculations):
             self.server.db.update_document(
                 "tba_team", update, {"team_number": update["team_number"]}
             )
+        end_time = time.time()
+        # Get total calc time
+        total_time = end_time - start_time
+        # Write total calc time to log
+        log.info(f"tba_team calculation time: {total_time}")

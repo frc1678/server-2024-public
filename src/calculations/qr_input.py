@@ -6,11 +6,14 @@ import utils
 import datetime
 from ulid import ULID
 import logging
+import time
 
 import sys
 from console import console
 
 log = logging.getLogger(__name__)
+server_log = logging.FileHandler("server.log")
+log.addHandler(server_log)
 
 
 class QRInput(calculations.base_calculations.BaseCalculations):
@@ -51,6 +54,8 @@ class QRInput(calculations.base_calculations.BaseCalculations):
 
     def run(self, test_input=None):
         """Grabs QR codes from user using stdin.read(), each qr is separated by a newline"""
+        # Get calc start time
+        start_time = time.time()
 
         # If test_input is assigned to a value (in tests), set qr_codes to test_input.
         # Otherwise, get input from user.
@@ -67,3 +72,8 @@ class QRInput(calculations.base_calculations.BaseCalculations):
         if qr_codes != "":
             self.upload_qr_codes(qr_codes.strip().split("\n"))
         adb_communicator.pull_device_data()
+        end_time = time.time()
+        # Get total calc time
+        total_time = end_time - start_time
+        # Write total calc time to log
+        log.info(f"qr_input calculation time: {total_time}")

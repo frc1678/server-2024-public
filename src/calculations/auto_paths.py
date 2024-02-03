@@ -12,9 +12,13 @@ Holds functions used to determine auto scoring and paths
 from typing import List
 from calculations.base_calculations import BaseCalculations
 import logging
+import console
 import utils
+import time
 
 log = logging.getLogger(__name__)
+server_log = logging.FileHandler("server.log")
+log.addHandler(server_log)
 
 
 class AutoPathCalc(BaseCalculations):
@@ -151,6 +155,8 @@ class AutoPathCalc(BaseCalculations):
 
     def run(self):
         """Executes the auto_path calculations"""
+        # Get calc start time
+        start_time = time.time()
         # Get oplog entries
         empty_pims = []
 
@@ -198,3 +204,8 @@ class AutoPathCalc(BaseCalculations):
                         "path_number": update["path_number"],
                     },
                 )
+        end_time = time.time()
+        # Get total calc time
+        total_time = end_time - start_time
+        # Write total calc time to log
+        log.info(f"auto_pims calculation time: {total_time}")

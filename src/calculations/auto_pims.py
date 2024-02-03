@@ -7,8 +7,11 @@ from calculations.base_calculations import BaseCalculations
 import logging
 import statistics
 import utils
+import time
 
 log = logging.getLogger(__name__)
+server_log = logging.FileHandler("server.log")
+log.addHandler(server_log)
 
 
 class AutoPIMCalc(BaseCalculations):
@@ -179,6 +182,8 @@ class AutoPIMCalc(BaseCalculations):
 
     def run(self):
         """Executes the auto_pim calculations"""
+        # Get calc start time
+        start_time = time.time()
         # Get oplog entries
         tims = []
 
@@ -226,3 +231,8 @@ class AutoPIMCalc(BaseCalculations):
                         "match_number": update["match_number"],
                     },
                 )
+        end_time = time.time()
+        # Get total calc time
+        total_time = end_time - start_time
+        # Write total calc time to log
+        log.info(f"auto_paths calculation time: {total_time}")

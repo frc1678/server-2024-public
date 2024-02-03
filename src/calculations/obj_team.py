@@ -5,6 +5,12 @@ import utils
 from typing import List, Dict
 from calculations import base_calculations
 import statistics
+import time
+import logging
+
+log = logging.getLogger(__name__)
+server_log = logging.FileHandler("server.log")
+log.addHandler(server_log)
 
 
 class OBJTeamCalc(base_calculations.BaseCalculations):
@@ -402,6 +408,8 @@ class OBJTeamCalc(base_calculations.BaseCalculations):
         return list(obj_team_updates.values())
 
     def run(self):
+        # Get calc start time
+        start_time = time.time()
         """Executes the OBJ Team calculations"""
         # Get oplog entries
         entries = self.entries_since_last()
@@ -418,3 +426,8 @@ class OBJTeamCalc(base_calculations.BaseCalculations):
             self.server.db.update_document(
                 "obj_team", update, {"team_number": update["team_number"]}
             )
+        end_time = time.time()
+        # Get total calc time
+        total_time = end_time - start_time
+        # Write total calc time to log
+        log.info(f"obj_team calculation time: {total_time}")

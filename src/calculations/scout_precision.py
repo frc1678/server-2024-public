@@ -6,6 +6,12 @@ from datetime import datetime
 from calculations.base_calculations import BaseCalculations
 from data_transfer import tba_communicator
 import utils
+import time
+import logging
+
+log = logging.getLogger(__name__)
+server_log = logging.FileHandler("server.log")
+log.addHandler(server_log)
 
 
 class ScoutPrecisionCalc(BaseCalculations):
@@ -57,6 +63,8 @@ class ScoutPrecisionCalc(BaseCalculations):
         return updates
 
     def run(self):
+        # Get calc start time
+        start_time = time.time()
         scouts = self.find_updated_scouts()
 
         if self.calc_all_data:
@@ -66,3 +74,8 @@ class ScoutPrecisionCalc(BaseCalculations):
             self.server.db.update_document(
                 "scout_precision", update, {"scout_name": update["scout_name"]}
             )
+        end_time = time.time()
+        # Get total calc time
+        total_time = end_time - start_time
+        # Write total calc time to log
+        log.info(f"scout_precision calculation time: {total_time}")
