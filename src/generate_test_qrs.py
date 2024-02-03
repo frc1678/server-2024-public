@@ -223,7 +223,7 @@ def gen_timeline(team_number: str) -> str:
     if count == 0:
         count = 1
     if complement_count == 0:
-        complement_count == 1
+        complement_count = 1
 
     # Action type schema (dict)
     action_types = TEST_QR_SCHEMA["action_type"]
