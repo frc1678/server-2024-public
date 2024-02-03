@@ -134,7 +134,15 @@ class ObjTIMCalcs(BaseCalculations):
         # Other time calculations (incap)
         else:
             start_actions = self.filter_timeline_actions(tim, action_type=start_action)
-            end_actions = self.filter_timeline_actions(tim, action_type=end_action)
+            end_actions = []
+            # Takes multiple end actions
+            if isinstance(end_action, list):
+                for action in end_action:
+                    end_actions = end_actions + self.filter_timeline_actions(
+                        tim, action_type=action
+                    )
+            else:
+                end_actions = self.filter_timeline_actions(tim, action_type=end_action)
             # Match scout app should automatically add an end action at the end of the match,
             # if there isn't already an end action after the last start action. That way there are the
             # same number of start actions and end actions.

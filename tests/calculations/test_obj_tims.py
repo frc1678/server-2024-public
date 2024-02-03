@@ -192,6 +192,7 @@ class TestObjTIMCalcs:
                 {"in_teleop": True, "time": 68, "action_type": "score_amp"},
                 {"in_teleop": True, "time": 70, "action_type": "score_trap"},
                 {"in_teleop": True, "time": 75, "action_type": "intake_amp"},
+                {"in_teleop": True, "time": 79, "action_type": "score_speaker"},
                 {"in_teleop": True, "time": 81, "action_type": "intake_poach"},
                 {"in_teleop": True, "time": 94, "action_type": "intake_center"},
                 {"in_teleop": True, "time": 105, "action_type": "intake_far"},
@@ -237,6 +238,7 @@ class TestObjTIMCalcs:
                 {"in_teleop": True, "time": 68, "action_type": "score_amp"},
                 {"in_teleop": True, "time": 70, "action_type": "score_trap"},
                 {"in_teleop": True, "time": 75, "action_type": "intake_amp"},
+                {"in_teleop": True, "time": 79, "action_type": "score_speaker"},
                 {"in_teleop": True, "time": 81, "action_type": "intake_poach"},
                 {"in_teleop": True, "time": 94, "action_type": "intake_center"},
                 {"in_teleop": True, "time": 105, "action_type": "intake_far"},
@@ -279,9 +281,10 @@ class TestObjTIMCalcs:
                 {"in_teleop": True, "time": 51, "action_type": "score_speaker"},
                 {"in_teleop": True, "time": 60, "action_type": "failed_score"},
                 {"in_teleop": True, "time": 61, "action_type": "score_speaker"},
-                {"in_teleop": True, "time": 68, "action_type": "score_amp"},
-                {"in_teleop": True, "time": 70, "action_type": "score_trap"},
+                {"in_teleop": True, "time": 63, "action_type": "intake_far"},
+                {"in_teleop": True, "time": 65, "action_type": "score_amplify"},
                 {"in_teleop": True, "time": 75, "action_type": "intake_amp"},
+                {"in_teleop": True, "time": 79, "action_type": "score_speaker"},
                 {"in_teleop": True, "time": 81, "action_type": "intake_poach"},
                 {"in_teleop": True, "time": 94, "action_type": "intake_center"},
                 {"in_teleop": True, "time": 105, "action_type": "intake_far"},
@@ -350,6 +353,7 @@ class TestObjTIMCalcs:
             {"in_teleop": True, "time": 68, "action_type": "score_amp"},
             {"in_teleop": True, "time": 70, "action_type": "score_trap"},
             {"in_teleop": True, "time": 75, "action_type": "intake_amp"},
+            {"in_teleop": True, "time": 79, "action_type": "score_speaker"},
             {"in_teleop": True, "time": 81, "action_type": "intake_poach"},
             {"in_teleop": True, "time": 94, "action_type": "intake_center"},
             {"in_teleop": True, "time": 105, "action_type": "intake_far"},
@@ -374,7 +378,7 @@ class TestObjTIMCalcs:
 
     def test_count_timeline_actions(self):
         action_num = self.test_calculator.count_timeline_actions(self.unconsolidated_tims[0])
-        assert action_num == 28
+        assert action_num == 29
 
     def test_total_time_between_actions(self):
         total_time = self.test_calculator.total_time_between_actions
