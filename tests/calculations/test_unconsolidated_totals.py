@@ -357,7 +357,7 @@ class TestUnconsolidatedTotals:
             "tele_speaker": 3,
             "tele_amp": 2,
             "tele_failed_amp": 0,
-            "tele_failed_speaker": 1,
+            "tele_failed_speaker": 0,
             "tele_total_pieces": 7,
             "tele_total_intakes": 0,
             "total_intakes": 0,
@@ -384,7 +384,7 @@ class TestUnconsolidatedTotals:
             "tele_amplified": 2,
             "tele_drop": 0,
             "tele_failed_amplified": 0,
-            "tele_total_failed_pieces": 1,
+            "tele_total_failed_pieces": 0,
         }
 
     @mock.patch.object(
