@@ -306,6 +306,8 @@ class PredictedAimCalc(BaseCalculations):
         """
         fields = self.schema["endgame_fields"]
 
+        # List of endgame data
+        alliance_data = []
         # Populate alliance_data with variables needed to calculate the RP
         for team in team_numbers:
             new_team = {}
