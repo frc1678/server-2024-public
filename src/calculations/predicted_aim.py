@@ -53,20 +53,64 @@ class PredictedAimCalc(BaseCalculations):
         super().__init__(server)
         self.watched_collections = ["obj_team", "tba_team"]
 
-    def calc_alliance_auto_score(self, predicted_values):
+    def calc_alliance_auto_score(
+        self, predicted_values, other_predicted_values=PredictedAimScores(), cap=True
+    ):
         """Calculates the predicted auto score for an alliance.
 
-        predicted_values is a dataclass which stores the predicted number of notes scored and success rates.
+        predicted_values: dataclass which stores the predicted number of notes scored and success rates.
 
-        calc_alliance_auto_score must be run after predicted_values is populated.
+        other_predicted_values: dataclass for the opposing alliance
         """
+        # TODO: when alliances are expected to intake (combined) more than 5 pieces from the center,
+        #       only scale down the scores from the center. Currently, we're scaling down their whole auto scores.
         auto_score = 0
-        # Uses dataclasses.asdict to create key: value pairs for predicted datapoints
-        for data_field in predicted_values.__dict__.keys():
-            # Filters out non-auto scores
-            if "auto" in data_field or data_field == "leave":
-                # Adds to predicted auto score
-                auto_score += getattr(predicted_values, data_field) * self.POINT_VALUES[data_field]
+
+        auto_amp = 0
+        auto_speaker = 0
+        other_auto_amp = 0
+        other_auto_speaker = 0
+
+        if cap:
+            # Iterates through auto datapoints
+            for data_field in predicted_values.__dict__.keys():
+                if data_field == "auto_amp":
+                    auto_amp += getattr(predicted_values, data_field)
+                    other_auto_amp += getattr(other_predicted_values, data_field)
+                elif data_field == "auto_speaker":
+                    auto_speaker += getattr(predicted_values, data_field)
+                    other_auto_speaker += getattr(other_predicted_values, data_field)
+                elif data_field == "leave":
+                    auto_score += (
+                        getattr(predicted_values, data_field) * self.POINT_VALUES[data_field]
+                    )
+
+            # Max pieces you can score in auto is 17
+            # If sum of pieces is above 17, rescale scores to sum to 17
+            # R = 17r / (r + 1)
+            # a1 = Rr1 / (r1 + 1)
+            # s1 = R / (r1 + 1)
+            if auto_amp + auto_speaker + other_auto_amp + other_auto_speaker > 17:
+                # r
+                ratio = (auto_amp + auto_speaker) / (other_auto_amp + other_auto_speaker)
+                # r1
+                ratio1 = auto_amp / auto_speaker
+                # R
+                total_pieces = (17 * ratio) / (ratio + 1)
+
+                # a1 * 2 + s1 * 5
+                auto_score += (total_pieces * ratio1) / (ratio1 + 1) * self.POINT_VALUES[
+                    "auto_amp"
+                ] + total_pieces / (ratio1 + 1) * self.POINT_VALUES["auto_speaker"]
+        else:
+            for data_field in predicted_values.__dict__.keys():
+                # Filters out non-auto scores
+                if "auto" in data_field or data_field == "leave":
+                    # Adds to predicted auto score
+                    auto_score += (
+                        getattr(predicted_values, data_field) * self.POINT_VALUES[data_field]
+                    )
+
         return round(auto_score, 3)
 
     def calc_alliance_tele_score(self, predicted_values):
@@ -86,12 +130,63 @@ class PredictedAimCalc(BaseCalculations):
 
         return round(tele_score, 3)
 
-    def calc_alliance_stage_score(self, predicted_ensemble_rp):
+    def calc_alliance_stage_score(self, obj_team, team_numbers):
         "Calculates an alliance's predicted endgame score based on their expected ensemble RP."
-        return predicted_ensemble_rp * 13
+        # List of dicts containing success rates for each team
+        endgame_data = self.get_endgame_fields(obj_team, team_numbers)
+
+        ## Scuffed formula to predict endgame score ##
+        # Probability cutoff to be considered as capable
+        cutoff = 0.5
+        # Number of teams that can do the action
+        num_can_climb = sum([1 for team in endgame_data if team["onstage_rate"] >= cutoff])
+        num_can_climb_after = sum(
+            [1 for team in endgame_data if team["climb_after_rate"] >= cutoff]
+        )
+        num_can_trap = sum([1 for team in endgame_data if team["trap_rate"] >= cutoff])
+        num_can_park = sum([1 for team in endgame_data if team["park_rate"] >= cutoff])
+
+        if num_can_climb_after > 2:
+            num_can_climb_after = 2
+
+        # Iterate through endgame scenarios
+        if num_can_climb == 3:
+            # Double harmony
+            if num_can_climb_after == 2:
+                if num_can_trap >= 1:
+                    return 18
+                else:
+                    return 13
+            # Harmony + climb
+            elif num_can_climb_after == 1:
+                if num_can_trap != 3:
+                    return 11 + num_can_trap * 5
+                else:
+                    return 21
+            # Triple climb
+            elif num_can_climb_after == 0:
+                return 9 + num_can_trap * 5
+        # Assume other team parks
+        elif num_can_climb == 2:
+            # Harmony
+            if num_can_climb_after >= 1:
+                if num_can_trap >= 1:
+                    return 14
+                else:
+                    return 9
+            # Double climb
+            if num_can_climb_after == 0:
+                return 7 + num_can_trap * 5
+        # Assume other teams park
+        elif num_can_climb == 1:
+            # Climb
+            return 5 + num_can_trap * 5
+        # All teams park
+        else:
+            return num_can_park
 
     def calc_alliance_score(self, predicted_values, obj_team_data, tba_team_data, team_numbers):
-        """Calculates the predicted score for an alliance.
+        """Calculates the predicted_values dataclass for an alliance.
 
         predicted_values is a dataclass which stores the predicted number of notes scored and success rates.
 
@@ -100,9 +195,9 @@ class PredictedAimCalc(BaseCalculations):
         tba_team is a list of dictionaries of tba team data.
 
         team_numbers is a list of team numbers (strings) on the alliance.
-        """
-        total_score = 0
 
+        other_team_numbers is a list of team numbers on the opposing alliance
+        """
         # Gets obj_team data for teams in team_numbers
         obj_team = [
             team_data for team_data in obj_team_data if team_data["team_number"] in team_numbers
@@ -131,15 +226,12 @@ class PredictedAimCalc(BaseCalculations):
                 team["trap_successes"] + team["trap_fails"]
             )
             predicted_values.leave += tba_team["leave_successes"] / team["matches_played"]
+            predicted_values.park_successes += team["parks"] / team["matches_played"]
+            predicted_values.onstage_successes += (
+                team["onstage_successes"] / team["onstage_attempts"]
+            )
 
-        # Calculate predicted score
-        total_score = (
-            self.calc_alliance_auto_score(predicted_values)
-            + self.calc_alliance_tele_score(predicted_values)
-            + self.calc_alliance_stage_score(self.calc_ensemble_rp(obj_team, team_numbers))
-        )
-
-        return round(total_score, 3)
+        return predicted_values
 
     def get_playoffs_alliances(self):
         """
@@ -201,14 +293,18 @@ class PredictedAimCalc(BaseCalculations):
             )
         return playoffs_alliances
 
-    def calc_ensemble_rp(self, obj_team_data, team_numbers):
-        """Calculates the expected ensemble RP for an alliance
+    def get_endgame_fields(self, obj_team_data, team_numbers):
+        """Gets the endgame score success rates for an alliance or a team.
 
-        obj_team_data: obj_team data from the database
+        obj_team_data: list of obj_team data from the database
 
-        team_numbers: teams in the alliance"""
-        fields = self.schema["ensemble_rp"]
-        alliance_data = []
+        team_numbers: (if calculating for a full alliance) list of three team numbers in the alliance, e.g. ['1678', '254', '4414']
+                        (if calculating a single team) team number contained in a list
+
+        If calculating for a full alliance, returns alliance_data, a list of dictionaries containing variables for each team
+        If calculating for a single team, returns dictionary containing data for that team
+        """
+        fields = self.schema["endgame_fields"]
 
         # Populate alliance_data with variables needed to calculate the RP
         for team in team_numbers:
@@ -222,7 +318,7 @@ class PredictedAimCalc(BaseCalculations):
                 warnings.warn(
                     f"predicted_aim: no obj_team data found for team {team}, unable to calculate ensemble RP for alliance {team_numbers}"
                 )
-                return 0
+                alliance_data.append({})
 
             # Collect needed obj_team variables for each team in the alliance
             for field, vars in fields.items():
@@ -249,6 +345,16 @@ class PredictedAimCalc(BaseCalculations):
                 except:
                     new_team[field] = 0
             alliance_data.append(new_team)
+        return alliance_data
+
+    def calc_ensemble_rp(self, obj_team_data, team_numbers):
+        """Calculates the expected ensemble RP for an alliance
+
+        obj_team_data: obj_team data from the database
+
+        team_numbers: teams in the alliance"""
+
+        alliance_data = self.get_endgame_fields(obj_team_data, team_numbers)
 
         # Calculate expected climb points and probability of RP
 
@@ -381,7 +487,7 @@ class PredictedAimCalc(BaseCalculations):
         alliance_color: "R" or "B"
         """
         # Sets up data needed to calculate win chance
-        schema_fields = self.schema["win_chance"]["required_vars"]
+        schema_fields = self.schema["win_chance"]
         data = {"R": {"mean": 0, "var": 0}, "B": {"mean": 0, "var": 0}}
 
         # Gets mean and variance for alliance score distribution
@@ -426,41 +532,93 @@ class PredictedAimCalc(BaseCalculations):
         tba_match_data = tba_communicator.tba_request(f"event/{self.server.TBA_EVENT_KEY}/matches")
         filtered_aims_list = self.filter_aims_list(obj_team, tba_team, aims_list)
 
+        finished_matches = []
         # Update every aim
         for aim in filtered_aims_list:
-            predicted_values = PredictedAimScores()
-            update = {
-                "match_number": aim["match_number"],
-                "alliance_color_is_red": aim["alliance_color"] == "R",
-            }
-
-            update["predicted_score"] = self.calc_alliance_score(
-                predicted_values, obj_team, tba_team, aim["team_list"]
-            )
-            # TODO: check TBA for rp1 and rp2
-            update["predicted_rp1"] = self.calc_ensemble_rp(obj_team, aim["team_list"])
-            update["predicted_rp2"] = self.calc_melody_rp(predicted_values)
-
-            other_aim = list(
-                filter(
-                    lambda some_aim: some_aim["match_number"] == aim["match_number"]
-                    and some_aim != aim,
-                    filtered_aims_list,
+            if aim["match_number"] not in finished_matches:
+                # Find opposing alliance
+                other_aim = list(
+                    filter(
+                        lambda some_aim: some_aim["match_number"] == aim["match_number"]
+                        and some_aim != aim,
+                        filtered_aims_list,
+                    )
                 )
-            )[0]
-            update["win_chance"] = self.calc_win_chance(
-                obj_team,
-                {
-                    aim["alliance_color"]: aim["team_list"],
-                    other_aim["alliance_color"]: other_aim["team_list"],
-                },
-                aim["alliance_color"],
-            )
+                if len(other_aim) == 1:
+                    other_aim = other_aim[0]
+                else:
+                    warnings.warn(
+                        f"predicted_aim: alliance {aim['team_list']} has no opposing alliance in match {aim['match_number']}"
+                    )
+                    continue
 
-            update.update(self.get_actual_values(aim, tba_match_data))
-            update["team_numbers"] = aim["team_list"]
+                # Create updates
+                update = {
+                    "match_number": aim["match_number"],
+                    "alliance_color_is_red": aim["alliance_color"] == "R",
+                }
+                other_update = {
+                    "match_number": other_aim["match_number"],
+                    "alliance_color_is_red": other_aim["alliance_color"] == "R",
+                }
 
-            updates.append(update)
+                # Calculate predicted values data classes
+                aim_predicted_values = self.calc_alliance_score(
+                    PredictedAimScores(), obj_team, tba_team, aim["team_list"]
+                )
+                other_aim_predicted_values = self.calc_alliance_score(
+                    PredictedAimScores(), obj_team, tba_team, other_aim["team_list"]
+                )
+
+                # Calculate scores
+                update["predicted_score"] = (
+                    self.calc_alliance_auto_score(aim_predicted_values, other_aim_predicted_values)
+                    + self.calc_alliance_tele_score(aim_predicted_values)
+                    + self.calc_alliance_stage_score(obj_team, aim["team_list"])
+                )
+                other_update["predicted_score"] = (
+                    self.calc_alliance_auto_score(other_aim_predicted_values, aim_predicted_values)
+                    + self.calc_alliance_tele_score(other_aim_predicted_values)
+                    + self.calc_alliance_stage_score(obj_team, other_aim["team_list"])
+                )
+
+                # Calculate RPs
+                # TODO: check TBA for rp1 and rp2
+                update["predicted_rp1"] = self.calc_ensemble_rp(obj_team, aim["team_list"])
+                update["predicted_rp2"] = self.calc_melody_rp(aim_predicted_values)
+                other_update["predicted_rp1"] = self.calc_ensemble_rp(
+                    obj_team, other_aim["team_list"]
+                )
+                other_update["predicted_rp2"] = self.calc_melody_rp(other_aim_predicted_values)
+
+                # Calculate win chance
+                update["win_chance"] = self.calc_win_chance(
+                    obj_team,
+                    {
+                        aim["alliance_color"]: aim["team_list"],
+                        other_aim["alliance_color"]: other_aim["team_list"],
+                    },
+                    aim["alliance_color"],
+                )
+                other_update["win_chance"] = self.calc_win_chance(
+                    obj_team,
+                    {
+                        other_aim["alliance_color"]: other_aim["team_list"],
+                        aim["alliance_color"]: aim["team_list"],
+                    },
+                    other_aim["alliance_color"],
+                )
+
+                # Calculate actual values
+                update.update(self.get_actual_values(aim, tba_match_data))
+                other_update.update(self.get_actual_values(other_aim, tba_match_data))
+
+                # Add aim team list
+                update["team_numbers"] = aim["team_list"]
+                other_update["team_numbers"] = other_aim["team_list"]
+
+                updates.extend([update, other_update])
+                finished_matches.append(aim["match_number"])
         return updates
 
     def update_playoffs_alliances(self):
@@ -482,16 +640,23 @@ class PredictedAimCalc(BaseCalculations):
             return updates
 
         for alliance in playoffs_alliances:
-            predicted_values = PredictedAimScores()
-            update = alliance
-            update["predicted_score"] = self.calc_alliance_score(
-                predicted_values, obj_team, tba_team, alliance["picks"]
+            predicted_values = self.calc_alliance_score(
+                PredictedAimScores(), obj_team, tba_team, alliance["picks"]
             )
-            update["predicted_auto_score"] = self.calc_alliance_auto_score(predicted_values)
+            update = alliance
+            update["predicted_auto_score"] = self.calc_alliance_auto_score(
+                predicted_values, cap=False
+            )
             update["predicted_tele_score"] = self.calc_alliance_tele_score(predicted_values)
             update["predicted_stage_score"] = self.calc_alliance_stage_score(
-                self.calc_ensemble_rp(obj_team, alliance["picks"])
+                obj_team, alliance["picks"]
             )
+            update["predicted_score"] = (
+                update["predicted_auto_score"]
+                + update["predicted_tele_score"]
+                + update["predicted_stage_score"]
+            )
+
             updates.append(update)
         return updates
 
