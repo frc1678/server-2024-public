@@ -19,6 +19,9 @@ def test_predict_alliance():
             "avg_trap": 1.0,
             "trap_successes": 1,
             "trap_fails": 3,
+            "parks": 0,
+            "onstage_successes": 5,
+            "onstage_attempts": 5,
         },
         {
             "team_number": "1533",
@@ -31,6 +34,9 @@ def test_predict_alliance():
             "avg_trap": 0.2,
             "trap_successes": 2,
             "trap_fails": 1,
+            "parks": 2,
+            "onstage_successes": 1,
+            "onstage_attempts": 2,
         },
         {
             "team_number": "7229",
@@ -43,6 +49,9 @@ def test_predict_alliance():
             "avg_trap": 0.6,
             "trap_successes": 0,
             "trap_fails": 3,
+            "parks": 1,
+            "onstage_successes": 3,
+            "onstage_attempts": 4,
         },
     ]
     fake_tba_team_data = [
@@ -60,9 +69,9 @@ def test_predict_alliance():
         },
     ]
     expected_return = {
-        "predicted_score": 197.4,
-        "predicted_auto_score": 59.8,
-        "predicted_stage_score": 0,
+        "predicted_score": 156.4,
+        "predicted_auto_score": 4.8,
+        "predicted_stage_score": 14,
         "predicted_tele_score": 137.6,
     }
     assert (
