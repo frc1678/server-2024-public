@@ -116,21 +116,6 @@ class UnconsolidatedTotals(BaseCalculations):
             unconsolidated_totals.extend(calculated_unconsolidated_tim)
         return unconsolidated_totals
 
-    def get_grid_status(self, matches):
-        grid_status = {}
-        for match in matches:
-            alliance_status = {}
-            if match["score_breakdown"] is not None and match["comp_level"] == "qm":
-                for alliance in ["red", "blue"]:
-                    alliance_status[alliance] = True
-                    for row in match["score_breakdown"][alliance]["teleopCommunity"].values():
-                        if "None" in row:
-                            alliance_status[alliance] = False
-
-                    grid_status[match["match_number"]] = alliance_status
-
-        return grid_status
-
     def run(self):
         """Executes the OBJ TIM calculations"""
         # Get calc start time
@@ -138,8 +123,6 @@ class UnconsolidatedTotals(BaseCalculations):
         tba_match_data: List[dict] = tba_communicator.tba_request(
             f"event/{utils.TBA_EVENT_KEY}/matches"
         )
-
-        self.grid_status = self.get_grid_status(tba_match_data)
 
         # Get oplog entries
         tims = []
