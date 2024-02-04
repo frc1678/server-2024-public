@@ -195,17 +195,58 @@ class ObjTIMCalcs(BaseCalculations):
             expected_type = filters_.pop("type")
             for tim in unconsolidated_tims:
                 # Override timeline counts at consolidation
-                if tim["override"] == {}:  # If no overrides
+                new_count = 0
+                if calculation not in tim["override"]:  # If no overrides
                     new_count = self.count_timeline_actions(tim, **filters_)
                 else:
                     for key in list(tim["override"].keys()):
                         if (
                             key == calculation
                         ):  # If datapoint in overrides matches calculation being counted
+                            # if override begins with += or -=, add or subtract respectively instead of just setting
+                            if isinstance(tim["override"][calculation], str):
+                                # removing "+=" and setting override[edited_datapoint] to the right type
+                                if tim["override"][calculation][0:2] == "+=":
+                                    tim["override"][calculation] = tim["override"][calculation][2:]
+                                    if tim["override"][calculation].isdecimal():
+                                        tim["override"][calculation] = int(
+                                            tim["override"][calculation]
+                                        )
+                                    elif (
+                                        "." in tim["override"][calculation]
+                                        and tim["override"][calculation]
+                                        .replace(".", "0", 1)
+                                        .isdecimal()
+                                    ):
+                                        tim["override"][calculation] = float(
+                                            tim["override"][calculation]
+                                        )
+                                    # "adding" to the original value
+                                    tim["override"][calculation] += self.count_timeline_actions(
+                                        tim, **filters_
+                                    )
+                                elif tim["override"][calculation][0:2] == "-=":
+                                    # removing "-=" and setting override[edited_datapoint] to the right type
+                                    tim["override"][calculation] = tim["override"][calculation][2:]
+                                    if tim["override"][calculation].isdecimal():
+                                        tim["override"][calculation] = int(
+                                            tim["override"][calculation]
+                                        )
+                                    elif (
+                                        "." in tim["override"][calculation]
+                                        and tim["override"][calculation]
+                                        .replace(".", "0", 1)
+                                        .isdecimal()
+                                    ):
+                                        tim["override"][calculation] = float(
+                                            tim["override"][calculation]
+                                        )
+                                    # "subtracting" to the original value
+                                    tim["override"][calculation] *= -1
+                                    tim["override"][calculation] += self.count_timeline_actions(
+                                        tim, **filters_
+                                    )
                             new_count = tim["override"][calculation]
-                            tim["override"] = {}
-                        else:  # To account for non-timeline overrides
-                            new_count = self.count_timeline_actions(tim, **filters_)
                 if not isinstance(new_count, self.type_check_dict[expected_type]):
                     raise TypeError(f"Expected {new_count} calculation to be a {expected_type}")
                 unconsolidated_counts.append(new_count)

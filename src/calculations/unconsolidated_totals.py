@@ -112,6 +112,38 @@ class UnconsolidatedTotals(BaseCalculations):
             if override != {}:
                 for edited_datapoint in override:
                     if edited_datapoint in calculated_unconsolidated_tim[0]:
+                        # if override begins with += or -=, add or subtract respectively instead of just setting
+                        if isinstance(override[edited_datapoint], str):
+                            if override[edited_datapoint][0:2] == "+=":
+                                # removing "+=" and setting override[edited_datapoint] to the right type
+                                override[edited_datapoint] = override[edited_datapoint][2:]
+                                if override[edited_datapoint].isdecimal():
+                                    override[edited_datapoint] = int(override[edited_datapoint])
+                                elif (
+                                    "." in override[edited_datapoint]
+                                    and override[edited_datapoint].replace(".", "0", 1).isdecimal()
+                                ):
+                                    override[edited_datapoint] = float(override[edited_datapoint])
+                                # "adding" to the original value
+                                override[edited_datapoint] += calculated_unconsolidated_tim[0][
+                                    edited_datapoint
+                                ]
+                            elif override[edited_datapoint][0:2] == "-=":
+                                # removing "-=" and setting override[edited_datapoint] to the right type
+                                override[edited_datapoint] = override[edited_datapoint][2:]
+                                if override[edited_datapoint].isdecimal():
+                                    override[edited_datapoint] = int(override[edited_datapoint])
+                                elif (
+                                    "." in override[edited_datapoint]
+                                    and override[edited_datapoint].replace(".", "0", 1).isdecimal()
+                                ):
+                                    override[edited_datapoint] = float(override[edited_datapoint])
+                                # "subtracting" from the original value
+                                override[edited_datapoint] *= -1
+                                override[edited_datapoint] += calculated_unconsolidated_tim[0][
+                                    edited_datapoint
+                                ]
+                        # overriding old value
                         calculated_unconsolidated_tim[0][edited_datapoint] = override[
                             edited_datapoint
                         ]

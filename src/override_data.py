@@ -81,7 +81,7 @@ elif ROLLBACK_BLOCKLIST_OR_DATA == "2":
     )
     # Takes user input for the new value
     NEW_VALUE = input(
-        f'Enter the new value for the data point {DATA_NAME} (input is converted to int/float/bool if possible unless in ""): '
+        f'Enter the new value for the data point {DATA_NAME} (input is converted to int/float/bool if possible unless in "") \n(put "+=" or "-=" in front of input to add or subtract from the value instead of setting): '
     )
 
     # Convert new value to correct type I think I didn't write this
