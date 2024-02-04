@@ -278,19 +278,23 @@ class OBJTeamCalc(base_calculations.BaseCalculations):
         """Creates a dictionary of mode actions, called team_info,
         where the keys are the names of the calculations, and the values are the results
         """
+
         team_info = {}
         for calculation, schema in self.SCHEMA["modes"].items():
-            tim_field = schema["tim_fields"][0]
-            if "lfm" in calculation:
-                values_to_count = [
-                    value
-                    for value in lfm_tim_action_categories[tim_field]
-                    if value != schema["ignore"]
-                ]
-            else:
-                values_to_count = [
-                    value for value in tim_action_categories[tim_field] if value != schema["ignore"]
-                ]
+            values_to_count = []
+            for tim_field in schema["tim_fields"]:
+                if "lfm" in calculation:
+                    values_to_count = values_to_count + [
+                        value
+                        for value in lfm_tim_action_categories[tim_field]
+                        if value != schema["ignore"]
+                    ]
+                else:
+                    values_to_count = values_to_count + [
+                        value
+                        for value in tim_action_categories[tim_field]
+                        if value != schema["ignore"]
+                    ]
             team_info[calculation] = statistics.multimode(values_to_count)
         return team_info
 
