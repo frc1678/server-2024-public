@@ -182,6 +182,7 @@ class ObjTIMCalcs(BaseCalculations):
                         unconsolidated_tims[num_1]["timeline"][num + 1][
                             "action_type"
                         ] = "score_fail_amplify"
+        return unconsolidated_tims
 
     def calculate_tim_counts(self, unconsolidated_tims: List[Dict]) -> dict:
         """Given a list of unconsolidated TIMs, returns the calculated count based data fields"""

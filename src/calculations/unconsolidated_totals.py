@@ -42,12 +42,7 @@ class UnconsolidatedTotals(BaseCalculations):
         """Returns the number of actions in one TIM timeline that meets the required filters"""
         return len(self.filter_timeline_actions(tim, **filters))
 
-    def calculate_unconsolidated_tims(self, unconsolidated_tims: List[Dict]):
-        """Given a list of unconsolidated TIMS, returns the unconsolidated calculated TIMs"""
-        if len(unconsolidated_tims) == 0:
-            log.warning("calculate_tim: zero TIMs given")
-            return {}
-
+    def score_fail_type(self, unconsolidated_tims: List[Dict]):
         for num_1, tim in enumerate(unconsolidated_tims):
             timeline = tim["timeline"]
             # Collects the data for score_fails for amp, and speaker.
@@ -60,8 +55,15 @@ class UnconsolidatedTotals(BaseCalculations):
                         ):
                             unconsolidated_tims[num_1]["timeline"][num + 1][
                                 "action_type"
-                            ] = new_value
+                            ] = new_value["name"]
+        return unconsolidated_tims
 
+    def calculate_unconsolidated_tims(self, unconsolidated_tims: List[Dict]):
+        """Given a list of unconsolidated TIMS, returns the unconsolidated calculated TIMs"""
+        if len(unconsolidated_tims) == 0:
+            log.warning("calculate_tim: zero TIMs given")
+            return {}
+        unconsolidated_tims = self.score_fail_type(unconsolidated_tims)
         unconsolidated_totals = []
         # Calculates unconsolidated tim counts
         for tim in unconsolidated_tims:

@@ -187,7 +187,7 @@ class TestUnconsolidatedTotals:
                 {"in_teleop": True, "time": 2, "action_type": "end_incap"},
                 {"in_teleop": True, "time": 12, "action_type": "start_incap"},
                 {"in_teleop": True, "time": 68, "action_type": "score_amp"},
-                {"in_teleop": True, "time": 75, "action_type": "score_amp"},
+                {"in_teleop": True, "time": 75, "action_type": "score_fail"},
                 {"in_teleop": True, "time": 81, "action_type": "score_amplify"},
                 {"in_teleop": True, "time": 94, "action_type": "score_amplify"},
                 {"in_teleop": True, "time": 105, "action_type": "score_speaker"},
@@ -227,7 +227,7 @@ class TestUnconsolidatedTotals:
             "timeline": [
                 {"in_teleop": True, "time": 2, "action_type": "end_incap"},
                 {"in_teleop": True, "time": 12, "action_type": "start_incap"},
-                {"in_teleop": True, "time": 68, "action_type": "score_amp"},
+                {"in_teleop": True, "time": 68, "action_type": "score_fail"},
                 {"in_teleop": True, "time": 75, "action_type": "score_amp"},
                 {"in_teleop": True, "time": 81, "action_type": "score_amplify"},
                 {"in_teleop": True, "time": 94, "action_type": "score_amplify"},
@@ -310,7 +310,7 @@ class TestUnconsolidatedTotals:
             {"in_teleop": True, "time": 2, "action_type": "end_incap"},
             {"in_teleop": True, "time": 12, "action_type": "start_incap"},
             {"in_teleop": True, "time": 68, "action_type": "score_amp"},
-            {"in_teleop": True, "time": 75, "action_type": "score_amp"},
+            {"in_teleop": True, "time": 75, "action_type": "score_fail"},
             {"in_teleop": True, "time": 81, "action_type": "score_amplify"},
             {"in_teleop": True, "time": 94, "action_type": "score_amplify"},
             {"in_teleop": True, "time": 105, "action_type": "score_speaker"},
@@ -332,6 +332,12 @@ class TestUnconsolidatedTotals:
     def test_count_timeline_actions(self):
         action_num = self.test_calculator.count_timeline_actions(self.unconsolidated_tims[0])
         assert action_num == 20
+
+    def test_score_fail_type(self):
+        score_fails = self.test_calculator.score_fail_type(self.unconsolidated_tims)
+        assert score_fails[0]["timeline"][4]["action_type"] == "score_fail_amplify"
+        assert score_fails[1]["timeline"][3]["action_type"] == "score_fail_amp"
+        assert score_fails[2]["timeline"][10]["action_type"] == "score_fail_speaker"
 
     def test_calculate_unconsolidated_tims(self):
         self.test_server.db.insert_documents("unconsolidated_obj_tim", self.unconsolidated_tims)
@@ -355,13 +361,13 @@ class TestUnconsolidatedTotals:
             "auto_total_failed_pieces": 0,
             "tele_ferry": 0,
             "tele_speaker": 3,
-            "tele_amp": 2,
+            "tele_amp": 1,
             "tele_failed_amp": 0,
-            "tele_failed_speaker": 0,
-            "tele_total_pieces": 7,
+            "tele_failed_speaker": 1,
+            "tele_total_pieces": 5,
             "tele_total_intakes": 0,
             "total_intakes": 0,
-            "total_pieces": 14,
+            "total_pieces": 12,
             "stage_level_amp": "N",
             "stage_level_source": "N",
             "stage_level_blind": "N",
@@ -381,10 +387,10 @@ class TestUnconsolidatedTotals:
             "auto_intake_spike_1": 0,
             "auto_intake_spike_2": 0,
             "auto_intake_spike_3": 0,
-            "tele_amplified": 2,
+            "tele_amplified": 1,
             "tele_drop": 0,
-            "tele_failed_amplified": 0,
-            "tele_total_failed_pieces": 0,
+            "tele_failed_amplified": 1,
+            "tele_total_failed_pieces": 1,
         }
 
     @mock.patch.object(
