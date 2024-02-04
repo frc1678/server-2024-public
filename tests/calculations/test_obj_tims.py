@@ -190,7 +190,7 @@ class TestObjTIMCalcs:
                 {"in_teleop": True, "time": 60, "action_type": "score_fail"},
                 {"in_teleop": True, "time": 61, "action_type": "score_speaker"},
                 {"in_teleop": True, "time": 68, "action_type": "score_amp"},
-                {"in_teleop": True, "time": 70, "action_type": "score_trap"},
+                {"in_teleop": True, "time": 70, "action_type": "score_speaker"},
                 {"in_teleop": True, "time": 75, "action_type": "intake_amp"},
                 {"in_teleop": True, "time": 79, "action_type": "score_speaker"},
                 {"in_teleop": True, "time": 81, "action_type": "intake_poach"},
@@ -205,17 +205,21 @@ class TestObjTIMCalcs:
                 {"in_teleop": False, "time": 139, "action_type": "auto_intake_spike_2"},
                 {"in_teleop": False, "time": 141, "action_type": "score_amp"},
                 {"in_teleop": False, "time": 140, "action_type": "auto_intake_spike_3"},
-                {"in_teleop": False, "time": 142, "action_type": "score_trap"},
+                {"in_teleop": False, "time": 142, "action_type": "score_speaker"},
                 {"in_teleop": False, "time": 143, "action_type": "auto_intake_center_1"},
                 {"in_teleop": False, "time": 144, "action_type": "score_amp"},
                 {"in_teleop": False, "time": 145, "action_type": "auto_intake_center_2"},
-                {"in_teleop": False, "time": 147, "action_type": "score_trap"},
+                {"in_teleop": False, "time": 147, "action_type": "score_speaker"},
                 {"in_teleop": False, "time": 146, "action_type": "auto_intake_center_3"},
                 {"in_teleop": False, "time": 148, "action_type": "auto_intake_center_4"},
                 {"in_teleop": False, "time": 150, "action_type": "auto_intake_center_5"},
             ],
-            "stage_level": "P",
+            "stage_level_left": "N",
+            "stage_level_center": "O",
+            "stage_level_right": "N",
             "start_position": "1",
+            "trap": "N",
+            "parked": True,
             "has_preload": False,
             "override": {"failed_scores": 0},
             "stage_level_amp": "N",
@@ -242,7 +246,7 @@ class TestObjTIMCalcs:
                 {"in_teleop": True, "time": 60, "action_type": "score_fail"},
                 {"in_teleop": True, "time": 61, "action_type": "score_speaker"},
                 {"in_teleop": True, "time": 68, "action_type": "score_amp"},
-                {"in_teleop": True, "time": 70, "action_type": "score_trap"},
+                {"in_teleop": True, "time": 70, "action_type": "score_speaker"},
                 {"in_teleop": True, "time": 75, "action_type": "intake_amp"},
                 {"in_teleop": True, "time": 79, "action_type": "score_speaker"},
                 {"in_teleop": True, "time": 81, "action_type": "intake_poach"},
@@ -256,21 +260,22 @@ class TestObjTIMCalcs:
                 {"in_teleop": False, "time": 139, "action_type": "auto_intake_spike_2"},
                 {"in_teleop": False, "time": 141, "action_type": "score_amp"},
                 {"in_teleop": False, "time": 140, "action_type": "auto_intake_spike_3"},
-                {"in_teleop": False, "time": 142, "action_type": "score_trap"},
+                {"in_teleop": False, "time": 142, "action_type": "score_speaker"},
                 {"in_teleop": False, "time": 143, "action_type": "auto_intake_center_1"},
                 {"in_teleop": False, "time": 144, "action_type": "score_amp"},
                 {"in_teleop": False, "time": 145, "action_type": "auto_intake_center_2"},
-                {"in_teleop": False, "time": 147, "action_type": "score_trap"},
+                {"in_teleop": False, "time": 147, "action_type": "score_speaker"},
                 {"in_teleop": False, "time": 146, "action_type": "auto_intake_center_3"},
                 {"in_teleop": False, "time": 148, "action_type": "auto_intake_center_4"},
                 {"in_teleop": False, "time": 150, "action_type": "auto_intake_center_5"},
             ],
-            "stage_level_amp": "O",
-            "stage_level_blind": "F",
-            "stage_level_source": "N",
-            "trap": "F",
+            "stage_level_left": "N",
+            "stage_level_center": "O",
+            "stage_level_right": "N",
             "start_position": "3",
+            "trap": "S",
             "has_preload": False,
+            "parked": False,
             "override": {"failed_scores": 0},
             "parked": True,
         },
@@ -306,17 +311,22 @@ class TestObjTIMCalcs:
                 {"in_teleop": False, "time": 139, "action_type": "auto_intake_spike_2"},
                 {"in_teleop": False, "time": 141, "action_type": "score_amp"},
                 {"in_teleop": False, "time": 140, "action_type": "auto_intake_spike_3"},
-                {"in_teleop": False, "time": 142, "action_type": "score_trap"},
+                {"in_teleop": False, "time": 142, "action_type": "score_speaker"},
                 {"in_teleop": False, "time": 143, "action_type": "auto_intake_center_1"},
                 {"in_teleop": False, "time": 144, "action_type": "score_amp"},
                 {"in_teleop": False, "time": 145, "action_type": "auto_intake_center_2"},
-                {"in_teleop": False, "time": 147, "action_type": "score_trap"},
+                {"in_teleop": False, "time": 147, "action_type": "score_speaker"},
                 {"in_teleop": False, "time": 146, "action_type": "auto_intake_center_3"},
                 {"in_teleop": False, "time": 148, "action_type": "auto_intake_center_4"},
                 {"in_teleop": False, "time": 150, "action_type": "auto_intake_center_5"},
             ],
+            "stage_level_left": "N",
+            "stage_level_center": "O",
+            "stage_level_right": "N",
             "start_position": "1",
+            "trap": "F",
             "has_preload": False,
+            "parked": True,
             "override": {"failed_scores": 0},
             "stage_level_amp": "F",
             "stage_level_blind": "O",
@@ -325,6 +335,65 @@ class TestObjTIMCalcs:
             "parked": False,
         },
     ]
+
+    calculated_tim_data = {
+        "auto_speaker": 2,
+        "auto_amp": 2,
+        "tele_intakes_amp": 1,
+        "tele_intakes_poach": 1,
+        "tele_intakes_center": 1,
+        "tele_intakes_far": 1,
+        "tele_speaker": 2,
+        "tele_amplified": 0,
+        "tele_ferry": 0,
+        "tele_failed_amp": 0,
+        "tele_failed_speaker": 1,
+        "tele_failed_amplified": 0,
+        "auto_failed_amp": 0,
+        "auto_failed_speaker": 0,
+        "tele_amp": 1,
+        "auto_intake_spike_1": 1,
+        "auto_intake_spike_2": 1,
+        "auto_intake_spike_3": 1,
+        "auto_intake_center_1": 1,
+        "auto_intake_center_2": 1,
+        "auto_intake_center_3": 1,
+        "auto_intake_center_4": 1,
+        "auto_intake_center_5": 1,
+        "tele_drop": 0,
+        "incap": 33,
+        "median_cycle_time": -6,
+        "cycle_time_from_amp_to_amp": 7,
+        "cycle_time_from_amp_to_speaker": 24,
+        "cycle_time_from_poach_to_amp": 13,
+        "cycle_time_from_poach_to_speaker": 30,
+        "cycle_time_from_center_to_amp": 26,
+        "cycle_time_from_center_to_speaker": 43,
+        "cycle_time_from_far_to_amp": 37,
+        "cycle_time_from_far_to_speaker": 39,
+        "stage_level_left": "N",
+        "stage_level_center": "O",
+        "stage_level_right": "N",
+        "start_position": "1",
+        "trap": "F",
+        "has_preload": False,
+        "parked": True,
+        "auto_total_points": 14,
+        "tele_total_points": 5,
+        "endgame_total_points": 0,
+        "total_points": 19,
+        "auto_total_intakes": 8,
+        "auto_total_pieces": 4,
+        "auto_total_failed_pieces": 0,
+        "tele_total_intakes": 4,
+        "tele_total_pieces": 3,
+        "tele_total_failed_pieces": 1,
+        "total_intakes": 12,
+        "total_pieces": 7,
+        "match_number": 42,
+        "team_number": "254",
+        "confidence_ranking": 3,
+    }
 
     @mock.patch.object(
         base_calculations.BaseCalculations, "get_teams_list", return_value=["3", "254", "1"]
@@ -364,7 +433,7 @@ class TestObjTIMCalcs:
             {"in_teleop": True, "time": 60, "action_type": "score_fail"},
             {"in_teleop": True, "time": 61, "action_type": "score_speaker"},
             {"in_teleop": True, "time": 68, "action_type": "score_amp"},
-            {"in_teleop": True, "time": 70, "action_type": "score_trap"},
+            {"in_teleop": True, "time": 70, "action_type": "score_speaker"},
             {"in_teleop": True, "time": 75, "action_type": "intake_amp"},
             {"in_teleop": True, "time": 79, "action_type": "score_speaker"},
             {"in_teleop": True, "time": 81, "action_type": "intake_poach"},
@@ -379,11 +448,11 @@ class TestObjTIMCalcs:
             {"in_teleop": False, "time": 139, "action_type": "auto_intake_spike_2"},
             {"in_teleop": False, "time": 141, "action_type": "score_amp"},
             {"in_teleop": False, "time": 140, "action_type": "auto_intake_spike_3"},
-            {"in_teleop": False, "time": 142, "action_type": "score_trap"},
+            {"in_teleop": False, "time": 142, "action_type": "score_speaker"},
             {"in_teleop": False, "time": 143, "action_type": "auto_intake_center_1"},
             {"in_teleop": False, "time": 144, "action_type": "score_amp"},
             {"in_teleop": False, "time": 145, "action_type": "auto_intake_center_2"},
-            {"in_teleop": False, "time": 147, "action_type": "score_trap"},
+            {"in_teleop": False, "time": 147, "action_type": "score_speaker"},
             {"in_teleop": False, "time": 146, "action_type": "auto_intake_center_3"},
             {"in_teleop": False, "time": 148, "action_type": "auto_intake_center_4"},
             {"in_teleop": False, "time": 150, "action_type": "auto_intake_center_5"},
@@ -404,6 +473,28 @@ class TestObjTIMCalcs:
         assert score_fails[1]["timeline"][3]["action_type"] == "score_fail_amp"
         assert score_fails[2]["timeline"][14]["action_type"] == "score_fail_amplify"
 
+    def test_calculate_aggregates(self):
+        aggreated_values = self.test_calculator.calculate_aggregates(self.calculated_tim_data)
+        assert aggreated_values == {
+            "auto_total_intakes": 8,
+            "auto_total_pieces": 4,
+            "auto_total_failed_pieces": 0,
+            "tele_total_intakes": 4,
+            "tele_total_pieces": 3,
+            "tele_total_failed_pieces": 1,
+            "total_intakes": 12,
+            "total_pieces": 7,
+        }
+
+    def test_calculate_point_values(self):
+        point_values = self.test_calculator.calculate_point_values(self.calculated_tim_data)
+        assert point_values == {
+            "auto_total_points": 14,
+            "endgame_total_points": 0,
+            "tele_total_points": 5,
+            "total_points": 19,
+        }
+
     def test_calculate_cycle_times(self):
         calculated_tim = self.test_calculator.calculate_tim_times(self.unconsolidated_tims)
         assert calculated_tim["cycle_time_from_amp_to_amp"] == 7
@@ -413,7 +504,7 @@ class TestObjTIMCalcs:
         assert calculated_tim["cycle_time_from_center_to_amp"] == 26
         assert calculated_tim["cycle_time_from_center_to_speaker"] == 43
         assert calculated_tim["cycle_time_from_far_to_amp"] == 37
-        assert calculated_tim["cycle_time_from_far_to_speaker"] == 38
+        assert calculated_tim["cycle_time_from_far_to_speaker"] == 39
 
     def test_run_consolidation(self):
         self.test_server.db.insert_documents("unconsolidated_obj_tim", self.unconsolidated_tims)
@@ -427,11 +518,11 @@ class TestObjTIMCalcs:
         assert calculated_tim["match_number"] == 42
         assert calculated_tim["team_number"] == "254"
         assert calculated_tim["auto_total_intakes"] == 8
-        assert calculated_tim["auto_total_pieces"] == 2
+        assert calculated_tim["auto_total_pieces"] == 4
         assert calculated_tim["tele_total_intakes"] == 4
         assert calculated_tim["tele_total_pieces"] == 4
         assert calculated_tim["total_intakes"] == 12
-        assert calculated_tim["total_pieces"] == 6
+        assert calculated_tim["total_pieces"] == 7
         assert calculated_tim["start_position"] == "1"
         assert calculated_tim["has_preload"] == False
 

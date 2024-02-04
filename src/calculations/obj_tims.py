@@ -304,7 +304,7 @@ class ObjTIMCalcs(BaseCalculations):
         for point_datapoint_section, filters in self.schema["point_calculations"].items():
             total_points = 0
             point_aggregates = filters["counts"]
-            point_counts = point_aggregates.keys()
+            point_counts = list(point_aggregates.keys())
             # Add up all the counts for each aggregate, multiplys them by their value, then adds them to the final dictionary
             for point in point_counts:
                 count = calculated_tim[point] if point in calculated_tim else 0
