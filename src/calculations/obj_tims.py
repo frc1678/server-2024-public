@@ -255,6 +255,21 @@ class ObjTIMCalcs(BaseCalculations):
                 final_aggregates[aggregate] = total_count
         return final_aggregates
 
+    def calculate_point_values(self, calculated_tim: List[Dict]):
+        """Given a list of consolidated tims by calculate_tim_counts, return consolidated point values"""
+        final_points = {}
+        # Get each point data point
+        for point_datapoint_section, filters in self.schema["point_calculations"].items():
+            total_points = 0
+            point_aggregates = filters["counts"]
+            point_counts = point_aggregates.keys()
+            # Add up all the counts for each aggregate, multiplys them by their value, then adds them to the final dictionary
+            for point in point_counts:
+                count = calculated_tim[point] if point in calculated_tim else 0
+                total_points += count * point_aggregates[point]
+            final_points[point_datapoint_section] = total_points
+        return final_points
+
     def calculate_tim(self, unconsolidated_tims: List[Dict]) -> dict:
         """Given a list of unconsolidated TIMs, returns a calculated TIM"""
         if len(unconsolidated_tims) == 0:
@@ -265,6 +280,7 @@ class ObjTIMCalcs(BaseCalculations):
         calculated_tim.update(self.calculate_tim_times(unconsolidated_tims))
         calculated_tim.update(self.consolidate_categorical_actions(unconsolidated_tims))
         calculated_tim.update(self.calculate_aggregates(calculated_tim))
+        calculated_tim.update(self.calculate_point_values(calculated_tim))
         # Use any of the unconsolidated TIMs to get the team and match number,
         # since that should be the same for each unconsolidated TIM
         calculated_tim["match_number"] = unconsolidated_tims[0]["match_number"]
