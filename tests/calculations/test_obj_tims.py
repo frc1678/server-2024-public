@@ -218,6 +218,11 @@ class TestObjTIMCalcs:
             "start_position": "1",
             "has_preload": False,
             "override": {"failed_scores": 0},
+            "stage_level_amp": "N",
+            "stage_level_blind": "F",
+            "stage_level_source": "O",
+            "trap": "F",
+            "parked": True,
         },
         {
             "schema_version": 6,
@@ -260,10 +265,14 @@ class TestObjTIMCalcs:
                 {"in_teleop": False, "time": 148, "action_type": "auto_intake_center_4"},
                 {"in_teleop": False, "time": 150, "action_type": "auto_intake_center_5"},
             ],
-            "stage_level": "P",
+            "stage_level_amp": "O",
+            "stage_level_blind": "F",
+            "stage_level_source": "N",
+            "trap": "F",
             "start_position": "3",
             "has_preload": False,
             "override": {"failed_scores": 0},
+            "parked": True,
         },
         {
             "schema_version": 6,
@@ -306,10 +315,14 @@ class TestObjTIMCalcs:
                 {"in_teleop": False, "time": 148, "action_type": "auto_intake_center_4"},
                 {"in_teleop": False, "time": 150, "action_type": "auto_intake_center_5"},
             ],
-            "stage_level": "P",
             "start_position": "1",
             "has_preload": False,
             "override": {"failed_scores": 0},
+            "stage_level_amp": "F",
+            "stage_level_blind": "O",
+            "stage_level_source": "N",
+            "trap": "O",
+            "parked": False,
         },
     ]
 
@@ -416,9 +429,9 @@ class TestObjTIMCalcs:
         assert calculated_tim["auto_total_intakes"] == 8
         assert calculated_tim["auto_total_pieces"] == 2
         assert calculated_tim["tele_total_intakes"] == 4
-        assert calculated_tim["tele_total_pieces"] == 3
+        assert calculated_tim["tele_total_pieces"] == 4
         assert calculated_tim["total_intakes"] == 12
-        assert calculated_tim["total_pieces"] == 5
+        assert calculated_tim["total_pieces"] == 6
         assert calculated_tim["start_position"] == "1"
         assert calculated_tim["has_preload"] == False
 
