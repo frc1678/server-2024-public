@@ -62,10 +62,10 @@ def test_compress_obj_tim():
             {"time": 7, "action_type": "end_incap"},
         ],
         "has_preload": True,
-        "chain_amp": "O",
-        "chain_source": "N",
-        "chain_blind": "N",
-        "park": False,
+        "stage_level_amp": "O",
+        "stage_level_source": "N",
+        "stage_level_blind": "N",
+        "parked": False,
     }
     compressed_data = (
         "+A1$B1$C1582994470$D1.0.2$EJELLY K%Z9999$Y2$X3$W045AC007AD$VTRUE$UO$TN$SN$RFALSE"
