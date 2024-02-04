@@ -62,9 +62,9 @@ def test_compress_obj_tim():
             {"time": 7, "action_type": "end_incap"},
         ],
         "has_preload": True,
-        "stage_level_amp": "O",
-        "stage_level_source": "N",
-        "stage_level_blind": "N",
+        "stage_level_left": "O",
+        "stage_level_right": "N",
+        "stage_level_center": "N",
         "parked": False,
     }
     compressed_data = (
