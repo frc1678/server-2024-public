@@ -5,7 +5,6 @@ import utils
 import dataclasses
 import numpy as np
 from statistics import NormalDist as Norm
-import warnings
 
 from calculations.base_calculations import BaseCalculations
 from data_transfer import tba_communicator
@@ -216,7 +215,9 @@ class PredictedAimCalc(BaseCalculations):
             if tba_team != []:
                 tba_team = tba_team[0]
             else:
-                warnings.warn(f"predicted_aim: tba_team data not found for team {team}")
+                log.critical(
+                    f"predicted_aim: tba_team data not found for team {team['team_number']}"
+                )
                 continue
 
             # Update predicted values
@@ -320,10 +321,10 @@ class PredictedAimCalc(BaseCalculations):
             if obj_data != []:
                 obj_data = obj_data[0]
             else:
-                warnings.warn(
+                log.critical(
                     f"predicted_aim: no obj_team data found for team {team}, unable to calculate ensemble RP for alliance {team_numbers}"
                 )
-                alliance_data.append({})
+                alliance_data.append({field: 0 for field in fields.keys()})
 
             # Collect needed obj_team variables for each team in the alliance
             for field, vars in fields.items():
@@ -472,8 +473,8 @@ class PredictedAimCalc(BaseCalculations):
             for team in aim["team_list"]:
                 if team not in team_numbers:
                     has_data = False
-                    log.warning(
-                        f'Incomplete team data for Alliance {aim["alliance_color"]} in Match {aim["match_number"]}'
+                    log.critical(
+                        f'Incomplete obj_team or tba_team data for team {team} (Alliance {aim["alliance_color"]} in Match {aim["match_number"]})'
                     )
                     break
             if has_data == True:
@@ -552,7 +553,7 @@ class PredictedAimCalc(BaseCalculations):
                 if len(other_aim) == 1:
                     other_aim = other_aim[0]
                 else:
-                    warnings.warn(
+                    log.critical(
                         f"predicted_aim: alliance {aim['team_list']} has no opposing alliance in match {aim['match_number']}"
                     )
                     continue

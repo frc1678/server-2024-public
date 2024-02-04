@@ -36,10 +36,10 @@ class OBJTeamCalc(base_calculations.BaseCalculations):
             **self.SCHEMA["averages"],
             **self.SCHEMA["standard_deviations"],
         }.values():
-            tim_fields.add(schema["tim_fields"][0])
+            tim_fields.add(schema["tim_fields"][0].split(".")[1])
         for tim_field in tim_fields:
             # Gets the total number of actions across all tims
-            tim_action_counts[tim_field] = [tim[tim_field.split(".")[1]] for tim in tims]
+            tim_action_counts[tim_field] = [tim[tim_field] for tim in tims]
         return tim_action_counts
 
     def get_action_sum(self, tims: List[Dict]):
@@ -48,9 +48,9 @@ class OBJTeamCalc(base_calculations.BaseCalculations):
         # Gathers all necessary schema fields
         tim_fields = set()
         for schema in {**self.SCHEMA["medians"]}.values():
-            tim_fields.add(schema["tim_fields"][0])
+            tim_fields.add(schema["tim_fields"][0].split(".")[1])
         for tim_field in tim_fields:
-            tim_action_sum[tim_field] = [tim[tim_field.split(".")[1]] for tim in tims]
+            tim_action_sum[tim_field] = [tim[tim_field] for tim in tims]
         return tim_action_sum
 
     def get_action_categories(self, tims: List[Dict]):
@@ -59,10 +59,10 @@ class OBJTeamCalc(base_calculations.BaseCalculations):
         # Gathers all necessary schema fields
         tim_fields = set()
         for schema in {**self.SCHEMA["modes"]}.values():
-            tim_fields.add(schema["tim_fields"][0])
+            tim_fields.add(schema["tim_fields"][0].split(".")[1])
         for tim_field in tim_fields:
             # Gets the total number of actions across all tims
-            tim_action_categories[tim_field] = [tim[tim_field.split(".")[1]] for tim in tims]
+            tim_action_categories[tim_field] = [tim[tim_field] for tim in tims]
         return tim_action_categories
 
     def calculate_averages(self, tim_action_counts, lfm_tim_action_counts):
@@ -74,6 +74,7 @@ class OBJTeamCalc(base_calculations.BaseCalculations):
             # Average the values for the tim_fields
             average = 0
             for tim_field in schema["tim_fields"]:
+                tim_field = tim_field.split(".")[1]
                 if "lfm" in calculation:
                     average += self.avg(lfm_tim_action_counts[tim_field])
                 else:
@@ -88,7 +89,7 @@ class OBJTeamCalc(base_calculations.BaseCalculations):
         team_info = {}
         for calculation, schema in self.SCHEMA["standard_deviations"].items():
             # Take the standard deviation for the tim_field
-            tim_field = schema["tim_fields"][0]
+            tim_field = schema["tim_fields"][0].split(".")[1]
             if "lfm" in calculation:
                 standard_deviation = statistics.pstdev(lfm_tim_action_counts[tim_field])
             else:
@@ -234,7 +235,7 @@ class OBJTeamCalc(base_calculations.BaseCalculations):
         """
         team_info = {}
         for calculation, schema in self.SCHEMA["extrema"].items():
-            tim_field = schema["tim_fields"][0]
+            tim_field = schema["tim_fields"][0].split(".")[1]
             if schema["extrema_type"] == "max":
                 if "lfm" in calculation:
                     team_info[calculation] = max(lfm_tim_action_counts[tim_field])
@@ -255,6 +256,7 @@ class OBJTeamCalc(base_calculations.BaseCalculations):
         for calculation, schema in self.SCHEMA["medians"].items():
             median = 0
             for tim_field in schema["tim_fields"]:
+                tim_field = tim_field.split(".")[1]
                 if "lfm" in calculation:
                     values_to_count = [
                         value
@@ -283,6 +285,7 @@ class OBJTeamCalc(base_calculations.BaseCalculations):
         for calculation, schema in self.SCHEMA["modes"].items():
             values_to_count = []
             for tim_field in schema["tim_fields"]:
+                tim_field = tim_field.split(".")[1]
                 if "lfm" in calculation:
                     values_to_count = values_to_count + [
                         value
