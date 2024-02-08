@@ -312,6 +312,53 @@ class ObjTIMCalcs(BaseCalculations):
             final_points[point_datapoint_section] = total_points
         return final_points
 
+    def calculate_harmony(self, calculated_tims: List[Dict]):
+        """Given a list of calculated TIMs, returns a list of team and match numbers of the teams that harmonized"""
+        harmonized_teams = []
+        for tim1 in calculated_tims:
+            if "O" in [
+                tim1["stage_level_left"],
+                tim1["stage_level_right"],
+                tim1["stage_level_center"],
+            ]:
+                for tim2 in calculated_tims:
+                    if (
+                        tim1["match_number"] == tim2["match_number"]
+                        and tim1["alliance_color_is_red"] == tim2["alliance_color_is_red"]
+                        and tim1["team_number"] != tim2["team_number"]
+                    ):
+                        if (
+                            tim1["stage_level_left"] == tim2["stage_level_left"]
+                            and tim1["stage_level_left"] != "N"
+                        ):
+                            harmonized_teams.append(
+                                {
+                                    "team_number": tim1["team_number"],
+                                    "match_number": tim1["match_number"],
+                                }
+                            )
+                        elif (
+                            tim1["stage_level_right"] == tim2["stage_level_right"]
+                            and tim1["stage_level_right"] != "N"
+                        ):
+                            harmonized_teams.append(
+                                {
+                                    "team_number": tim1["team_number"],
+                                    "match_number": tim1["match_number"],
+                                }
+                            )
+                        elif (
+                            tim1["stage_level_center"] == tim2["stage_level_center"]
+                            and tim1["stage_level_center"] != "N"
+                        ):
+                            harmonized_teams.append(
+                                {
+                                    "team_number": tim1["team_number"],
+                                    "match_number": tim1["match_number"],
+                                }
+                            )
+        return harmonized_teams
+
     def calculate_tim(self, unconsolidated_tims: List[Dict]) -> dict:
         """Given a list of unconsolidated TIMs, returns a calculated TIM"""
         if len(unconsolidated_tims) == 0:
@@ -327,6 +374,7 @@ class ObjTIMCalcs(BaseCalculations):
         # since that should be the same for each unconsolidated TIM
         calculated_tim["match_number"] = unconsolidated_tims[0]["match_number"]
         calculated_tim["team_number"] = unconsolidated_tims[0]["team_number"]
+        calculated_tim["alliance_color_is_red"] = unconsolidated_tims[0]["alliance_color_is_red"]
         # confidence_rating is the number of scouts that scouted one robot
         calculated_tim["confidence_ranking"] = len(unconsolidated_tims)
         return calculated_tim
@@ -339,6 +387,15 @@ class ObjTIMCalcs(BaseCalculations):
             unconsolidated_obj_tims = self.server.db.find("unconsolidated_obj_tim", tim)
             calculated_tim = self.calculate_tim(unconsolidated_obj_tims)
             calculated_tims.append(calculated_tim)
+        harmonized_teams = self.calculate_harmony(calculated_tims)
+        for tim in calculated_tims:
+            if {
+                "team_number": tim["team_number"],
+                "match_number": tim["match_number"],
+            } in harmonized_teams:
+                tim["harmonized"] = True
+            else:
+                tim["harmonized"] = False
         return calculated_tims
 
     def run(self):
