@@ -474,9 +474,11 @@ class TestObjTIMCalcs:
         assert score_fails[2]["timeline"][14]["action_type"] == "score_fail_amplify"
 
     def test_calculate_aggregates(self):
-        aggreated_values = self.test_calculator.calculate_aggregates(self.calculated_tim_data)
-        assert aggreated_values == {
+        aggregated_values = self.test_calculator.calculate_aggregates(self.calculated_tim_data)
+        assert aggregated_values == {
             "auto_total_intakes": 8,
+            "auto_intakes_spike": 3,
+            "auto_intakes_center": 5,
             "auto_total_pieces": 4,
             "auto_total_failed_pieces": 0,
             "tele_total_intakes": 4,
@@ -707,7 +709,7 @@ class TestObjTIMCalcs:
         assert calculated_tim["auto_total_intakes"] == 8
         assert calculated_tim["auto_total_pieces"] == 4
         assert calculated_tim["tele_total_intakes"] == 4
-        assert calculated_tim["tele_total_pieces"] == 4
+        assert calculated_tim["tele_total_pieces"] == 3
         assert calculated_tim["total_intakes"] == 12
         assert calculated_tim["total_pieces"] == 7
         assert calculated_tim["start_position"] == "1"
