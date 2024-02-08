@@ -702,4 +702,4 @@ class PredictedAimCalc(BaseCalculations):
         # Get total calc time
         total_time = end_time - start_time
         # Write total calc time to log
-        log.info(f"predicted_aim calculation time: {total_time}")
+        log.info(f"predicted_aim calculation time: {round(total_time, 2)} sec")
