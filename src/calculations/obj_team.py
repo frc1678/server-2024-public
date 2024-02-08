@@ -350,11 +350,11 @@ class OBJTeamCalc(base_calculations.BaseCalculations):
         team_info = {}
         for calculation, schema in self.SCHEMA["sums"].items():
             # incap has no point values
-            if calculation == "total_incap":
-                team_info[calculation] = sum(tim["incap"] for tim in tims)
-            elif calculation == "lfm_total_incap":
+            if calculation == "total_incap_time":
+                team_info[calculation] = sum(tim["incap_time"] for tim in tims)
+            elif calculation == "lfm_total_incap_time":
                 # Use lfm_tims instead of tims, also this is the only lfm sum
-                team_info[calculation] = sum([tim["incap"] for tim in lfm_tims])
+                team_info[calculation] = sum([tim["incap_time"] for tim in lfm_tims])
             else:
                 total_points = 0
                 for field, value in schema.items():
