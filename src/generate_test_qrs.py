@@ -104,7 +104,7 @@ def gen_data_from_schema(schema_section, team_number: str, complete: bool = True
 
                 # If the varible is a bool, pick a random bool. (getrandbits used for opimization purposes, randint or random.choice works fine too)
                 elif field_attrs["type"] == "bool":
-                    field_value += str(bool(random.getrandbits(1)))
+                    field_value += random.choice(["TRUE", "FALSE"])
             # If false, pick the value closest to skill_level * range
             elif field_attrs["is_random"] == False:
                 # If variable is an int, calculate the skill_level * range + min
@@ -442,7 +442,6 @@ if __name__ == "__main__":
 
     # Get Match Schedule
     MATCH_SCHEDULE_LOCAL_PATH = f"data/{utils.TBA_EVENT_KEY}_match_schedule.json"
-
     with open(MATCH_SCHEDULE_LOCAL_PATH, "r") as match_schedule_json:
         MATCH_SCHEDULE_DICT = dict(json.load(match_schedule_json))
 
