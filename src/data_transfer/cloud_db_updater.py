@@ -62,16 +62,34 @@ class CloudDBUpdater:
                 return {}
         results = {}
         for collection, bulk_ops in self.create_db_changes().items():
+            new_bulk_ops = []
+            for op in bulk_ops:
+                if op is not None:
+                    new_bulk_ops.append(op)
+            bulk_ops = new_bulk_ops
             try:
                 results[collection] = self.cloud_db.bulk_write(collection, bulk_ops)
-            except pymongo.errors.BulkWriteError:
-                log.error(f"Error Writing to {collection}.")
-                current_documents = self.db.find(collection)
-                self.cloud_db.delete_data(collection)
-                self.cloud_db.insert_documents(collection, current_documents)
+            except pymongo.errors.BulkWriteError as bulk_errmsg:
+                bulk_errmsg = str(bulk_errmsg)
+                if "E11000 duplicate key error" in bulk_errmsg:
+                    log.warning(
+                        f"cloud_db_updater: skipped upload of duplicate document in {collection}"
+                    )
+                else:
+                    log.error(f"cloud_db_updater: BulkWriteError when writing to {collection}.")
+                    current_documents = self.db.find(collection)
+                    self.cloud_db.delete_data(collection)
+                    self.cloud_db.insert_documents(collection, current_documents)
             except pymongo.errors.ServerSelectionTimeoutError:
-                log.warning(f"Unable to write to {collection} due to poor internet")
+                log.warning(
+                    f"cloud_db_updater: unable to write to {collection} due to poor internet (ServerSelectionTimeoutError)"
+                )
                 break  # Don't delay server cycle with more operations without internet
+            # Catches errors when updating to the cloud DB on non-server computers
+            except TypeError:
+                log.error(
+                    f"cloud_db_updater: error writing {len(bulk_ops)} documents to {collection} (TypeError)"
+                )
         # Update timestamp if loop exited properly
         else:
             self.update_timestamp()
@@ -96,9 +114,12 @@ class CloudDBUpdater:
             return None
         if "o" in entry and "$v" in entry["o"].keys():
             entry["o"].pop("$v")
-        if "o2" in entry:
+        if "o2" in entry and len(entry["o2"]) > 1:
             return operation(entry["o2"], entry["o"])
-        return operation(entry["o"])
+        elif len(entry["o"]) > 1:
+            return operation(entry["o"])
+        else:
+            return None
 
     @classmethod
     def get_cloud_db(cls) -> Optional[database.Database]:
@@ -110,7 +131,7 @@ class CloudDBUpdater:
             return database.Database(connection=cls.get_connection_string())
         except pymongo.errors.ConfigurationError:
             # Raised when DNS operation times out, effectively means no internet
-            log.warning("Cannot connect to Cloud DB")
+            log.error("cloud_db_updater: cannot connect to Cloud DB")
             return None
 
     @classmethod

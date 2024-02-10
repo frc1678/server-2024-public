@@ -51,3 +51,6 @@
 
 - import_path: calculations.predicted_team
   class_name: PredictedTeamCalc
+
+- import_path: data_transfer.adb_communicator
+  class_name: PullDataCalc

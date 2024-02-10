@@ -13,6 +13,7 @@ import qr_code_uploader
 import utils
 import logging
 from calculations import decompressor
+from calculations import base_calculations
 
 log = logging.getLogger(__name__)
 
@@ -205,7 +206,7 @@ def pull_device_data():
     # Add QRs to database and make sure that only QRs that should be decompressed are added to queue
     data["qr"] = qr_code_uploader.upload_qr_codes(data["qr"])
 
-    # Only raw_obj_pit in the 2022 season, but other years also have raw_subj_pit which is why this iterates through datasets
+    # Only raw_obj_pit in the 2024 season, but other years also have raw_subj_pit which is why this iterates through datasets
     for dataset in ["raw_obj_pit"]:
         modified_data = []
         for document in data[dataset]:
@@ -281,3 +282,17 @@ TABLET_SERIAL_NUMBERS = {
 PHONE_SERIAL_NUMBERS = {
     serial: key for serial, key in DEVICE_SERIAL_NUMBERS.items() if "Pixel" in key
 }
+
+
+class PullDataCalc(base_calculations.BaseCalculations):
+    def __init__(self, server):
+        super().__init__(server)
+        self.watched_collections = ["raw_obj_pit", "ss_team", "ss_tim"]
+
+    def run(self):
+        # Re-inserts data so it gets uploaded to the cloud DB
+        if self.calc_all_data and self.entries_since_last() != []:
+            for collection in ["raw_obj_pit", "ss_team", "ss_tim"]:
+                data = self.server.db.find(collection)
+                self.server.db.delete_data(collection)
+                self.server.db.insert_documents(collection, data)
