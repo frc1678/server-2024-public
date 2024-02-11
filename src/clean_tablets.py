@@ -37,7 +37,7 @@ class TabletClean:
 if __name__ == "__main__":
     FILE_PATH = utils.create_file_path("data/devices")
     DEVICES = adb_communicator.get_attached_devices()
-
+    num_cleaned = 0
     adb_communicator.adb_font_size_enforcer()
     print("Enforced tablet font size")
 
@@ -63,3 +63,5 @@ if __name__ == "__main__":
             print(
                 f"Uninstalled Match Collection from {adb_communicator.DEVICE_SERIAL_NUMBERS[device]}"
             )
+            num_cleaned += 1
+    print([f"Number of devices cleaned: {num_cleaned}"])

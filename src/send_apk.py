@@ -59,6 +59,7 @@ print(f'Attempting to send file "{LOCAL_FILE_PATH}".')
 while True:
     DEVICES = adb_communicator.get_attached_devices()
     TABLET_SERIALS, PHONE_SERIALS = [], []
+    num_sent = 0
 
     # Determine if each connected device_serial is a tablet or phone and if it needs the APK
     for serial in DEVICES:
@@ -79,9 +80,12 @@ while True:
             break
         for device in TABLET_SERIALS:
             install_apk(device)
+            num_sent += 1
     if CHOSEN_DEVICE == "p":
         # APK has been installed onto all connected phones
         if PHONE_SERIALS == []:
             break
         for device in PHONE_SERIALS:
             install_apk(device)
+            num_sent += 1
+    print([f"Number of devices sent new apk: {num_sent}"])
