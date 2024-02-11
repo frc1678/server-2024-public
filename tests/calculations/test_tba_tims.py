@@ -20,17 +20,17 @@ TEST_DATA = [
         "match_number": 1,
         "score_breakdown": {
             "blue": {
-                "leaveRobot1": "Yes",
-                "leaveRobot2": "Yes",
-                "leaveRobot3": "Yes",
+                "autoLineRobot1": "Yes",
+                "autoLineRobot2": "Yes",
+                "autoLineRobot3": "Yes",
                 "spotlitRobot1": "No",
                 "spotlitRobot2": "No",
                 "spotlitRobot3": "No",
             },
             "red": {
-                "leaveRobot1": "Yes",
-                "leaveRobot2": "Yes",
-                "leaveRobot3": "No",
+                "autoLineRobot1": "Yes",
+                "autoLineRobot2": "Yes",
+                "autoLineRobot3": "No",
                 "spotlitRobot1": "No",
                 "spotlitRobot2": "No",
                 "spotlitRobot3": "No",
@@ -50,17 +50,17 @@ TEST_DATA = [
         "match_number": 2,
         "score_breakdown": {
             "blue": {
-                "leaveRobot1": "Yes",
-                "leaveRobot2": "Yes",
-                "leaveRobot3": "Yes",
+                "autoLineRobot1": "Yes",
+                "autoLineRobot2": "Yes",
+                "autoLineRobot3": "Yes",
                 "spotlitRobot1": "No",
                 "spotlitRobot2": "No",
                 "spotlitRobot3": "No",
             },
             "red": {
-                "leaveRobot1": "Yes",
-                "leaveRobot2": "Yes",
-                "leaveRobot3": "Yes",
+                "autoLineRobot1": "Yes",
+                "autoLineRobot2": "Yes",
+                "autoLineRobot3": "Yes",
                 "spotlitRobot1": "No",
                 "spotlitRobot2": "No",
                 "spotlitRobot3": "No",
@@ -151,17 +151,17 @@ class TestTBATimCalc:
         match_data = {
             "score_breakdown": {
                 "blue": {
-                    "leaveRobot1": "Yes",
-                    "leaveRobot2": "Yes",
-                    "leaveRobot3": "Yes",
+                    "autoLineRobot1": "Yes",
+                    "autoLineRobot2": "Yes",
+                    "autoLineRobot3": "Yes",
                     "spotlitRobot1": "No",
                     "spotlitRobot2": "No",
                     "spotlitRobot3": "No",
                 },
                 "red": {
-                    "leaveRobot1": "Yes",
-                    "leaveRobot2": "No",
-                    "leaveRobot3": "Yes",
+                    "autoLineRobot1": "Yes",
+                    "autoLineRobot2": "No",
+                    "autoLineRobot3": "Yes",
                     "spotlitRobot1": "No",
                     "spotlitRobot2": "No",
                     "spotlitRobot3": "No",
@@ -170,8 +170,8 @@ class TestTBATimCalc:
         }
 
         # Tests calc_tba_bool() using the example match data above
-        assert tba_tims.TBATIMCalc.calc_tba_bool(match_data, "blue", {"leaveRobot1": "Yes"})
-        assert not tba_tims.TBATIMCalc.calc_tba_bool(match_data, "red", {"leaveRobot2": "Yes"})
+        assert tba_tims.TBATIMCalc.calc_tba_bool(match_data, "blue", {"autoLineRobot1": "Yes"})
+        assert not tba_tims.TBATIMCalc.calc_tba_bool(match_data, "red", {"autoLineRobot2": "Yes"})
 
     def test_get_robot_number_and_alliance(self):
         # Generates example team keys to test get_robot_number_and_alliance()
