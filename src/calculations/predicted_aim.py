@@ -596,12 +596,12 @@ class PredictedAimCalc(BaseCalculations):
 
                 # Calculate RPs
                 # TODO: check TBA for rp1 and rp2
-                update["predicted_rp1"] = self.calc_ensemble_rp(obj_team, aim["team_list"])
-                update["predicted_rp2"] = self.calc_melody_rp(aim_predicted_values)
-                other_update["predicted_rp1"] = self.calc_ensemble_rp(
+                update["predicted_rp1"] = self.calc_melody_rp(aim_predicted_values)
+                update["predicted_rp2"] = self.calc_ensemble_rp(obj_team, aim["team_list"])
+                other_update["predicted_rp1"] = self.calc_melody_rp(other_aim_predicted_values)
+                other_update["predicted_rp2"] = self.calc_ensemble_rp(
                     obj_team, other_aim["team_list"]
                 )
-                other_update["predicted_rp2"] = self.calc_melody_rp(other_aim_predicted_values)
 
                 # Calculate win chance
                 update["win_chance"] = self.calc_win_chance(
