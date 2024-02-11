@@ -95,8 +95,6 @@ def pull_device_files(local_file_path, tablet_file_path, devices=[]):
     Usage:
     pull_device_files('/path/to/output/directory', '/path/to/tablet/data')
     """
-    if devices == []:
-        devices = get_attached_devices()
     # Wait for USB connection to initialize
     time.sleep(0.1)
     # List of devices that have been pulled from (finished)
@@ -116,6 +114,7 @@ def pull_device_files(local_file_path, tablet_file_path, devices=[]):
             # Bridge (ADB) to copy the match schedule file to the tablet.
             # The -s flag specifies the device by its serial number.
             utils.run_command(f"adb -s {device} pull {tablet_file_path} {full_local_path}")
+            devices_finished.append(device)
 
 
 def adb_remove_files(tablet_file_path):
