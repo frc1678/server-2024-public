@@ -50,7 +50,7 @@ class AutoPathCalc(BaseCalculations):
             ]
         )
 
-        path = {"team_number": pim["team_number"], "start_position": pim["start_position"]}
+        path = {"team_number": pim["team_number"]}
 
         # Finy any matching paths
         for document in current_documents:
@@ -78,7 +78,7 @@ class AutoPathCalc(BaseCalculations):
                 path["num_matches_ran"] = document["num_matches_ran"] + 1
                 path["match_numbers_played"] = [pim["match_number"]]
                 path["match_numbers_played"].extend(document["match_numbers_played"])
-                path["path_number"] = document["path_number"]
+                path["path_number"] = document["path_number"] + 1
                 break
         else:
             # If there are no matching documents, that means this is a new auto path
@@ -97,7 +97,6 @@ class AutoPathCalc(BaseCalculations):
                             path[new_datapoint] = 1
                         else:
                             path[new_datapoint] = 0
-
         return path
 
     def is_same_path(self, pim: dict, document: dict) -> bool:

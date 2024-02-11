@@ -229,7 +229,7 @@ class TestAutoPathCalc:
                 {"in_teleop": False, "time": 150, "action_type": "score_speaker"},
             ][::-1],
             "match_numbers_played": [],
-            "path_number": 1,
+            "path_number": 2,
             "num_matches_ran": 2,
         },
         {
@@ -264,7 +264,7 @@ class TestAutoPathCalc:
                 {"in_teleop": False, "time": 150, "action_type": "score_speaker"},
             ][::-1],
             "match_numbers_played": [],
-            "path_number": 1,
+            "path_number": 2,
             "num_matches_ran": 2,
         },
         {
@@ -334,7 +334,7 @@ class TestAutoPathCalc:
                 {"in_teleop": False, "time": 150, "action_type": "score_speaker"},
             ][::-1],
             "match_numbers_played": [],
-            "path_number": 1,
+            "path_number": 2,
             "num_matches_ran": 2,
         },
         {
@@ -369,7 +369,7 @@ class TestAutoPathCalc:
                 {"in_teleop": False, "time": 150, "action_type": "score_fail"},
             ][::-1],
             "match_numbers_played": [],
-            "path_number": 1,
+            "path_number": 2,
             "num_matches_ran": 2,
         },
     ]
@@ -485,7 +485,7 @@ class TestAutoPathCalc:
         },
         {
             # 254, 2
-            "path_number": 1,
+            "path_number": 2,
             "match_numbers_played": [45, 42],
             "num_matches_ran": 2,
             "team_number": "254",
@@ -521,7 +521,7 @@ class TestAutoPathCalc:
         },
         {
             # 1678, 2
-            "path_number": 1,
+            "path_number": 2,
             "match_numbers_played": [46, 43],
             "num_matches_ran": 2,
             "team_number": "1678",
@@ -596,7 +596,7 @@ class TestAutoPathCalc:
         },
         {
             # 254, 2
-            "path_number": 1,
+            "path_number": 2,
             "match_numbers_played": [45, 42],
             "num_matches_ran": 2,
             "team_number": "254",
@@ -632,7 +632,7 @@ class TestAutoPathCalc:
         },
         {
             # 1678, 2
-            "path_number": 1,
+            "path_number": 2,
             "match_numbers_played": [46, 43],
             "num_matches_ran": 2,
             "team_number": "1678",
