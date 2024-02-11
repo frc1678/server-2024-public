@@ -115,11 +115,14 @@ class SimPrecisionCalc(BaseCalculations):
     def get_tba_value(
         self,
         tba_match_data: List[dict],
-        required: Dict[str, Dict[str, Union[int, List[str]]]],
+        tba_points: List,
         match_number: int,
         alliance_color_is_red: bool,
     ) -> int:
         """Get the total value for the required datapoints caclculated using tba match data"""
+
+        log.info(f"TBA_VALUE_THING")
+        log.info(f"{tba_match_data}")
 
         alliance_color = ["blue", "red"][int(alliance_color_is_red)]
 
@@ -128,11 +131,15 @@ class SimPrecisionCalc(BaseCalculations):
                 tba_match_data = match["score_breakdown"][alliance_color]
 
         total = 0
-        count = 0
-        scores = ["auto_speaker", "auto_amp", "tele_speaker_amped", "tele_speaker", "tele_amp"]
-        for datapoint in required.values():
-            total += datapoint * tba_match_data[scores[count]]
-            count += 1
+        for datapoint in tba_points:
+            total += tba_match_data[datapoint]
+
+        # total = 0
+        # count = 0
+        # scores = ["autoSpeakerNoteCount", "autoAmpNoteCount", "teleopSpeakerNoteAmplifiedCount", "teleopSpeakerNoteCount", "teleopAmpNoteCount"]
+        # for datapoint in required.values():
+        #     total += datapoint * tba_match_data[scores[count]]
+        #     count += 1
         return total
 
     def calc_sim_precision(self, sim, tba_match_data: List[dict]):
@@ -141,9 +148,10 @@ class SimPrecisionCalc(BaseCalculations):
         calculations = {}
         for calculation, schema in self.sim_schema["calculations"].items():
             required = schema["requires"]
+            tba_points = schema["tba_datapoints"]
 
             tba_aim_score = self.get_tba_value(
-                tba_match_data, required, sim["match_number"], sim["alliance_color_is_red"]
+                tba_match_data, tba_points, sim["match_number"], sim["alliance_color_is_red"]
             )
 
             # Value reported for datapoint by a specific scout for a robot in a match
@@ -214,6 +222,7 @@ class SimPrecisionCalc(BaseCalculations):
         return updates
 
     def run(self):
+
         # Get calc start time
         start_time = time.time()
         entries = self.entries_since_last()
@@ -243,3 +252,4 @@ class SimPrecisionCalc(BaseCalculations):
         total_time = end_time - start_time
         # Write total calc time to log
         log.info(f"sim_precision calculation time: {round(total_time, 2)} sec")
+        log.info(f"SIM_PRECISON_RAN")

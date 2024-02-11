@@ -16,25 +16,29 @@ class TestSimPrecisionCalc:
                 "score_breakdown": {
                     "blue": {
                         "foulPoints": 0,
+                        "teleopTotalNotePoints": 24,
+                        "autoTotalNotePoints": 29,
                         "autoMobilityPoints": 0,
                         "autoGamePiecePoints": 0,
                         "teleopGamePiecePoints": 0,
-                        "auto_speaker": 5,
-                        "auto_amp": 2,
-                        "tele_speaker": 1,
-                        "tele_speaker_amped": 3,
-                        "tele_amp": 7,
+                        "autoSpeakerNotePoints": 25,
+                        "autoAmpNotePoints": 4,
+                        "teleopSpeakerNotePoints": 2,
+                        "teleopSpeakerAmplifiedNotePoints": 15,
+                        "teleopAmpNotePoints": 7,
                     },
                     "red": {
                         "foulPoints": 0,
+                        "teleopTotalNotePoints": 53,
+                        "autoTotalNotePoints": 34,
                         "autoMobilityPoints": 0,
                         "autoGamePiecePoints": 0,
                         "teleopGamePiecePoints": 0,
-                        "auto_speaker": 2,
-                        "auto_amp": 6,
-                        "tele_speaker": 3,
-                        "tele_speaker_amped": 8,
-                        "tele_amp": 7,
+                        "autoSpeakerNotePoints": 10,
+                        "autoAmpNotePoints": 24,
+                        "teleopSpeakerNotePoints": 6,
+                        "teleopSpeakerAmplifiedNotePoints": 40,
+                        "teleopAmpNotePoints": 7,
                     },
                 },
             },
@@ -45,25 +49,29 @@ class TestSimPrecisionCalc:
                 "score_breakdown": {
                     "blue": {
                         "foulPoints": 0,
+                        "teleopTotalNotePoints": 24,
+                        "autoTotalNotePoints": 20,
                         "autoMobilityPoints": 0,
                         "autoGamePiecePoints": 0,
                         "teleopGamePiecePoints": 0,
-                        "auto_speaker": 4,
-                        "auto_amp": 0,
-                        "tele_speaker": 1,
-                        "tele_speaker_amped": 4,
-                        "tele_amp": 2,
+                        "autoSpeakerNotePoints": 20,
+                        "autoAmpNotePoints": 0,
+                        "teleopSpeakerNotePoints": 2,
+                        "teleopSpeakerAmplifiedNotePoints": 20,
+                        "teleopAmpNotePoints": 2,
                     },
                     "red": {
                         "foulPoints": 0,
+                        "teleopTotalNotePoints": 47,
+                        "autoTotalNotePoints": 49,
                         "autoMobilityPoints": 0,
                         "autoGamePiecePoints": 0,
                         "teleopGamePiecePoints": 0,
-                        "auto_speaker": 9,
-                        "auto_amp": 2,
-                        "tele_speaker": 3,
-                        "tele_speaker_amped": 7,
-                        "tele_amp": 6,
+                        "autoSpeakerNotePoints": 45,
+                        "autoAmpNotePoints": 4,
+                        "teleopSpeakerNotePoints": 6,
+                        "teleopSpeakerAmplifiedNotePoints": 35,
+                        "teleopAmpNotePoints": 6,
                     },
                 },
             },
@@ -263,7 +271,7 @@ class TestSimPrecisionCalc:
             if field not in fields_to_keep:
                 sim_precision_result.pop(field)
 
-        assert dict_near(sim_precision_result, {"sim_precision": -4.833333333333333})
+        assert dict_near(sim_precision_result, {"sim_precision": -8.833333333333333})
 
     def test_update_sim_precision_calcs(self):
         self.test_server.db.insert_documents("unconsolidated_totals", self.scout_tim_test_data)
@@ -311,25 +319,25 @@ class TestSimPrecisionCalc:
                 "scout_name": "ALISON LIN",
                 "match_number": 1,
                 "team_number": "1678",
-                "sim_precision": 7.666666666666667,
+                "sim_precision": 3.666666666666667,
             },
             {
                 "scout_name": "NATHAN MILLS",
                 "match_number": 1,
                 "team_number": "1678",
-                "sim_precision": -17.333333333333336,
+                "sim_precision": -21.333333333333336,
             },
             {
                 "scout_name": "KATHY LI",
                 "match_number": 1,
                 "team_number": "4414",
-                "sim_precision": -4.833333333333333,
+                "sim_precision": -8.833333333333333,
             },
             {
                 "scout_name": "KATE UNGER",
                 "match_number": 1,
                 "team_number": "589",
-                "sim_precision": -4.833333333333333,
+                "sim_precision": -8.833333333333333,
             },
         ]
         self.test_server.db.delete_data("unconsolidated_totals")
