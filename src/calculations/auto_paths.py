@@ -161,7 +161,7 @@ class AutoPathCalc(BaseCalculations):
         empty_pims = []
 
         # Check if changes need to be made to teams
-        if (entries := self.entries_since_last()) != []:
+        if entries := self.entries_since_last():
             for entry in entries:
                 if "team_number" not in entry["o"].keys():
                     continue

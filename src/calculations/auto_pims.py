@@ -50,7 +50,7 @@ class AutoPIMCalc(BaseCalculations):
             else:
                 if len(sim_precision) > 1:
                     log.error(
-                        f"auto_pim: multiple sim_precisions found for {sim}, taking first option"
+                        f"auto_pims: multiple sim_precisions found for {sim}, taking first option"
                     )
                 precision = abs(sim_precision[0]["sim_precision"])
                 if best_sim_precision is None or precision < best_sim_precision:
@@ -104,7 +104,7 @@ class AutoPIMCalc(BaseCalculations):
                     # Handle no data
                     tim_auto_values[datapoint] = None
                     log.critical(
-                        f"auto pim: data not found for {field, calculated_tim['match_number'], calculated_tim['team_number']}"
+                        f"auto_pims: {field} not found for {calculated_tim['team_number']} in match {calculated_tim['match_number']}"
                     )
                 else:
                     tim_auto_values[datapoint] = data[0][datapoint]
@@ -125,11 +125,11 @@ class AutoPIMCalc(BaseCalculations):
         for action in tim["auto_timeline"]:
             # BUG: action_type sometimes doesn't exist for a timeline action
             if action.get("action_type") is None:
-                log.warning("auto_pim: action_type does not exist")
+                log.warning("auto_pims: action_type does not exist")
                 continue
             # BUG: action_type can sometimes be null, need better tests in auto_pim, more edge cases
             elif action["action_type"] is None:
-                log.warning("auto_pim: action_type is null")
+                log.warning("auto_pims: action_type is null")
                 continue
             # Iterate through each timeline_field
             for field, info in self.schema["--timeline_fields"].items():
@@ -162,7 +162,13 @@ class AutoPIMCalc(BaseCalculations):
         for tim in tims:
             # Get data for the tim from MongoDB
             unconsolidated_obj_tims: List[dict] = self.server.db.find("unconsolidated_obj_tim", tim)
-            obj_tim: dict = self.server.db.find("obj_tim", tim)[0]
+            obj_tim: dict = self.server.db.find("obj_tim", tim)
+            if len(obj_tim) > 0:
+                obj_tim = obj_tim[0]
+            else:
+                log.critical(
+                    f"auto_pims: no obj_tim data for {tim['team_number']} in match {tim['match_number']}"
+                )
 
             # Run calculations on the team in match
             tim.update(self.get_consolidated_tim_fields(obj_tim))
@@ -188,7 +194,7 @@ class AutoPIMCalc(BaseCalculations):
         tims = []
 
         # Check if changes need to be made to teams
-        if (entries := self.entries_since_last()) != []:
+        if entries := self.entries_since_last():
             for entry in entries:
                 # Check that the entry is an unconsolidated_obj_tim
                 if "timeline" not in entry["o"].keys() or "team_number" not in entry["o"].keys():
@@ -197,7 +203,7 @@ class AutoPIMCalc(BaseCalculations):
                 # Check that the team is in the team list, ignore team if not in teams list
                 team_num = entry["o"]["team_number"]
                 if team_num not in self.teams_list:
-                    log.warning(f"auto_pim: team number {team_num} is not in teams list")
+                    log.warning(f"auto_pims: team number {team_num} is not in teams list")
                     continue
 
                 # Make tims list

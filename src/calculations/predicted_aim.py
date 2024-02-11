@@ -212,28 +212,34 @@ class PredictedAimCalc(BaseCalculations):
                 for team_data in tba_team_data
                 if team_data["team_number"] == team["team_number"]
             ]
-            if tba_team != []:
+            if tba_team:
                 tba_team = tba_team[0]
             else:
-                log.critical(
+                log.warning(
                     f"predicted_aim: tba_team data not found for team {team['team_number']}"
                 )
-                continue
+                tba_team = {"leave_successes": 0}
 
             # Update predicted values
             predicted_values.auto_speaker += team["auto_avg_speaker"]
             predicted_values.auto_amp += team["auto_avg_amp"]
             predicted_values.tele_speaker += team["tele_avg_speaker"]
-            predicted_values.tele_speaker_amped += team["tele_avg_speaker_amped"]
+            predicted_values.tele_speaker_amped += team["tele_avg_amplified"]
             predicted_values.tele_amp += team["tele_avg_amp"]
-            predicted_values.trap += team["trap_successes"] / (
-                team["trap_successes"] + team["trap_fails"]
-            )
             predicted_values.leave += tba_team["leave_successes"] / team["matches_played"]
             predicted_values.park_successes += team["parks"] / team["matches_played"]
-            predicted_values.onstage_successes += (
-                team["onstage_successes"] / team["onstage_attempts"]
-            )
+            try:
+                predicted_values.onstage_successes += (
+                    team["onstage_successes"] / team["onstage_attempts"]
+                )
+            except:
+                pass
+            try:
+                predicted_values.trap += team["trap_successes"] / (
+                    team["trap_successes"] + team["trap_fails"]
+                )
+            except ZeroDivisionError:
+                pass
 
         return predicted_values
 

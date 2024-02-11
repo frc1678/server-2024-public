@@ -409,7 +409,7 @@ class ObjTIMCalcs(BaseCalculations):
         # Get oplog entries
         tims = []
         # Check if changes need to be made to teams
-        if (entries := self.entries_since_last()) != []:
+        if entries := self.entries_since_last():
 
             for entry in entries:
                 team_num = entry["o"]["team_number"]
