@@ -49,7 +49,10 @@ class CloudDBUpdater:
                 continue
             # Get collection name from full location
             collection = location[location.index(".") + 1 :]
-            changes[collection].append(self.create_bulk_operation(entry))
+            if (bulk_op := self.create_bulk_operation(entry)) is None:
+                continue
+            else:
+                changes[collection].append(bulk_op)
         return changes
 
     def write_db_changes(self) -> Dict[str, pymongo.results.BulkWriteResult]:
@@ -62,33 +65,28 @@ class CloudDBUpdater:
                 return {}
         results = {}
         for collection, bulk_ops in self.create_db_changes().items():
-            new_bulk_ops = []
-            for op in bulk_ops:
-                if op is not None:
-                    new_bulk_ops.append(op)
-            bulk_ops = new_bulk_ops
             try:
                 results[collection] = self.cloud_db.bulk_write(collection, bulk_ops)
             except pymongo.errors.BulkWriteError as bulk_errmsg:
                 bulk_errmsg = str(bulk_errmsg)
                 if "E11000 duplicate key error" in bulk_errmsg:
-                    log.warning(
-                        f"cloud_db_updater: skipped upload of duplicate document in {collection}"
+                    log.info(
+                        f"cloud_db_updater: skipped upload of {len(bulk_ops)} duplicate documents in {collection}"
                     )
                 else:
-                    log.error(f"cloud_db_updater: BulkWriteError when writing to {collection}.")
+                    log.error(f"cloud_db_updater: {bulk_errmsg}")
                     current_documents = self.db.find(collection)
                     self.cloud_db.delete_data(collection)
                     self.cloud_db.insert_documents(collection, current_documents)
             except pymongo.errors.ServerSelectionTimeoutError:
-                log.warning(
-                    f"cloud_db_updater: unable to write to {collection} due to poor internet (ServerSelectionTimeoutError)"
+                log.critical(
+                    f"cloud_db_updater: unable to write {len(bulk_ops)} documents to {collection} due to poor internet (ServerSelectionTimeoutError)"
                 )
                 break  # Don't delay server cycle with more operations without internet
             # Catches errors when updating to the cloud DB on non-server computers
-            except TypeError:
-                log.error(
-                    f"cloud_db_updater: error writing {len(bulk_ops)} documents to {collection} (TypeError)"
+            except TypeError as type_e:
+                log.critical(
+                    f"cloud_db_updater: error writing {len(bulk_ops)} documents to {collection} ({type_e})"
                 )
         # Update timestamp if loop exited properly
         else:
@@ -100,26 +98,32 @@ class CloudDBUpdater:
         last_op = self.oplog.find({}).sort("ts", pymongo.DESCENDING).limit(1)
         self.last_timestamp = last_op.next()["ts"]
 
-    @classmethod
     def create_bulk_operation(
-        cls, entry: Dict[str, Any]
+        self, entry: Dict[str, Any]
     ) -> Optional[Union[pymongo.DeleteOne, pymongo.InsertOne, pymongo.UpdateOne]]:
         """Creates a pymongo bulk write operation for the entry.
 
         Note: this does not handle the collection that is written to, and the operations need to be
         applied to a specific collection to work.
         """
-        operation = cls.OPERATION_MAP.get(entry["op"])
+        operation = self.OPERATION_MAP.get(entry["op"])
+
         if operation is None:
             return None
-        if "o" in entry and "$v" in entry["o"].keys():
+        if "o" in entry and "$v" in entry["o"]:
             entry["o"].pop("$v")
-        if "o2" in entry and len(entry["o2"]) > 1:
-            return operation(entry["o2"], entry["o"])
-        elif len(entry["o"]) > 1:
-            return operation(entry["o"])
-        else:
+
+        if entry["op"] == "u" and "$set" not in entry["o"]:
             return None
+
+        if "o2" in entry:
+            try:
+                return operation(entry["o2"], entry["o"])
+            # Tries to InsertOne with an o2
+            except:
+                return operation(entry["o"])
+
+        return operation(entry["o"])
 
     @classmethod
     def get_cloud_db(cls) -> Optional[database.Database]:

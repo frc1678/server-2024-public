@@ -227,19 +227,9 @@ class PredictedAimCalc(BaseCalculations):
             predicted_values.tele_speaker_amped += team["tele_avg_amplified"]
             predicted_values.tele_amp += team["tele_avg_amp"]
             predicted_values.leave += tba_team["leave_successes"] / team["matches_played"]
-            predicted_values.park_successes += team["parks"] / team["matches_played"]
-            try:
-                predicted_values.onstage_successes += (
-                    team["onstage_successes"] / team["onstage_attempts"]
-                )
-            except:
-                pass
-            try:
-                predicted_values.trap += team["trap_successes"] / (
-                    team["trap_successes"] + team["trap_fails"]
-                )
-            except ZeroDivisionError:
-                pass
+            predicted_values.park_successes += team["parked_percent"] / 100
+            predicted_values.onstage_successes += team["stage_percent_success_all"] / 100
+            predicted_values.trap += team["trap_percent_success"] / 100
 
         return predicted_values
 
@@ -331,31 +321,10 @@ class PredictedAimCalc(BaseCalculations):
                     f"predicted_aim: no obj_team data found for team {team}, unable to calculate ensemble RP for alliance {team_numbers}"
                 )
                 alliance_data.append({field: 0 for field in fields.keys()})
-
+                continue
             # Collect needed obj_team variables for each team in the alliance
             for field, vars in fields.items():
-                counts = vars["counts"]
-                try:
-                    # Attempts is a single variable
-                    if len(counts[1]) == 1:
-                        # Currently, we can't calculate exact climb_after_rate
-                        # An approximate adjustment is used
-                        if field == "climb_after_rate":
-                            try:
-                                new_team[field] = obj_data[counts[0]] / (obj_data[counts[1][0]] - 2)
-                            except ZeroDivisionError:
-                                new_team[field] = obj_data[counts[0]] / obj_data[counts[1][0]]
-                            if new_team[field] <= 0:
-                                new_team[field] = 0
-                        else:
-                            new_team[field] = obj_data[counts[0]] / obj_data[counts[1][0]]
-                    # Attempts needs to be calculated through successes + fails
-                    elif len(counts[1]) == 2:
-                        new_team[field] = obj_data[counts[0]] / (
-                            obj_data[counts[1][0]] + obj_data[counts[1][1]]
-                        )
-                except:
-                    new_team[field] = 0
+                new_team[field] = obj_data[vars["var"]] / 100
             alliance_data.append(new_team)
         return alliance_data
 
@@ -444,10 +413,14 @@ class PredictedAimCalc(BaseCalculations):
                     alliance_color = "blue"
                 actual_match_dict["actual_score"] = actual_aim[alliance_color]["totalPoints"]
                 # TBA stores RPs as booleans. If the RP is true, they get 1 RP, otherwise they get 0.
-                if actual_aim[alliance_color]["melodyBonusAchieved"]:
-                    actual_match_dict["actual_rp1"] = 1.0
-                if actual_aim[alliance_color]["ensembleBonusAchieved"]:
-                    actual_match_dict["actual_rp2"] = 1.0
+                # TODO: re-implement this when we update to TBA 2024
+                try:
+                    if actual_aim[alliance_color]["melodyBonusAchieved"]:
+                        actual_match_dict["actual_rp1"] = 1.0
+                    if actual_aim[alliance_color]["ensembleBonusAchieved"]:
+                        actual_match_dict["actual_rp2"] = 1.0
+                except:
+                    pass
                 # Gets whether the alliance won the match by checking the winning alliance against the alliance color/
                 actual_match_dict["won_match"] = match["winning_alliance"] == alliance_color
                 # Sets actual_match_data to true once the actual data has been pulled
@@ -468,19 +441,21 @@ class PredictedAimCalc(BaseCalculations):
         filtered_aims_list = []
 
         # List of all teams that have existing documents in obj_team and tba_team
-        team_numbers = list(
-            set([team_data["team_number"] for team_data in obj_team])
-            & set([team_data["team_number"] for team_data in tba_team])
-        )
+        obj_team_numbers = [team_data["team_number"] for team_data in obj_team]
+        tba_team_numbers = [team_data["team_number"] for team_data in tba_team]
 
         # Check each aim for data
         for aim in aims_list:
             has_data = True
             for team in aim["team_list"]:
-                if team not in team_numbers:
+                if team not in tba_team_numbers:
+                    log.warning(
+                        f'predicted_aim: no tba_team data for team {team} (Alliance {aim["alliance_color"]} in Match {aim["match_number"]})'
+                    )
+                if team not in obj_team_numbers:
                     has_data = False
                     log.critical(
-                        f'Incomplete obj_team or tba_team data for team {team} (Alliance {aim["alliance_color"]} in Match {aim["match_number"]})'
+                        f'predicted_aim: no obj_team data for team {team} (Alliance {aim["alliance_color"]} in Match {aim["match_number"]})'
                     )
                     break
             if has_data == True:
@@ -507,13 +482,20 @@ class PredictedAimCalc(BaseCalculations):
             for team in team_list[color]:
                 obj_data = list(
                     filter(lambda team_data: team_data["team_number"] == team, obj_team)
-                )[0]
+                )
+                if len(obj_data) > 0:
+                    obj_data = obj_data[0]
+                else:
+                    log.critical(
+                        f"predicted_aim: no obj_team data for team {team}, cannot calculate win chance"
+                    )
+                    continue
                 team_mean = 0
                 team_var = 0
                 # Add mean and variance for every score datapoint
                 for name, attrs in schema_fields.items():
                     # We don't have SDs for endgame points
-                    if name != "avg_endgame_points":
+                    if attrs["sd"] != "None":
                         team_mean += obj_data[name] * attrs["value"]
                         team_var += (obj_data[attrs["sd"]] * attrs["value"]) ** 2
                     else:
