@@ -23,8 +23,8 @@ class TestDecompressor:
         action_type_dict = {
             "score_speaker": "AA",
             "score_amp": "AB",
-            "start_incap": "AC",
-            "end_incap": "AD",
+            "start_incap_time": "AC",
+            "end_incap_time": "AD",
             "auto_intake_spike_1": "AE",
             "auto_intake_spike_2": "AF",
             "auto_intake_spike_3": "AG",
@@ -277,12 +277,12 @@ class TestDecompressor:
                     "timeline": [
                         {
                             "time": 60,
-                            "action_type": "start_incap",
+                            "action_type": "start_incap_time",
                             "in_teleop": False,
                         },
                         {
                             "time": 61,
-                            "action_type": "end_incap",
+                            "action_type": "end_incap_time",
                             "in_teleop": False,
                         },
                     ],
@@ -468,8 +468,8 @@ class TestDecompressor:
                 {"time": 1, "action_type": "score_amp", "in_teleop": False},
                 {"time": 5, "action_type": "to_teleop", "in_teleop": True},
                 {"time": 6, "action_type": "score_amp", "in_teleop": True},
-                {"time": 7, "action_type": "start_incap", "in_teleop": True},
-                {"time": 8, "action_type": "end_incap", "in_teleop": True},
+                {"time": 7, "action_type": "start_incap_time", "in_teleop": True},
+                {"time": 8, "action_type": "end_incap_time", "in_teleop": True},
             ],
             "stage_level_left": "O",
             "stage_level_right": "N",

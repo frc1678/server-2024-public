@@ -5,8 +5,8 @@ from utils import read_schema
 
 def test_compress_timeline():
     timeline_data = [
-        {"time": 1, "action_type": "start_incap"},
-        {"time": 0, "action_type": "end_incap"},
+        {"time": 1, "action_type": "start_incap_time"},
+        {"time": 0, "action_type": "end_incap_time"},
     ]
     assert compression.compress_timeline(timeline_data) == "001AC000AD"
     timeline_data[1]["action_type"] = "intake_amp"
@@ -31,7 +31,7 @@ def test_compress_section_obj():
     compressed_schema = "Z1678$Y18"
     assert compression.compress_section(schema_data, "objective_tim") == compressed_schema
     # With timeline
-    schema_data["timeline"] = [{"time": 51, "action_type": "start_incap", "in_teleop": False}]
+    schema_data["timeline"] = [{"time": 51, "action_type": "start_incap_time", "in_teleop": False}]
     compressed_schema += "$W051AC"
     assert compression.compress_section(schema_data, "objective_tim") == compressed_schema
 
@@ -58,8 +58,8 @@ def test_compress_obj_tim():
         "scout_id": 2,
         "start_position": "3",
         "timeline": [
-            {"time": 45, "action_type": "start_incap"},
-            {"time": 7, "action_type": "end_incap"},
+            {"time": 45, "action_type": "start_incap_time"},
+            {"time": 7, "action_type": "end_incap_time"},
         ],
         "has_preload": True,
         "stage_level_left": "O",
