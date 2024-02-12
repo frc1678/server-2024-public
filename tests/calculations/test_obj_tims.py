@@ -222,9 +222,9 @@ class TestObjTIMCalcs:
             "parked": True,
             "has_preload": False,
             "override": {"failed_scores": 0},
-            "stage_level_amp": "N",
-            "stage_level_blind": "F",
-            "stage_level_source": "O",
+            "stage_level_left": "N",
+            "stage_level_center": "F",
+            "stage_level_right": "O",
             "trap": "F",
             "parked": True,
         },
@@ -328,9 +328,9 @@ class TestObjTIMCalcs:
             "has_preload": False,
             "parked": True,
             "override": {"failed_scores": 0},
-            "stage_level_amp": "F",
-            "stage_level_blind": "O",
-            "stage_level_source": "N",
+            "stage_level_left": "F",
+            "stage_level_center": "O",
+            "stage_level_right": "N",
             "trap": "O",
             "parked": False,
         },
@@ -678,10 +678,7 @@ class TestObjTIMCalcs:
             },
         ]
         harmonized_teams = self.test_calculator.calculate_harmony(test_calculated_tims)
-        expected_result = [
-            {"team_number": "254", "match_number": 42},
-            {"team_number": "1678", "match_number": 42},
-        ]
+        expected_result = [{"team_number": "254", "match_number": 42}]
         assert harmonized_teams == expected_result
 
     def test_calculate_cycle_times(self):

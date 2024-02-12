@@ -316,48 +316,51 @@ class ObjTIMCalcs(BaseCalculations):
         """Given a list of calculated TIMs, returns a list of team and match numbers of the teams that harmonized"""
         harmonized_teams = []
         for tim1 in calculated_tims:
-            if "O" in [
-                tim1["stage_level_left"],
-                tim1["stage_level_right"],
-                tim1["stage_level_center"],
-            ]:
-                for tim2 in calculated_tims:
-                    if (
-                        tim1["match_number"] == tim2["match_number"]
-                        and tim1["alliance_color_is_red"] == tim2["alliance_color_is_red"]
-                        and tim1["team_number"] != tim2["team_number"]
-                    ):
+            if calculated_tims == [{}]:
+                break
+            else:
+                if "O" in [
+                    tim1["stage_level_left"],
+                    tim1["stage_level_right"],
+                    tim1["stage_level_center"],
+                ]:
+                    for tim2 in calculated_tims:
                         if (
-                            tim1["stage_level_left"] == tim2["stage_level_left"]
-                            and tim1["stage_level_left"] != "N"
+                            tim1["match_number"] == tim2["match_number"]
+                            and tim1["alliance_color_is_red"] == tim2["alliance_color_is_red"]
+                            and tim1["team_number"] != tim2["team_number"]
                         ):
-                            harmonized_teams.append(
-                                {
-                                    "team_number": tim1["team_number"],
-                                    "match_number": tim1["match_number"],
-                                }
-                            )
-                        elif (
-                            tim1["stage_level_right"] == tim2["stage_level_right"]
-                            and tim1["stage_level_right"] != "N"
-                        ):
-                            harmonized_teams.append(
-                                {
-                                    "team_number": tim1["team_number"],
-                                    "match_number": tim1["match_number"],
-                                }
-                            )
-                        elif (
-                            tim1["stage_level_center"] == tim2["stage_level_center"]
-                            and tim1["stage_level_center"] != "N"
-                        ):
-                            harmonized_teams.append(
-                                {
-                                    "team_number": tim1["team_number"],
-                                    "match_number": tim1["match_number"],
-                                }
-                            )
-        return harmonized_teams
+                            if (
+                                tim1["stage_level_left"] == tim2["stage_level_left"]
+                                and tim1["stage_level_left"] != "N"
+                            ):
+                                harmonized_teams.append(
+                                    {
+                                        "team_number": tim1["team_number"],
+                                        "match_number": tim1["match_number"],
+                                    }
+                                )
+                            elif (
+                                tim1["stage_level_right"] == tim2["stage_level_right"]
+                                and tim1["stage_level_right"] != "N"
+                            ):
+                                harmonized_teams.append(
+                                    {
+                                        "team_number": tim1["team_number"],
+                                        "match_number": tim1["match_number"],
+                                    }
+                                )
+                            elif (
+                                tim1["stage_level_center"] == tim2["stage_level_center"]
+                                and tim1["stage_level_center"] != "N"
+                            ):
+                                harmonized_teams.append(
+                                    {
+                                        "team_number": tim1["team_number"],
+                                        "match_number": tim1["match_number"],
+                                    }
+                                )
+            return harmonized_teams
 
     def calculate_tim(self, unconsolidated_tims: List[Dict]) -> dict:
         """Given a list of unconsolidated TIMs, returns a calculated TIM"""
@@ -389,14 +392,17 @@ class ObjTIMCalcs(BaseCalculations):
             calculated_tims.append(calculated_tim)
         harmonized_teams = self.calculate_harmony(calculated_tims)
         for tim in calculated_tims:
-            if {
-                "team_number": tim["team_number"],
-                "match_number": tim["match_number"],
-            } in harmonized_teams:
-                tim["harmonized"] = True
+            if tim == {}:
+                break
             else:
-                tim["harmonized"] = False
-        return calculated_tims
+                if {
+                    "team_number": tim["team_number"],
+                    "match_number": tim["match_number"],
+                } in harmonized_teams:
+                    tim["harmonized"] = True
+                else:
+                    tim["harmonized"] = False
+            return calculated_tims
 
     def run(self):
         """Executes the OBJ TIM calculations"""
@@ -431,18 +437,21 @@ class ObjTIMCalcs(BaseCalculations):
             self.server.db.delete_data("obj_tim")
 
         updates = self.update_calcs(unique_tims)
-        for update in updates:
-            if update != {}:
-                self.server.db.update_document(
-                    "obj_tim",
-                    update,
-                    {
-                        "team_number": update["team_number"],
-                        "match_number": update["match_number"],
-                    },
-                )
-        end_time = time.time()
-        # Get total calc time
-        total_time = end_time - start_time
-        # Write total calc time to log
-        log.info(f"obj_tims calculation time: {round(total_time, 2)} sec")
+        if updates == None:
+            pass
+        else:
+            for update in updates:
+                if update != {}:
+                    self.server.db.update_document(
+                        "obj_tim",
+                        update,
+                        {
+                            "team_number": update["team_number"],
+                            "match_number": update["match_number"],
+                        },
+                    )
+            end_time = time.time()
+            # Get total calc time
+            total_time = end_time - start_time
+            # Write total calc time to log
+            log.info(f"obj_tims calculation time: {round(total_time, 2)} sec")
