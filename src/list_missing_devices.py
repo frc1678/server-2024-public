@@ -20,6 +20,8 @@ def missing_devices():
     # Counter for all connected devices
     total_devices_connected = 0
     total_unauthorized_devices = 0
+    if not devices:
+        status = 0
     # Gets all devices
     for device in adb_communicator.DEVICE_SERIAL_NUMBERS:
         # Checks if device is connected and connection status
@@ -46,6 +48,8 @@ def missing_devices():
 
     print(f"Total Devices Connected: {total_devices_connected}")
     print(f"Total Unauthorized Devices: {total_unauthorized_devices}")
+    if not devices:
+        console.print(f"[bright_red]WARNING: No devices connected")
 
 
 if __name__ == "__main__":
