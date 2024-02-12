@@ -49,7 +49,7 @@ def test_get_attached_devices():
     fake_attached_devices = (
         "List of devices attached\nA1B2C3D4\tdevice\nE5F6G7H8\tdevice\nI9J1K2L3\tdevice"
     )
-    expected_output = ["A1B2C3D4", "E5F6G7H8", "I9J1K2L3"]
+    expected_output = [["A1B2C3D4", "device"], ["E5F6G7H8", "device"], ["I9J1K2L3", "device"]]
 
     with patch("utils.run_command", return_value=fake_attached_devices):
         assert adb_communicator.get_attached_devices() == expected_output
@@ -94,17 +94,17 @@ def test_pull_device_files():
     real_run_command = utils.run_command
 
     with Patcher() as patcher:
-        fake_serials = ["A1B2C3D4", "E5F6G7H8", "I9J1K2L3"]
+        fake_serials = [["A1B2C3D4", "device"], ["E5F6G7H8", "device"], ["I9J1K2L3", "device"]]
         adb_communicator.get_attached_devices = MagicMock(return_value=fake_serials)
         utils.run_command = MagicMock()
         fake_tablet_path = "fakedata/fakefile"
         fake_local_path = "fakepath/path"
         patcher.fs.create_dir(fake_local_path)
 
-        adb_communicator.pull_device_files(fake_local_path, fake_tablet_path)
         for i in fake_serials:
-            utils.run_command.assert_any_call(
-                f"adb -s {i} pull fakedata/fakefile fakepath/path/{i}"
+            adb_communicator.pull_device_files(fake_local_path, fake_tablet_path, devices=[i[0]])
+            utils.run_command.assert_called_with(
+                f"adb -s {i[0]} pull fakedata/fakefile fakepath/path/{i[0]}"
             )
 
     adb_communicator.get_attached_devices = real_get_attached_devices
