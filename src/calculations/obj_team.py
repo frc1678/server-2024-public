@@ -349,7 +349,7 @@ class OBJTeamCalc(base_calculations.BaseCalculations):
         """
         team_info = {}
         for calculation, schema in self.SCHEMA["sums"].items():
-            # incap has no point values
+            # incap_time has no point values
             if calculation == "total_incap_time":
                 team_info[calculation] = sum(tim["incap"] for tim in tims)
             elif calculation == "lfm_total_incap_time":
