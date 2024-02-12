@@ -375,8 +375,6 @@ def create_single_subj_qr(
 
     # Cut off extra alliance separator
     qr = qr[:-1]
-    # Add in alliance data seperator
-    qr += TEST_QR_SCHEMA["subjective_aim"]["_alliance_data_separator"]
     if single:
         raw_qrs.append(qr)
     else:
@@ -495,9 +493,9 @@ if __name__ == "__main__":
     if args.print == True:
         print("\n".join(raw_qrs))
     else:
-        with open("test_qrs.txt", "w") as qr_file:
+        with open("data/test_qrs.txt", "w") as qr_file:
             for qr in raw_qrs:
                 qr_file.write(f"{qr}\n")
         print(
-            f"Wrote {len(raw_qrs)} {'subjective aim' if args.subj_aim else 'objective tim'} QR(s) to test_qrs.txt"
+            f"Wrote {len(raw_qrs)} {'subjective aim' if args.subj_aim else 'objective tim'} QR(s) to data/test_qrs.txt"
         )
