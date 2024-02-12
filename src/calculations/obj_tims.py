@@ -340,6 +340,12 @@ class ObjTIMCalcs(BaseCalculations):
                                         "match_number": tim1["match_number"],
                                     }
                                 )
+                                harmonized_teams.append(
+                                    {
+                                        "team_number": tim2["team_number"],
+                                        "match_number": tim2["match_number"],
+                                    }
+                                )
                             elif (
                                 tim1["stage_level_right"] == tim2["stage_level_right"]
                                 and tim1["stage_level_right"] != "N"
@@ -350,6 +356,12 @@ class ObjTIMCalcs(BaseCalculations):
                                         "match_number": tim1["match_number"],
                                     }
                                 )
+                                harmonized_teams.append(
+                                    {
+                                        "team_number": tim2["team_number"],
+                                        "match_number": tim2["match_number"],
+                                    }
+                                )
                             elif (
                                 tim1["stage_level_center"] == tim2["stage_level_center"]
                                 and tim1["stage_level_center"] != "N"
@@ -358,6 +370,12 @@ class ObjTIMCalcs(BaseCalculations):
                                     {
                                         "team_number": tim1["team_number"],
                                         "match_number": tim1["match_number"],
+                                    }
+                                )
+                                harmonized_teams.append(
+                                    {
+                                        "team_number": tim2["team_number"],
+                                        "match_number": tim2["match_number"],
                                     }
                                 )
             return harmonized_teams
