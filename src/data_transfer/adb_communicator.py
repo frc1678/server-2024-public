@@ -40,8 +40,8 @@ def get_attached_devices():
     # Split output by lines
     # [1:] removes line one, 'List of devices attached'
     adb_output = adb_output.rstrip("\n").split("\n")[1:]
-    # Remove '\tdevice' from each line
-    return [line.split("\t")[0] for line in adb_output]
+    # Each connected device in `adb_output` will be a list of either [<serial>, "device"] or [<serial>, "unauthorized"]
+    return [line.split("\t") for line in adb_output]
 
 
 def push_file(serial_number, local_path, tablet_path, validate_function=None):
