@@ -442,6 +442,13 @@ if __name__ == "__main__":
 
     # Get Match Schedule
     MATCH_SCHEDULE_LOCAL_PATH = f"data/{utils.TBA_EVENT_KEY}_match_schedule.json"
+    try:
+        with open(MATCH_SCHEDULE_LOCAL_PATH, "r") as match_schedule_json:
+            MATCH_SCHEDULE_DICT = dict(json.load(match_schedule_json))
+    except FileNotFoundError:
+        print(
+            f"\033[31mError: \033[0m Match schedule for {utils.TBA_EVENT_KEY} not found. \033[32m  Make sure you are running this file from a directory out! \033[0m (Try python src/generate_test_qrs.py) \n"
+        )
     with open(MATCH_SCHEDULE_LOCAL_PATH, "r") as match_schedule_json:
         MATCH_SCHEDULE_DICT = dict(json.load(match_schedule_json))
 
@@ -485,8 +492,12 @@ if __name__ == "__main__":
         else:
             create_obj_qrs(MATCH_SCHEDULE_DICT)
 
-    with open("test_qrs.txt", "w") as qr_file:
-        for qr in raw_qrs:
-            qr_file.write(f"{qr}\n")
-
-    print("Wrote QRs to test_qrs.txt")
+    if args.print == True:
+        print("\n".join(raw_qrs))
+    else:
+        with open("test_qrs.txt", "w") as qr_file:
+            for qr in raw_qrs:
+                qr_file.write(f"{qr}\n")
+        print(
+            f"Wrote {len(raw_qrs)} {'subjective aim' if args.subj_aim else 'objective tim'} QR(s) to test_qrs.txt"
+        )
