@@ -411,7 +411,7 @@ class ObjTIMCalcs(BaseCalculations):
         harmonized_teams = self.calculate_harmony(calculated_tims)
         for tim in calculated_tims:
             if tim == {}:
-                break
+                continue
             else:
                 if {
                     "team_number": tim["team_number"],
@@ -420,7 +420,7 @@ class ObjTIMCalcs(BaseCalculations):
                     tim["harmonized"] = True
                 else:
                     tim["harmonized"] = False
-            return calculated_tims
+        return calculated_tims
 
     def run(self):
         """Executes the OBJ TIM calculations"""
