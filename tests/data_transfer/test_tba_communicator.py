@@ -18,7 +18,7 @@ def test_connection_error(get_mock, caplog):
     with patch("data_transfer.tba_communicator.get_api_key", return_value="api_key"):
         tba_communicator.tba_request("events/2020caln/matches")
     assert ["Error: No internet connection."] == [
-        rec.message for rec in caplog.records if rec.levelname == "WARNING"
+        rec.message for rec in caplog.records if rec.levelname == "ERROR"
     ]
 
 

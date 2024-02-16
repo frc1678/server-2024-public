@@ -71,7 +71,7 @@ def catch_function_errors(fn, *args, **kwargs):
     # Notify user that error occurred
     except Exception as err:
         log.error(f'{err}\n{"".join(traceback.format_stack()[:-1])}')
-        log.info(f"Function {fn.__name__}: {err.__class__} - {err}")
+        print(f"Function {fn.__name__}: {err.__class__} - {err}")
         result = None
     return result
 
