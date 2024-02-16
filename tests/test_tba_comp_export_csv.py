@@ -324,11 +324,15 @@ def test_pull_comp_data():
             }
         ],
     }
+    real_tba_request = tba_communicator.tba_request
     tba_communicator.tba_request = MagicMock(side_effect=mock_tba_request)
     assert tba_comp_export_csv.pull_comp_data("2023cada") == expected_output
+    tba_communicator.tba_request = real_tba_request
 
 
 def test_export_csv():
+    real_tba_request = tba_communicator.tba_request
+    tba_communicator.tba_request = MagicMock(side_effect=mock_tba_request)
     expected_csv = ""
     expected_csv += "EVENT INFO\naddress,city,country,district,division_keys,end_date,event_code,event_type,event_type_string,first_event_code,first_event_id,gmaps_place_id,gmaps_url,key,lat,lng,location_name,name,parent_event_key,playoff_type,playoff_type_string,postal_code,short_name,start_date,state_prov,timezone,webcasts,website,week,year\n\"164 Orchard Park Dr, Davis, CA 95616, USA\",Davis,USA,,[],2023-03-26,cada,0,Regional,cada,,ChIJ_U9p9QAphYARItEorYXUibY,https://maps.google.com/?cid=13153277857313116450,2023cada,38.54117419999999,-121.7621451,The Colleges at La Rue Apartments,Sacramento Regional,,10,Double Elimination Bracket (8 Alliances),95616,Sacramento,2023-03-23,CA,America/Los_Angeles,\"[{'channel': 'firstinspires3', 'type': 'twitch'}, {'channel': 'firstinspires4', 'type': 'twitch'}]\",https://cafirst.org/frc/sacramento/,3,2023"
     expected_csv += "\nALLIANCES\nname,declines,picks,status.current_level_record.losses,status.current_level_record.ties,status.current_level_record.wins,status.double_elim_round,status.level,status.playoff_type,status.record.losses,status.record.ties,status.record.wins,status.status\nAlliance 1,[],\"['frc254', 'frc1678', 'frc3189']\",0,0,2,Finals,f,10,0,0,5,won"
@@ -352,3 +356,4 @@ def test_export_csv():
         tba_comp_export_csv.export_csv("2023cada", "tba_data_2023cada.csv")
         with open("tba_data_2023cada.csv", "r") as test_output:
             assert test_output.read() == expected_csv
+    tba_communicator.tba_request = real_tba_request
