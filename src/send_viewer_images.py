@@ -7,6 +7,9 @@ import re
 from typing import Dict
 import utils
 from data_transfer import adb_communicator
+import logging
+
+log = logging.getLogger(__name__)
 
 IMAGE_PATH_PATTERN = re.compile(r"([0-9]+)_(full_robot|side|front|mechanism_[0-9]+)\.jpg")
 
@@ -38,7 +41,7 @@ def send_images() -> None:
         for filename, full_path in find_robot_images().items():
             adb_communicator.push_file(device, full_path, f"storage/emulated/0/Download/{filename}")
             images_sent += 1
-        print(f"Sent {images_sent} photos to {adb_communicator.DEVICE_SERIAL_NUMBERS[device]}")
+        log.info(f"Sent {images_sent} photos to {adb_communicator.DEVICE_SERIAL_NUMBERS[device]}")
 
 
 if __name__ == "__main__":

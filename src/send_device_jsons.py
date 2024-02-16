@@ -94,7 +94,7 @@ MATCH_SCHEDULE_LOCAL_PATH = utils.create_file_path(
 )
 TEAM_LIST_LOCAL_PATH = utils.create_file_path(f"data/{utils.TBA_EVENT_KEY}_team_list.json")
 
-print(f"You are working with the competition {utils.TBA_EVENT_KEY}. Is that right?")
+log.info(f"You are working with the competition {utils.TBA_EVENT_KEY}. Is that right?")
 while True:
     if input("Hit enter to continue, or Ctrl-C to exit:") == "":
         break
@@ -126,9 +126,9 @@ if __name__ == "__main__":
     DEVICES = set(adb_communicator.get_attached_devices())
 
     if SEND_MATCH_SCHEDULE:
-        print(f'{MATCH_SCHEDULE_LOCAL_PATH}"\n')
+        log.info(f'{MATCH_SCHEDULE_LOCAL_PATH}"\n')
     else:
-        print(f'Match Schedule for "{utils.TBA_EVENT_KEY}" not available')
+        log.warning(f'Match Schedule for "{utils.TBA_EVENT_KEY}" not available')
 
     while True:
         # Wait for USB connection to initialize
@@ -136,12 +136,12 @@ if __name__ == "__main__":
         for device in DEVICES:
             device_name = adb_communicator.DEVICE_SERIAL_NUMBERS[device]
             if device not in DEVICES_WITH_SCHEDULE and SEND_MATCH_SCHEDULE:
-                print(f"\nAttempting to load {MATCH_SCHEDULE_LOCAL_PATH} onto {device_name}")
+                log.info(f"\nAttempting to load {MATCH_SCHEDULE_LOCAL_PATH} onto {device_name}")
                 if adb_communicator.push_file(
                     device, MATCH_SCHEDULE_LOCAL_PATH, MATCH_SCHEDULE_TABLET_PATH, validate_file
                 ):
                     DEVICES_WITH_SCHEDULE.add(device)
-                    print(f"Loaded {MATCH_SCHEDULE_LOCAL_PATH} onto {device_name}")
+                    log.info(f"Loaded {MATCH_SCHEDULE_LOCAL_PATH} onto {device_name}")
                 else:
                     # Give both serial number and device name in warning
                     log.warning(
@@ -152,11 +152,11 @@ if __name__ == "__main__":
         DEVICES = set(adb_communicator.get_attached_devices())
         if DEVICES == DEVICES_WITH_SCHEDULE:
             # Print blank lines for visual distinction
-            print("\n")
+            log.info("\n")
             # Schedule has been loaded onto all connected devices
             if SEND_MATCH_SCHEDULE:
                 if len(DEVICES_WITH_SCHEDULE) != 1:
-                    print(f"Match schedule loaded onto {len(DEVICES_WITH_SCHEDULE)} devices.")
+                    log.info(f"Match schedule loaded onto {len(DEVICES_WITH_SCHEDULE)} devices.")
                 else:
-                    print("Match schedule loaded onto 1 device.")
+                    log.info("Match schedule loaded onto 1 device.")
             break

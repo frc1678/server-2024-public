@@ -7,13 +7,16 @@ import re
 from pymongo import MongoClient
 
 import utils
+import logging
+
+log = logging.getLogger(__name__)
 
 
 def setup_connection(specifier, COMPETITION_KEY):
     CLIENT = MongoClient(specifier)
     # Checks that the competition inputted by the user is not already in the database
     if COMPETITION_KEY in CLIENT.list_database_names():
-        print(f"WARNING: The competition {COMPETITION_KEY} already exists.")
+        log.warning(f"WARNING: The competition {COMPETITION_KEY} already exists.")
         if not utils.get_boolean_input("Continue anyway?"):
             raise Exception("Database already exists")
     # Creates the competition.txt file
@@ -24,7 +27,7 @@ def setup_connection(specifier, COMPETITION_KEY):
     return CLIENT
 
 
-print("Competition setup started")
+log.info("Competition setup started")
 COMPETITION_KEY = input("Input the competition code from TBA: ")
 # Use a regular expression to determine if competition code is in the correct format
 # First capture group: Matches 4 digits
@@ -51,4 +54,4 @@ if CLOUD_DB_PERMISSION:
     # Created indexes for the database
     CLOUD_DB.setup_db()
 
-print("Competition setup finished")
+log.info("Competition setup finished")

@@ -73,7 +73,7 @@ class Server:
             calc.run()
 
     def ask_calc_all_data(self):
-        print(
+        log.info(
             "Run calculations on all data?\n"
             "WARNING: This will re-calculate, delete and re-insert all calculated documents, leading to a much longer runtime."
         )

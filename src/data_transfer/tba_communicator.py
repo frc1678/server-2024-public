@@ -28,12 +28,12 @@ def tba_request(api_url):
     # Check if cache exists
     if cached:
         request_headers["If-None-Match"] = cached["etag"]
-    print(f"Retrieving data from {full_url}")
+    log.info(f"Retrieving data from {full_url}")
     log.info(f"tba request from {api_url} finished")
     try:
         request = requests.get(full_url, headers=request_headers)
     except requests.exceptions.ConnectionError:
-        log.warning("Error: No internet connection.")
+        log.error("Error: No internet connection.")
         return None
     # A 200 status code means the request was successful
     # 304 means that data was not modified since the last timestamp

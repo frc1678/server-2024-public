@@ -2,13 +2,16 @@ from os.path import exists
 from data_transfer.database import Database
 from send_device_jsons import get_team_list
 from utils import read_csv_file
+import logging
+
+log = logging.getLogger(__name__)
 
 if __name__ == "__main__":
     DATABASE = Database()
 
     # Check if the picklist csv exists
     if not exists("data/picklist_upload.csv"):
-        print("Picklist upload file not found.")
+        log.error("Picklist upload file not found.")
         exit(1)
     # Load the csv file from picklist
     csvdata = read_csv_file("data/picklist_upload.csv")

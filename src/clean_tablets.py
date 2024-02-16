@@ -39,7 +39,7 @@ if __name__ == "__main__":
     DEVICES = adb_communicator.get_attached_devices()
     num_cleaned = 0
     adb_communicator.adb_font_size_enforcer()
-    print("Enforced tablet font size")
+    log.info("Enforced tablet font size")
 
     # Checks if the server operator wants to delete tablet data
     delete_tablet_data = input("Delete all local tablet data: [y/N]")
@@ -47,21 +47,21 @@ if __name__ == "__main__":
         clean_tablets = TabletClean()
         # Deletes tablet data from local tablet directory
         clean_tablets.clean_local_tablet_directory()
-        print(f"Deleted all files in {clean_tablets.tablet_data_path}")
+        log.info(f"Deleted all files in {clean_tablets.tablet_data_path}")
 
     delete_tablet_downloads = input(
         "Delete all tablet downloads (includes match schedule and teams list files and downloaded QRs): [y/N]"
     )
     if delete_tablet_downloads.upper() == "Y":
         adb_communicator.delete_tablet_downloads()
-        print("Deleted all downloaded files from tablets.")
+        log.info("Deleted all downloaded files from tablets.")
 
     uninstall_match_collection = input("Uninstall match collection from tablets: [y/N]")
     if uninstall_match_collection.upper() == "Y":
         for device in DEVICES:
             adb_communicator.uninstall_app(device)
-            print(
+            log.info(
                 f"Uninstalled Match Collection from {adb_communicator.DEVICE_SERIAL_NUMBERS[device]}"
             )
             num_cleaned += 1
-    print([f"Number of devices cleaned: {num_cleaned}"])
+    log.info([f"Number of devices cleaned: {num_cleaned}"])

@@ -3,6 +3,9 @@ import warnings
 from io import StringIO
 import json
 import csv
+import logging
+
+log = logging.getLogger(__name__)
 
 # dictionary for converting bad datapoint names into section titles for the csv file
 name_conversions = {
@@ -208,7 +211,7 @@ def export_csv(key, file_name):
             else:
                 # empty datapoints get this
                 csv_file.write("N/A\n")
-    print(f"Successfully wrote to {file_name}")
+    log.info(f"Successfully wrote to {file_name}")
 
 
 if __name__ == "__main__":

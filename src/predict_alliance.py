@@ -34,7 +34,7 @@ def predict_alliance(team1, team2, team3, server, obj_team_data, tba_team_data):
 def main():
     with patch("server.Server.ask_calc_all_data", return_value=False):
         server1 = server.Server()
-    print(
+    log.info(
         predict_alliance(
             input("team 1: "),
             input("team 2: "),

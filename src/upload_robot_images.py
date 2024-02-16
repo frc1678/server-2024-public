@@ -26,11 +26,11 @@ with open("data/api_keys/imgur_client_secret.txt", "r") as f:
     client_secret = f.read().strip()
 
 if not client_id:
-    print("No client ID found in imgur_client_id.txt")
+    log.error("No client ID found in imgur_client_id.txt")
     exit(1)
 
 if not client_secret:
-    print("No client secret found in imgur_client_secret.txt")
+    log.error("No client secret found in imgur_client_secret.txt")
     exit(1)
 
 api_creds = {"client_id": client_id, "client_secret": client_secret}
@@ -299,7 +299,7 @@ def run(creds):
 
             images = list(map(lambda x: f"{x['title']}: {x['link']}", images))
             for image in images:
-                print(image)
+                log.info(image)
 
         if prompt == "3":
             teams: dict[str, List[str]] = {}

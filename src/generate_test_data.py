@@ -332,9 +332,9 @@ if __name__ == "__main__":
         with open(parsed.outfile, "w") as file:
             json.dump(data, file)
 
-        print(f"Wrote to {parsed.outfile}")
+        log.info(f"Wrote to {parsed.outfile}")
     else:
         if parsed.pretty:
-            pprint(data)
+            log.info(data)
         else:
-            print(data)
+            log.info(data)

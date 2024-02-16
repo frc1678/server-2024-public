@@ -34,7 +34,7 @@ try:
     )
     CLOUD_CLIENT.close()
 except FileNotFoundError:
-    print("Cloud database password not found")
+    log.error("Cloud database password not found")
 
 
 SCHEMA = utils.read_schema("schema/collection_schema.yml")
@@ -456,7 +456,7 @@ def make_zip(directory_path: str):
     Get the newly made export and generation a zip archive of this and move
     it to the correct export directory
     """
-    print("Making zip archive...")
+    log.info("Making zip archive...")
     dir_name = directory_path.split("/")[-1]
     archive_name = dir_name + ".zip"
 
@@ -465,7 +465,7 @@ def make_zip(directory_path: str):
 
     shutil.make_archive(dir_name, "zip", to_archive_path)
     shutil.move(archive_name, move_location)
-    print("Zip archive complete!")
+    log.info("Zip archive complete!")
 
 
 def full_data_export(should_zip, should_return_scout_data, export_cloud=False) -> None:

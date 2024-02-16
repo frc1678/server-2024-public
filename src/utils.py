@@ -19,7 +19,7 @@ log = logging.getLogger(__name__)
 try:
     import yaml
 except ImportError:
-    print("PyYaml not found, load schema is unavailable", file=sys.stderr)
+    log.error("PyYaml not found, load schema is unavailable", file=sys.stderr)
 
 
 def create_file_path(path_after_main, create_directories=True) -> str:
@@ -71,7 +71,7 @@ def catch_function_errors(fn, *args, **kwargs):
     # Notify user that error occurred
     except Exception as err:
         log.error(f'{err}\n{"".join(traceback.format_stack()[:-1])}')
-        print(f"Function {fn.__name__}: {err.__class__} - {err}")
+        log.info(f"Function {fn.__name__}: {err.__class__} - {err}")
         result = None
     return result
 
@@ -118,8 +118,8 @@ def _inner_read_schema(schema_file_path: str) -> dict:
             return yaml.load(schema_file, yaml.Loader)
     except FileNotFoundError as e:
         # TODO - use logger (waiting on #544 for better logging)
-        print(f'server: Error: file "{schema_file_path}" not found.')
-        print(f"server: full info: {e}")
+        log.error(f'server: Error: file "{schema_file_path}" not found.')
+        log.info(f"server: full info: {e}")
         # Please check for None
         return None
 
@@ -185,7 +185,7 @@ def get_boolean_input(question: str) -> bool:
         elif user_input in ["n", "no"]:
             return False
         else:
-            print("Please be sure to enter either 'yes' or 'no'")
+            log.info("Please be sure to enter either 'yes' or 'no'")
 
 
 def read_csv_file(file_path):
@@ -272,4 +272,4 @@ _TBA_EVENT_KEY_FILE = "data/competition.txt"
 TBA_EVENT_KEY = load_tba_event_key_file(_TBA_EVENT_KEY_FILE)
 
 if sys.prefix == sys.base_prefix:
-    print("Hey friend! Don't forget to activate the virtual environment")
+    log.info("Hey friend! Don't forget to activate the virtual environment")

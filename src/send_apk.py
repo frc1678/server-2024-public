@@ -8,8 +8,11 @@ ADB stands for Android Debug Bridge.
 
 import sys
 import time
+import logging
 
 from data_transfer import adb_communicator
+
+log = logging.getLogger(__name__)
 
 
 def install_apk(device_serial):
@@ -18,16 +21,16 @@ def install_apk(device_serial):
     Convert serial number to human-readable format.
     """
     device_name = adb_communicator.DEVICE_SERIAL_NUMBERS[device_serial]
-    print(f"Loading {LOCAL_FILE_PATH} onto {device_name}")
+    log.info(f"Loading {LOCAL_FILE_PATH} onto {device_name}")
     # Send apk file and get output
     validate = adb_communicator.validate_apk(device_serial, LOCAL_FILE_PATH)
     # If .apk is loaded successfully, ADB will output a string containing 'Success'
     if "Success" in validate:
         DEVICES_WITH_APK.append(device_serial)
-        print(f"Loaded {LOCAL_FILE_PATH} onto {device_name}")
-        print(f"APK successfully installed on {device_serial}")
+        log.info(f"Loaded {LOCAL_FILE_PATH} onto {device_name}")
+        log.info(f"APK successfully installed on {device_serial}")
     else:
-        print(f"Failed Loading {LOCAL_FILE_PATH} onto {device_name}.", file=sys.stderr)
+        log.error(f"Failed Loading {LOCAL_FILE_PATH} onto {device_name}.", file=sys.stderr)
 
 
 if len(sys.argv) == 2:
@@ -35,7 +38,7 @@ if len(sys.argv) == 2:
     # LOCAL_FILE_PATH is a string
     LOCAL_FILE_PATH = sys.argv[1]
 else:
-    print(
+    log.error(
         "Error: Local APK file path is not being passed as an argument. Exiting...", file=sys.stderr
     )
     sys.exit(1)
@@ -51,10 +54,10 @@ if CHOSEN_DEVICE == "t":
 elif CHOSEN_DEVICE == "p":
     CHOSEN_DEVICE_VALUE = "phone"
 else:
-    print("Error: (t)ablet or (p)hone not specified.", file=sys.stderr)
+    log.error("Error: (t)ablet or (p)hone not specified.", file=sys.stderr)
     sys.exit(1)
 
-print(f'Attempting to send file "{LOCAL_FILE_PATH}".')
+log.info(f'Attempting to send file "{LOCAL_FILE_PATH}".')
 
 while True:
     DEVICES = adb_communicator.get_attached_devices()
@@ -88,4 +91,4 @@ while True:
         for device in PHONE_SERIALS:
             install_apk(device)
             num_sent += 1
-    print([f"Number of devices sent new apk: {num_sent}"])
+    log.info([f"Number of devices sent new apk: {num_sent}"])

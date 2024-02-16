@@ -63,7 +63,7 @@ class QRInput(calculations.base_calculations.BaseCalculations):
         if test_input:
             qr_codes = test_input
         else:
-            console.print("[green]ENTER DATA: ")
+            log.info("[green]ENTER DATA: ")
             qr_codes = (
                 sys.stdin.read()
             )  # stdin.read() is used so that pressing enter does not end the input | Use CTRL+D instead

@@ -33,12 +33,15 @@ import utils
 import json
 import numpy as np
 import argparse
+import logging
+
+log = logging.getLogger(__name__)
 
 if __name__ == "__main__":
     from send_device_jsons import get_team_list
 
     TEAM_LIST = get_team_list()  # List of team numbers
-    print("Created team list\n")
+    log.info("Created team list\n")
 else:
     TEAM_LIST = ["1678"]
 
@@ -444,7 +447,7 @@ if __name__ == "__main__":
         with open(MATCH_SCHEDULE_LOCAL_PATH, "r") as match_schedule_json:
             MATCH_SCHEDULE_DICT = dict(json.load(match_schedule_json))
     except FileNotFoundError:
-        print(
+        log.error(
             f"\033[31mError: \033[0m Match schedule for {utils.TBA_EVENT_KEY} not found. \033[32m  Make sure you are running this file from a directory out! \033[0m (Try python src/generate_test_qrs.py) \n"
         )
     with open(MATCH_SCHEDULE_LOCAL_PATH, "r") as match_schedule_json:
@@ -466,11 +469,11 @@ if __name__ == "__main__":
 
             # generating to command line
             if args.subj_aim == True:
-                print(
+                log.info(
                     create_single_subj_qr(RANDOM_ALLIANCE, random_alliance_color, random_match_num)
                 )
             else:
-                print(create_single_obj_qr(RANDOM_TEAM, random_alliance_color, random_match_num))
+                log.info(create_single_obj_qr(RANDOM_TEAM, random_alliance_color, random_match_num))
 
         # generating in file
         else:
@@ -491,11 +494,11 @@ if __name__ == "__main__":
             create_obj_qrs(MATCH_SCHEDULE_DICT)
 
     if args.print == True:
-        print("\n".join(raw_qrs))
+        log.info("\n".join(raw_qrs))
     else:
         with open("data/test_qrs.txt", "w") as qr_file:
             for qr in raw_qrs:
                 qr_file.write(f"{qr}\n")
-        print(
+        log.info(
             f"Wrote {len(raw_qrs)} {'subjective aim' if args.subj_aim else 'objective tim'} QR(s) to data/test_qrs.txt"
         )

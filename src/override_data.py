@@ -28,7 +28,7 @@ ROLLBACK_BLOCKLIST_OR_DATA = input(
 
 # If user doesn't enter a valid option, exit
 if ROLLBACK_BLOCKLIST_OR_DATA not in ["0", "1", "2"]:
-    print("Please enter a valid number", file=sys.stderr)
+    log.error("Please enter a valid number", file=sys.stderr)
     sys.exit()
 
 # Find if the user wants to UNDO this action
@@ -50,7 +50,7 @@ MATCH = input(
 
 # If the user inputted match number is not a number, exit
 if not MATCH.isnumeric():
-    print("Please enter a number")
+    log.info("Please enter a number")
     sys.exit()
 
 # Opens the schema document, to be used in regexes

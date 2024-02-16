@@ -8,8 +8,11 @@ To be run for every new clone of server.
 import os
 import subprocess
 import venv
+import logging
 
 import utils
+
+log = logging.getLogger(__name__)
 
 
 class Logger:
@@ -29,13 +32,13 @@ class Logger:
         if self.should_destroy_log:
             os.remove(self.path)
         else:
-            print("\n\nSomething broke! Check setup_environment.log for details")
+            log.warning("\n\nSomething broke! Check setup_environment.log for details")
 
     def log(self, message: str, should_output: bool = True):
         """Adds something to the file, prints it by default"""
         self.log_file.write(f"\n{message}")
         if should_output:
-            print(message)
+            log.info(message)
 
     def discard(self):
         """Changes the state of the file being destroyed"""
