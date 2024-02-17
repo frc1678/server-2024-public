@@ -182,8 +182,74 @@ def gen_generic_data(team_number: str, alliance_color: str, match_num: str) -> s
     return qr
 
 
+# for storing current match data
+current_match_data = {}
+
+# updates timeline with the needed action
+def update_timeline_with_action(
+    action_type: str, timeline: str, time: int, skill_level: float = 0, match_data: tuple = None
+) -> str:
+    """A function to update the timeline with the needed action. action_type, timeline, and time are always needed, skill level is needed for scoring,
+    and match data is needed for auto intake actions. Use by setting the timeline equal to this function while passing the current timeline into it. doozer"""
+    action_types = TEST_QR_SCHEMA["action_type"]
+    action_specifics = TEST_QR_SCHEMA["action_specifics"]
+
+    global current_match_data
+
+    nonrenewables = [
+        entry for entry in action_specifics if action_specifics[entry]["renewable"] == False
+    ]
+    auto_actions = [entry for entry in action_specifics if action_specifics[entry]["auto"] == True]
+    tele_actions = [entry for entry in action_specifics if action_specifics[entry]["tele"] == True]
+
+    # Function that searches action types for a specific phrase
+    def search(phrase, dict=action_types.keys()):
+        result = list(filter(lambda x: phrase in x, dict))
+        return result
+
+    # checks if its still the same alliance on the same match
+    if match_data != None:
+        if current_match_data == {} or current_match_data["alliance_color"] != match_data[1]:
+            current_match_data = {
+                "match_num": match_data[0],
+                "alliance_color": match_data[1],
+                "nonrenewables_status": nonrenewables,
+            }
+        # gets the auto intake actions not currently used
+        nonrenewables_status = current_match_data["nonrenewables_status"]
+
+    # gets an auto intake action and removes it from the list (to prevent double intakes)
+    for item in nonrenewables:
+        if action_type in item:
+            if len(nonrenewables_status) != 0:
+                timeline_action = action_types[
+                    nonrenewables_status.pop(random.randrange(len(nonrenewables_status)))
+                ]
+                current_match_data["free_auto_intakes"] = nonrenewables_status
+                timeline += f"{time:03d}{timeline_action}"
+
+    # gets a score action, uses skill level to determine fail rate (may need to be tuned later idk)
+    if "auto_score" in action_type or "tele_score" in action_type:
+        if np.random.random() > skill_level:
+            timeline += f"{time:03d}{action_types[random.choice(search('fail'))]}"
+        if action_type == "auto_score":
+            timeline += f"{time:03d}{action_types[random.choice(search('score', auto_actions))]}"
+        else:
+            timeline += f"{time:03d}{action_types[random.choice(search('score', tele_actions))]}"
+
+    # basically just makes sure you dont use auto intakes during tele
+    elif action_type == "tele_intake":
+        timeline += f"{time:03d}{action_types[random.choice(search('intake', auto_actions))]}"
+
+    # for everything else
+    else:
+        timeline += f"{time:03d}{action_types[random.choice(search(action_type))]}"
+
+    return timeline
+
+
 # 2.3
-def gen_timeline(team_number: str) -> str:
+def gen_timeline(team_number: str, match_data: tuple) -> str:
     """Generates a timeline based on team skill level
     Timelines are formatted with the timestamp followed by the action_type
     Ex: 123AA115AO102AG
@@ -193,7 +259,7 @@ def gen_timeline(team_number: str) -> str:
 
     2. Set all variables needed for timeline loop
         tele_pieces, auto_pieces, auto_pieces_scored, tele_pieces_scored
-        just_scored, auto_charged, tele_charged
+        just_scored, auto_charged,
 
     3. Iterate through the match time from 153s to 0s
         1. Check match time to find segment
@@ -231,11 +297,6 @@ def gen_timeline(team_number: str) -> str:
     # Action type schema (dict)
     action_types = TEST_QR_SCHEMA["action_type"]
 
-    # Function that searches action types for a specific phrase
-    def search(phrase):
-        result = list(filter(lambda x: phrase in x, action_types.keys()))
-        return result
-
     # The amount of pieces a team can score, based on their team level
     tele_pieces = round(skill_level * 15)
     auto_pieces = round(skill_level * 3)
@@ -254,13 +315,15 @@ def gen_timeline(team_number: str) -> str:
                 # If their last action was a score, their next action must be an intake
                 if just_scored:
                     if random.randint(1, complement_count) == 1:
-                        timeline += (
-                            f"{time:03d}{action_types[random.choice(search('auto_intake'))]}"
+                        timeline = update_timeline_with_action(
+                            "auto_intake", timeline, time, skill_level, match_data
                         )
                         just_scored == False
                 # Score a piece and add one to auto_pieces_scored
                 elif random.randint(1, complement_count) == 1:
-                    timeline += f"{time:03d}{action_types[random.choice(search('score'))]}"
+                    timeline = update_timeline_with_action(
+                        "auto_score", timeline, time, skill_level
+                    )
                     auto_pieces_scored += 1
                     # just scored
                     just_scored = True
@@ -272,7 +335,7 @@ def gen_timeline(team_number: str) -> str:
         # To teleop
         elif time == 135:
             # Add to_teleop action
-            timeline += f"{time:03d}{action_types[random.choice(search('to_teleop'))]}"
+            timeline = update_timeline_with_action("to_teleop", timeline, time)
         # Teleop scoring
         elif time > 15:
             # Check if team hasn't reached the max they can score
@@ -280,24 +343,28 @@ def gen_timeline(team_number: str) -> str:
                 # If their last action was a score, their next action must be an intake
                 if just_scored:
                     if random.randint(1, complement_count) == 1:
-                        timeline += f"{time:03d}{action_types[random.choice(list(filter(lambda x: 'auto' not in x, search('intake'))))]}"
+                        timeline = update_timeline_with_action("tele_intake", timeline, time)
                         just_scored == False
                 # Score a piece and add one to tele_pieces_scored
                 elif random.randint(1, complement_count) == 1:
-                    timeline += f"{time:03d}{action_types[random.choice(search('score'))]}"
+                    timeline = update_timeline_with_action(
+                        "tele_score", timeline, time, skill_level
+                    )
                     tele_pieces_scored += 1
                     # just scored
                     just_scored = True
             else:
                 continue
         # Endgame charge
+        elif time == 15:
+            timeline = update_timeline_with_action("to_endgame", timeline, time)
         else:
             continue
     return timeline
 
 
 # 2.4
-def gen_obj_tim(team_number: str) -> str:
+def gen_obj_tim(team_number: str, match_data: tuple) -> str:
     qr_attrs = []
 
     # objective_tim schema shortcut
@@ -310,7 +377,7 @@ def gen_obj_tim(team_number: str) -> str:
     qr_attrs.append(f"{TEST_QR_SCHEMA['objective_tim']['team_number']['symbol']}{team_number}")
 
     # Add timeline
-    qr_attrs.append(gen_timeline(team_number))
+    qr_attrs.append(gen_timeline(team_number, match_data))
 
     # Finish generating objective_tim data and return QR string
     qr_attrs.sort()
@@ -347,7 +414,7 @@ def create_single_obj_qr(
     qr += str(TEST_QR_SCHEMA["generic_data"]["_section_separator"])
 
     # Generate objective data
-    qr += gen_obj_tim(team_num)
+    qr += gen_obj_tim(team_num, match_data=(match_num, alliance_color))
 
     if single:
         raw_qrs.append(qr)
@@ -441,6 +508,9 @@ if __name__ == "__main__":
     # Get arguments
     args = parser()
 
+    # Clear match data
+    current_match_data = {}
+
     # Get Match Schedule
     MATCH_SCHEDULE_LOCAL_PATH = f"data/{utils.TBA_EVENT_KEY}_match_schedule.json"
     try:
@@ -448,7 +518,7 @@ if __name__ == "__main__":
             MATCH_SCHEDULE_DICT = dict(json.load(match_schedule_json))
     except FileNotFoundError:
         log.error(
-            f"\033[31mError: \033[0m Match schedule for {utils.TBA_EVENT_KEY} not found. \033[32m  Make sure you are running this file from a directory out! \033[0m (Try python src/generate_test_qrs.py) \n"
+            f"Match schedule for {utils.TBA_EVENT_KEY} not found. Make sure you are running this file from a directory out! (Try python src/generate_test_qrs.py) \n"
         )
     with open(MATCH_SCHEDULE_LOCAL_PATH, "r") as match_schedule_json:
         MATCH_SCHEDULE_DICT = dict(json.load(match_schedule_json))

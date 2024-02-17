@@ -45,7 +45,7 @@ def test_gen_timeline():
     action_schema = SCHEMA["action_type"]
 
     # get a generated timeline
-    timeline_data = generate_test_qrs.gen_timeline("1678")
+    timeline_data = generate_test_qrs.gen_timeline("1678", (1, "red"))
 
     # decompress data
     decompressed_data = DECOMPRESSOR.decompress_timeline(timeline_data[1:])
@@ -60,7 +60,7 @@ def test_gen_obj_tim():
     obj_tim_schema = SCHEMA["objective_tim"]
 
     # generated objective tim data
-    obj_tim_data = generate_test_qrs.gen_obj_tim("1678")
+    obj_tim_data = generate_test_qrs.gen_obj_tim("1678", (1, "red"))
 
     # seperate
     obj_tim_data = obj_tim_data.split(obj_tim_schema["_separator"])
