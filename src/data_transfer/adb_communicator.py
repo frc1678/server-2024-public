@@ -281,17 +281,3 @@ TABLET_SERIAL_NUMBERS = {
 PHONE_SERIAL_NUMBERS = {
     serial: key for serial, key in DEVICE_SERIAL_NUMBERS.items() if "Pixel" in key
 }
-
-
-class PullDataCalc(base_calculations.BaseCalculations):
-    def __init__(self, server):
-        super().__init__(server)
-        self.watched_collections = ["raw_obj_pit", "ss_team", "ss_tim"]
-
-    def run(self):
-        # Re-inserts data so it gets uploaded to the cloud DB
-        if self.calc_all_data and self.entries_since_last() != []:
-            for collection in ["raw_obj_pit", "ss_team", "ss_tim"]:
-                data = self.server.db.find(collection)
-                self.server.db.delete_data(collection)
-                self.server.db.insert_documents(collection, data)

@@ -7,10 +7,12 @@ from typing import List, Type
 
 import yaml
 
+from calculations import reinsert
 from calculations import base_calculations
 from data_transfer import database, cloud_db_updater
 import utils
 import logging
+
 
 log = logging.getLogger(__name__)
 
@@ -35,8 +37,13 @@ class Server:
             self.cloud_db_updater = None
         self.calc_all_data = self.ask_calc_all_data()
 
+        # Option to reinsert raw_qrs, obj_pit, and such
+        if write_cloud and self.calc_all_data:
+            self.reinsert = input("Reinsert ALL data? (y/N): ")
+
         self.calculations = self.load_calculations()
 
+    # TODO: optimize this function, this takes a really long time (especially on the old server computer)
     def load_calculations(self) -> List["base_calculations.BaseCalculations"]:
         """Imports calculation modules and creates instances of calculation classes."""
         with open(self.CALCULATIONS_FILE) as f:
@@ -70,19 +77,22 @@ class Server:
     def run_calculations(self):
         """Run each calculation in `self.calculations` in order"""
         for calc in self.calculations:
-            calc.run()
+            if calc != reinsert.ReinsertCalc:
+                calc.run()
+            # Run the re-insertion if user entered 'y'
+            elif self.reinsert:
+                calc.run()
 
     def ask_calc_all_data(self):
-        log.info(
-            "Run calculations on all data?\n"
-            "WARNING: This will re-calculate, delete and re-insert all calculated documents, leading to a much longer runtime."
-        )
-        calc_all_data = input("y/N").lower()
+        calc_all_data = input("Run calculations on all data? (y/N): ").lower()
+
         if calc_all_data in ["y", "yes"]:
             return True
         else:
             return False
 
+    # TODO: make a new input that asks for reinsert
+    # if true, run reinsert.py
     def run(self):
         """Starts server cycles, runs in infinite loop"""
         while True:
@@ -93,7 +103,7 @@ class Server:
 
 
 if __name__ == "__main__":
-    write_cloud_question = input("Write changes to cloud db? y/N").lower()
+    write_cloud_question = input("Write changes to cloud DB? (y/N): ").lower()
     if write_cloud_question in ["y", "yes"]:
         write_cloud = True
     else:

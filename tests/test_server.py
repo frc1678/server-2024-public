@@ -10,7 +10,9 @@ from data_transfer import database, cloud_db_updater
 class TestServer:
     @mock.patch("server.Server.load_calculations")
     def test_init(self, mock_load):
-        with mock.patch("server.Server.ask_calc_all_data", return_value=True):
+        with mock.patch("server.Server.ask_calc_all_data", return_value=True), mock.patch(
+            "builtins.input", return_value=True
+        ):
             s = server.Server(write_cloud=True)
         # Load calculations is mocked out, so calculations list should  be empty
         assert s.calculations == mock_load.return_value
