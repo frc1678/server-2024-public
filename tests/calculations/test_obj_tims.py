@@ -363,14 +363,14 @@ class TestObjTIMCalcs:
         "tele_drop": 0,
         "incap_time": 33,
         "median_cycle_time": -6,
-        "cycle_time_from_amp_to_amp": 7,
-        "cycle_time_from_amp_to_speaker": 24,
-        "cycle_time_from_poach_to_amp": 13,
-        "cycle_time_from_poach_to_speaker": 30,
-        "cycle_time_from_center_to_amp": 26,
-        "cycle_time_from_center_to_speaker": 43,
-        "cycle_time_from_far_to_amp": 37,
-        "cycle_time_from_far_to_speaker": 39,
+        "time_from_amp_to_amp": 7,
+        "time_from_amp_to_speaker": 24,
+        "time_from_poach_to_amp": 13,
+        "time_from_poach_to_speaker": 30,
+        "time_from_center_to_amp": 26,
+        "time_from_center_to_speaker": 43,
+        "time_from_far_to_amp": 37,
+        "time_from_far_to_speaker": 39,
         "stage_level_left": "N",
         "stage_level_center": "O",
         "stage_level_right": "N",
@@ -531,14 +531,14 @@ class TestObjTIMCalcs:
                 "tele_drop": 0,
                 "incap_time": 33,
                 "median_cycle_time": -6,
-                "cycle_time_from_amp_to_amp": 7,
-                "cycle_time_from_amp_to_speaker": 24,
-                "cycle_time_from_poach_to_amp": 13,
-                "cycle_time_from_poach_to_speaker": 30,
-                "cycle_time_from_center_to_amp": 26,
-                "cycle_time_from_center_to_speaker": 43,
-                "cycle_time_from_far_to_amp": 37,
-                "cycle_time_from_far_to_speaker": 39,
+                "time_from_amp_to_amp": 7,
+                "time_from_amp_to_speaker": 24,
+                "time_from_poach_to_amp": 13,
+                "time_from_poach_to_speaker": 30,
+                "time_from_center_to_amp": 26,
+                "time_from_center_to_speaker": 43,
+                "time_from_far_to_amp": 37,
+                "time_from_far_to_speaker": 39,
                 "stage_level_left": "N",
                 "stage_level_center": "O",
                 "stage_level_right": "N",
@@ -590,14 +590,14 @@ class TestObjTIMCalcs:
                 "tele_drop": 0,
                 "incap_time": 33,
                 "median_cycle_time": -6,
-                "cycle_time_from_amp_to_amp": 7,
-                "cycle_time_from_amp_to_speaker": 24,
-                "cycle_time_from_poach_to_amp": 13,
-                "cycle_time_from_poach_to_speaker": 30,
-                "cycle_time_from_center_to_amp": 26,
-                "cycle_time_from_center_to_speaker": 43,
-                "cycle_time_from_far_to_amp": 37,
-                "cycle_time_from_far_to_speaker": 39,
+                "time_from_amp_to_amp": 7,
+                "time_from_amp_to_speaker": 24,
+                "time_from_poach_to_amp": 13,
+                "time_from_poach_to_speaker": 30,
+                "time_from_center_to_amp": 26,
+                "time_from_center_to_speaker": 43,
+                "time_from_far_to_amp": 37,
+                "time_from_far_to_speaker": 39,
                 "stage_level_left": "N",
                 "stage_level_center": "O",
                 "stage_level_right": "N",
@@ -649,14 +649,14 @@ class TestObjTIMCalcs:
                 "tele_drop": 0,
                 "incap_time": 33,
                 "median_cycle_time": -6,
-                "cycle_time_from_amp_to_amp": 7,
-                "cycle_time_from_amp_to_speaker": 24,
-                "cycle_time_from_poach_to_amp": 13,
-                "cycle_time_from_poach_to_speaker": 30,
-                "cycle_time_from_center_to_amp": 26,
-                "cycle_time_from_center_to_speaker": 43,
-                "cycle_time_from_far_to_amp": 37,
-                "cycle_time_from_far_to_speaker": 39,
+                "time_from_amp_to_amp": 7,
+                "time_from_amp_to_speaker": 24,
+                "time_from_poach_to_amp": 13,
+                "time_from_poach_to_speaker": 30,
+                "time_from_center_to_amp": 26,
+                "time_from_center_to_speaker": 43,
+                "time_from_far_to_amp": 37,
+                "time_from_far_to_speaker": 39,
                 "stage_level_left": "N",
                 "stage_level_center": "O",
                 "stage_level_right": "N",
@@ -690,14 +690,14 @@ class TestObjTIMCalcs:
 
     def test_calculate_cycle_times(self):
         calculated_tim = self.test_calculator.calculate_tim_times(self.unconsolidated_tims)
-        assert calculated_tim["cycle_time_from_amp_to_amp"] == 7
-        assert calculated_tim["cycle_time_from_amp_to_speaker"] == 24
-        assert calculated_tim["cycle_time_from_poach_to_amp"] == 13
-        assert calculated_tim["cycle_time_from_poach_to_speaker"] == 30
-        assert calculated_tim["cycle_time_from_center_to_amp"] == 26
-        assert calculated_tim["cycle_time_from_center_to_speaker"] == 43
-        assert calculated_tim["cycle_time_from_far_to_amp"] == 37
-        assert calculated_tim["cycle_time_from_far_to_speaker"] == 39
+        assert calculated_tim["time_from_amp_to_amp"] == 7
+        assert calculated_tim["time_from_amp_to_speaker"] == 24
+        assert calculated_tim["time_from_poach_to_amp"] == 13
+        assert calculated_tim["time_from_poach_to_speaker"] == 30
+        assert calculated_tim["time_from_center_to_amp"] == 26
+        assert calculated_tim["time_from_center_to_speaker"] == 43
+        assert calculated_tim["time_from_far_to_amp"] == 37
+        assert calculated_tim["time_from_far_to_speaker"] == 39
 
     def test_run_consolidation(self):
         self.test_server.db.insert_documents("unconsolidated_obj_tim", self.unconsolidated_tims)
