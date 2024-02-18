@@ -65,7 +65,7 @@ class PickabilityCalc(base_calculations.BaseCalculations):
             team_data = {}
             # Get each calc name and search for it in the database
             for collection in self.watched_collections:
-                if (query := self.server.db.find(collection, {"team_number": team})) != []:
+                if query := self.server.db.find(collection, {"team_number": team}):
                     team_data[collection] = query[0]
             update = {"team_number": team}
             for calc_name in self.pickability_schema["calculations"]:

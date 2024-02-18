@@ -64,4 +64,4 @@ if __name__ == "__main__":
                 f"Uninstalled Match Collection from {adb_communicator.DEVICE_SERIAL_NUMBERS[device]}"
             )
             num_cleaned += 1
-    log.info([f"Number of devices cleaned: {num_cleaned}"])
+    log.info(f"{num_cleaned} devices cleaned")

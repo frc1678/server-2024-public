@@ -12,7 +12,7 @@ class TestServer:
     def test_init(self, mock_load):
         with mock.patch("server.Server.ask_calc_all_data", return_value=True), mock.patch(
             "builtins.input", return_value=True
-        ):
+        ), mock.patch("builtins.input", return_value="y"):
             s = server.Server(write_cloud=True)
         # Load calculations is mocked out, so calculations list should  be empty
         assert s.calculations == mock_load.return_value
@@ -60,11 +60,12 @@ class TestServer:
             rec.message for rec in caplog.records if rec.levelname == "ERROR"
         ]
 
-    @mock.patch("server.Server.ask_calc_all_data", return_value=False)
-    def test_run_calculations(self, mock_calc_all_data):
+    def test_run_calculations(self):
         calcs = [mock.MagicMock(), mock.MagicMock()]
-        with mock.patch("server.Server.load_calculations", return_value=calcs) as _:
-            s = server.Server()
+        with mock.patch("server.Server.load_calculations", return_value=calcs), mock.patch(
+            "server.Server.ask_calc_all_data", return_value=True
+        ), mock.patch("builtins.input", return_value="y"):
+            s = server.Server(write_cloud=True)
         s.run_calculations()
         for c in calcs:
             c.run.assert_called_once()

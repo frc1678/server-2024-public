@@ -91,4 +91,4 @@ while True:
         for device in PHONE_SERIALS:
             install_apk(device)
             num_sent += 1
-    log.info([f"Number of devices sent new apk: {num_sent}"])
+    log.info(f"New APK loaded onto {num_sent} devices")

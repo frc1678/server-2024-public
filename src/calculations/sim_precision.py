@@ -88,7 +88,7 @@ class SimPrecisionCalc(BaseCalculations):
         """Gets the average error from TBA of each scout's linear combinations in an AIM."""
         if len(aim_scout_scores) != 3:
             log.warning(
-                f"Missing scout data for Match {match_number}, Alliance is Red: {alliance_color_is_red}"
+                f"Missing {'red' if alliance_color_is_red else 'blue'} alliance scout data for Match {match_number}"
             )
             return {}
 
@@ -120,10 +120,6 @@ class SimPrecisionCalc(BaseCalculations):
         alliance_color_is_red: bool,
     ) -> int:
         """Get the total value for the required datapoints caclculated using tba match data"""
-
-        log.info(f"TBA_VALUE_THING")
-        log.info(f"{tba_match_data}")
-
         alliance_color = ["blue", "red"][int(alliance_color_is_red)]
 
         for match in tba_match_data:

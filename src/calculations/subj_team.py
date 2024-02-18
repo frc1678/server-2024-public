@@ -93,7 +93,7 @@ class SubjTeamCalcs(base_calculations.BaseCalculations):
             scores = {}
             for team in self.teams_that_have_competed:
                 tim = self.server.db.find(collection_name, {"team_number": team})
-                if tim != []:
+                if tim:
                     scores[team] = tim[0][unadjusted_calc]
             # Now scale the scores so they range from 0 to 1, and use those scaled scores to
             # compensate for alliance partners

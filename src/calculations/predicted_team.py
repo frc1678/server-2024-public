@@ -142,7 +142,7 @@ class PredictedTeamCalc(BaseCalculations):
         start_time = time.time()
         # Get oplog entries
         entries = self.entries_since_last()
-        if entries != []:
+        if entries:
             self.server.db.delete_data("predicted_team")
             predicted_aim = self.server.db.find("predicted_aim")
             self.server.db.insert_documents(

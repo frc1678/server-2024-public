@@ -65,7 +65,8 @@ class BaseCalculations:
                 document_id = entry["o2"]["_id"]
                 if (
                     query := self.server.db.find(entry["ns"].split(".")[-1], {"_id": document_id})
-                ) != [] and "team_number" in query[0].keys():
+                    and "team_number" in query[0].keys()
+                ):
                     teams.add(query[0]["team_number"])
         return list(teams)
 

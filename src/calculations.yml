@@ -52,5 +52,5 @@
 - import_path: calculations.predicted_team
   class_name: PredictedTeamCalc
 
-- import_path: data_transfer.reinsert
+- import_path: calculations.reinsert
   class_name: ReinsertCalc

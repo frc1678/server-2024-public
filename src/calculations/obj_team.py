@@ -415,15 +415,13 @@ class OBJTeamCalc(base_calculations.BaseCalculations):
         return list(obj_team_updates.values())
 
     def run(self):
+        """Executes the OBJ Team calculations"""
         # Get calc start time
         start_time = time.time()
-        """Executes the OBJ Team calculations"""
-        # Get oplog entries
-        entries = self.entries_since_last()
         teams = []
         # Filter out teams that are in subj_tim but not obj_tim
         for team in self.get_updated_teams():
-            if self.server.db.find("obj_tim", {"team_number": team}) != []:
+            if self.server.db.find("obj_tim", {"team_number": team}):
                 teams.append(team)
         # Delete and re-insert if updating all data
         if self.calc_all_data:

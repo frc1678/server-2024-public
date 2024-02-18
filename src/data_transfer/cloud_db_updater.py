@@ -80,7 +80,7 @@ class CloudDBUpdater:
                     self.cloud_db.insert_documents(collection, current_documents)
             except pymongo.errors.ServerSelectionTimeoutError:
                 log.critical(
-                    f"cloud_db_updater: unable to write {len(bulk_ops)} documents to {collection} due to poor internet (ServerSelectionTimeoutError)"
+                    f"cloud_db_updater: unable to write {len(bulk_ops)} documents to {collection} due to poor internet (ServerSelectionTimeoutError). Make sure you're not connected to DJUSD Wi-Fi (use a hotspot or different Wi-Fi)"
                 )
                 break  # Don't delay server cycle with more operations without internet
             # Catches errors when updating to the cloud DB on non-server computers

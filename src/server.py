@@ -7,7 +7,6 @@ from typing import List, Type
 
 import yaml
 
-from calculations import reinsert
 from calculations import base_calculations
 from data_transfer import database, cloud_db_updater
 import utils
@@ -39,7 +38,11 @@ class Server:
 
         # Option to reinsert raw_qrs, obj_pit, and such
         if write_cloud and self.calc_all_data:
-            self.reinsert = input("Reinsert ALL data? (y/N): ")
+            self.reinsert = input("Reinsert ALL data? (y/N): ").lower()
+            if self.reinsert == "y":
+                self.reinsert = True
+        else:
+            self.reinsert = False
 
         self.calculations = self.load_calculations()
 
@@ -77,7 +80,7 @@ class Server:
     def run_calculations(self):
         """Run each calculation in `self.calculations` in order"""
         for calc in self.calculations:
-            if calc != reinsert.ReinsertCalc:
+            if not hasattr(calc, "is_reinsert"):
                 calc.run()
             # Run the re-insertion if user entered 'y'
             elif self.reinsert:

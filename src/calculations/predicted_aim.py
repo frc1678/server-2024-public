@@ -314,7 +314,7 @@ class PredictedAimCalc(BaseCalculations):
             obj_data = list(
                 filter(lambda team_data: team_data["team_number"] == team, obj_team_data)
             )
-            if obj_data != []:
+            if obj_data:
                 obj_data = obj_data[0]
             else:
                 log.critical(
@@ -510,7 +510,13 @@ class PredictedAimCalc(BaseCalculations):
             "var": data["R"]["var"] + data["B"]["var"],
         }
         # Calculates win chance for red, P(R - B) > 0 --> 1 - phi(R - B)
-        prob_red_wins = round(1 - Norm(dist["mean"], dist["var"] ** 0.5).cdf(0), 3)
+        if dist["var"] > 0:
+            prob_red_wins = round(1 - Norm(dist["mean"], dist["var"] ** 0.5).cdf(0), 3)
+        else:
+            log.critical(
+                f"predicted_aim: alliance {team_list['R']} and {team_list['B']} have an invalid score variance of {dist['var']}"
+            )
+            return 1 if dist["mean"] > 0 else 0
 
         # Return win chance
         if alliance_color == "R":

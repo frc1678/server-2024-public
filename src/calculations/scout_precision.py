@@ -31,8 +31,8 @@ class ScoutPrecisionCalc(BaseCalculations):
             elif entry["op"] == "u":
                 document_id = entry["o2"]["_id"]
                 if (
-                    query := self.server.db.find(entry["ns"].split(".")[-1], {"_id": document_id}),
-                ) != [] and "scout_name" in query[0].keys():
+                    query := self.server.db.find(entry["ns"].split(".")[-1], {"_id": document_id})
+                ) and "scout_name" in query[0].keys():
                     scouts.add(query[0]["scout_name"])
         return list(scouts)
 
@@ -46,7 +46,7 @@ class ScoutPrecisionCalc(BaseCalculations):
             for document in scout_sims:
                 if document.get(datapoint) is not None:
                     all_sim_errors.append(document[datapoint])
-            if all_sim_errors != []:
+            if all_sim_errors:
                 calculations[calculation] = abs(self.avg(all_sim_errors))
         return calculations
 

@@ -24,7 +24,7 @@ class TestSimPrecisionCalc:
                         "autoSpeakerNotePoints": 25,
                         "autoAmpNotePoints": 4,
                         "teleopSpeakerNotePoints": 2,
-                        "teleopSpeakerAmplifiedNotePoints": 15,
+                        "teleopSpeakerNoteAmplifiedPoints": 15,
                         "teleopAmpNotePoints": 7,
                     },
                     "red": {
@@ -37,7 +37,7 @@ class TestSimPrecisionCalc:
                         "autoSpeakerNotePoints": 10,
                         "autoAmpNotePoints": 24,
                         "teleopSpeakerNotePoints": 6,
-                        "teleopSpeakerAmplifiedNotePoints": 40,
+                        "teleopSpeakerNoteAmplifiedPoints": 40,
                         "teleopAmpNotePoints": 7,
                     },
                 },
@@ -57,7 +57,7 @@ class TestSimPrecisionCalc:
                         "autoSpeakerNotePoints": 20,
                         "autoAmpNotePoints": 0,
                         "teleopSpeakerNotePoints": 2,
-                        "teleopSpeakerAmplifiedNotePoints": 20,
+                        "teleopSpeakerNoteAmplifiedPoints": 20,
                         "teleopAmpNotePoints": 2,
                     },
                     "red": {
@@ -70,7 +70,7 @@ class TestSimPrecisionCalc:
                         "autoSpeakerNotePoints": 45,
                         "autoAmpNotePoints": 4,
                         "teleopSpeakerNotePoints": 6,
-                        "teleopSpeakerAmplifiedNotePoints": 35,
+                        "teleopSpeakerNoteAmplifiedPoints": 35,
                         "teleopAmpNotePoints": 6,
                     },
                 },
@@ -92,7 +92,7 @@ class TestSimPrecisionCalc:
                 "auto_speaker": 2,
                 "auto_amp": 2,
                 "tele_speaker": 1,
-                "tele_speaker_amped": 3,
+                "tele_amplified": 3,
                 "tele_amp": 0,
             },
             {
@@ -103,7 +103,7 @@ class TestSimPrecisionCalc:
                 "auto_speaker": 0,
                 "auto_amp": 2,
                 "tele_speaker": 1,
-                "tele_speaker_amped": 0,
+                "tele_amplified": 0,
                 "tele_amp": 0,
             },
             {
@@ -114,7 +114,7 @@ class TestSimPrecisionCalc:
                 "auto_speaker": 0,
                 "auto_amp": 2,
                 "tele_speaker": 1,
-                "tele_speaker_amped": 2,
+                "tele_amplified": 2,
                 "tele_amp": 3,
             },
             {
@@ -125,7 +125,7 @@ class TestSimPrecisionCalc:
                 "auto_speaker": 0,
                 "auto_amp": 2,
                 "tele_speaker": 1,
-                "tele_speaker_amped": 3,
+                "tele_amplified": 3,
                 "tele_amp": 2,
             },
             {
@@ -136,7 +136,7 @@ class TestSimPrecisionCalc:
                 "auto_speaker": 0,
                 "auto_amp": 2,
                 "tele_speaker": 1,
-                "tele_speaker_amped": 3,
+                "tele_amplified": 3,
                 "tele_amp": 2,
             },
             {
@@ -147,7 +147,7 @@ class TestSimPrecisionCalc:
                 "auto_speaker": 0,
                 "auto_amp": 2,
                 "tele_speaker": 1,
-                "tele_speaker_amped": 3,
+                "tele_amplified": 3,
                 "tele_amp": 2,
             },
             # Match 2
@@ -159,7 +159,7 @@ class TestSimPrecisionCalc:
                 "auto_speaker": 2,
                 "auto_amp": 2,
                 "tele_speaker": 2,
-                "tele_speaker_amped": 1,
+                "tele_amplified": 1,
                 "tele_amp": 2,
             },
             {
@@ -170,7 +170,7 @@ class TestSimPrecisionCalc:
                 "auto_speaker": 3,
                 "auto_amp": 0,
                 "tele_speaker": 1,
-                "tele_speaker_amped": 3,
+                "tele_amplified": 3,
                 "tele_amp": 2,
             },
             {
@@ -181,7 +181,7 @@ class TestSimPrecisionCalc:
                 "auto_speaker": 3,
                 "auto_amp": 0,
                 "tele_speaker": 1,
-                "tele_speaker_amped": 3,
+                "tele_amplified": 3,
                 "tele_amp": 2,
             },
         ]
@@ -234,7 +234,7 @@ class TestSimPrecisionCalc:
             )
             == {}
         )
-        assert ["Missing scout data for Match 1, Alliance is Red: True"] == [
+        assert ["Missing red alliance scout data for Match 1"] == [
             rec.message for rec in caplog.records if rec.levelname == "WARNING"
         ]
         aim_scout_scores = {

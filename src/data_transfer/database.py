@@ -107,7 +107,7 @@ class Database:
     def insert_documents(self, collection: str, data: Union[list, dict]) -> None:
         """Inserts documents from 'data' list in 'collection'"""
         check_collection_name(collection)
-        if data != [] and isinstance(data, list):
+        if isinstance(data, list) and data:
             self.db[collection].insert_many(data)
         elif data != {} and isinstance(data, dict):
             self.db[collection].insert_one(data)
