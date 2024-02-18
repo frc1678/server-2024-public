@@ -50,36 +50,39 @@ def pull_comp_data(event_key):
     comp_data["oprs"] = tba_communicator.tba_request(f"event/{event_key}/oprs")
     # seperating all predictions into seperate categories
     predictions = tba_communicator.tba_request(f"event/{event_key}/predictions")
-    comp_data["predictions.match_prediction_stats"] = predictions["match_prediction_stats"]
-    # seperating match predictions into playoff and qual because we can't have three axes
-    comp_data["predictions.match_predictions.playoff"] = predictions["match_predictions"]["playoff"]
-    comp_data["predictions.match_predictions.qual"] = predictions["match_predictions"]["qual"]
-    comp_data["predictions.stat_mean_vars.playoff"] = {}
-    comp_data["predictions.stat_mean_vars.qual"] = {}
-    # formatting stat_mean_vars so it displays data per team instead of per datapoint
-    # ^ tba gives it to us like {mean: {datapoint: {team: data}, datapoint: {team: data}}, var: {datapoint: {team: data}, datapoint: {team: data}}}
-    # ^ but its easier to use it if it's like {datapoint: {team: {mean: data, var: data}, team: {mean: data, var: data}}, d: {t: {m: d, v: d}}}
-    for stat in predictions["stat_mean_vars"]["qual"].keys():
-        comp_data["predictions.stat_mean_vars.qual"][stat] = {}
-        if predictions["stat_mean_vars"]["playoff"] != {}:
-            comp_data["predictions.stat_mean_vars.playoff"][stat] = {}
-        for team in predictions["stat_mean_vars"]["qual"][stat]["mean"].keys():
-            comp_data["predictions.stat_mean_vars.qual"][stat][team] = {
-                "mean": predictions["stat_mean_vars"]["qual"][stat]["mean"][team],
-                "var": predictions["stat_mean_vars"]["qual"][stat]["var"][team],
-            }
+    if predictions != None:
+        comp_data["predictions.match_prediction_stats"] = predictions["match_prediction_stats"]
+        # seperating match predictions into playoff and qual because we can't have three axes
+        comp_data["predictions.match_predictions.playoff"] = predictions["match_predictions"][
+            "playoff"
+        ]
+        comp_data["predictions.match_predictions.qual"] = predictions["match_predictions"]["qual"]
+        comp_data["predictions.stat_mean_vars.playoff"] = {}
+        comp_data["predictions.stat_mean_vars.qual"] = {}
+        # formatting stat_mean_vars so it displays data per team instead of per datapoint
+        # ^ tba gives it to us like {mean: {datapoint: {team: data}, datapoint: {team: data}}, var: {datapoint: {team: data}, datapoint: {team: data}}}
+        # ^ but its easier to use it if it's like {datapoint: {team: {mean: data, var: data}, team: {mean: data, var: data}}, d: {t: {m: d, v: d}}}
+        for stat in predictions["stat_mean_vars"]["qual"].keys():
+            comp_data["predictions.stat_mean_vars.qual"][stat] = {}
             if predictions["stat_mean_vars"]["playoff"] != {}:
-                comp_data["predictions.stat_mean_vars.playoff"][stat][team] = {
-                    "mean": predictions["stat_mean_vars"]["playoff"][stat]["mean"][team],
-                    "var": predictions["stat_mean_vars"]["playoff"][stat]["var"][team],
+                comp_data["predictions.stat_mean_vars.playoff"][stat] = {}
+            for team in predictions["stat_mean_vars"]["qual"][stat]["mean"].keys():
+                comp_data["predictions.stat_mean_vars.qual"][stat][team] = {
+                    "mean": predictions["stat_mean_vars"]["qual"][stat]["mean"][team],
+                    "var": predictions["stat_mean_vars"]["qual"][stat]["var"][team],
                 }
-    # ranking predictions is a list of lists of stuff like [[team, [predictions, predictions]], [t, [p, p]]] which sucks
-    # this code reformats it to [{"team_key": frc1678, "predictions": [predictions, predictions]}]
-    comp_data["predictions.ranking_predictions"] = []
-    for team in predictions["ranking_predictions"]:
-        comp_data["predictions.ranking_predictions"].append(
-            {"team_key": team[0], "predictions": team[1]}
-        )
+                if predictions["stat_mean_vars"]["playoff"] != {}:
+                    comp_data["predictions.stat_mean_vars.playoff"][stat][team] = {
+                        "mean": predictions["stat_mean_vars"]["playoff"][stat]["mean"][team],
+                        "var": predictions["stat_mean_vars"]["playoff"][stat]["var"][team],
+                    }
+        # ranking predictions is a list of lists of stuff like [[team, [predictions, predictions]], [t, [p, p]]] which sucks
+        # this code reformats it to [{"team_key": frc1678, "predictions": [predictions, predictions]}]
+        comp_data["predictions.ranking_predictions"] = []
+        for team in predictions["ranking_predictions"]:
+            comp_data["predictions.ranking_predictions"].append(
+                {"team_key": team[0], "predictions": team[1]}
+            )
     # seperating different rankings datapoints
     rankings = tba_communicator.tba_request(f"event/{event_key}/rankings")
     # extra_stats info is just the name of what the extra_stats field in ranking.rankings represents
@@ -111,13 +114,16 @@ def pull_comp_data(event_key):
                     comp_data["matches"][i][f"alliances.{color}.{j}"] = z
         if "score_breakdown" in comp_data["matches"][i].keys():
             score_breakdown = comp_data["matches"][i].pop("score_breakdown")
-            for color, a in score_breakdown.items():
-                for scoretype, b in a.items():
-                    if isinstance(b, dict):
-                        for c, d in b.items():
-                            comp_data["matches"][i][f"score_breakdown.{color}.{scoretype}.{c}"] = d
-                    else:
-                        comp_data["matches"][i][f"score_breakdown.{color}.{scoretype}"] = b
+            if score_breakdown != None:
+                for color, a in score_breakdown.items():
+                    for scoretype, b in a.items():
+                        if isinstance(b, dict):
+                            for c, d in b.items():
+                                comp_data["matches"][i][
+                                    f"score_breakdown.{color}.{scoretype}.{c}"
+                                ] = d
+                        else:
+                            comp_data["matches"][i][f"score_breakdown.{color}.{scoretype}"] = b
     comp_data["awards"] = tba_communicator.tba_request(f"event/{event_key}/awards")
     # removing useless values such as who gave the award to the team so the recipients list looks nicer
     for i in range(len(comp_data["awards"])):
@@ -216,4 +222,4 @@ def export_csv(key, file_name):
 
 if __name__ == "__main__":
     key = input("Enter a tba event key: ")
-    export_csv(key, f"tba_data_{key}.csv")
+    export_csv(key, f"data/tba_data_{key}.csv")
