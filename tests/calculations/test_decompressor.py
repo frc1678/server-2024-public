@@ -207,6 +207,7 @@ class TestDecompressor:
                 "field_awareness_score": 2,
                 "was_tippy": True,
                 "climb_after": True,
+                "did_ferry": True,
             },
             {
                 "schema_version": decompressor.Decompressor.SCHEMA["schema_file"]["version"],
@@ -220,6 +221,7 @@ class TestDecompressor:
                 "field_awareness_score": 1,
                 "was_tippy": True,
                 "climb_after": False,
+                "did_ferry": True,
             },
         ]
         # Test objective qr decompression
@@ -230,7 +232,7 @@ class TestDecompressor:
         )
         # Test subjective qr decompression
         assert expected_subjective == self.test_decompressor.decompress_single_qr(
-            f"A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B34$C1230$Dv1.3$EName$FTRUE%A1678$B1$C2$DTRUE$ETRUE#A254$B4$C1$DFALSE$EFALSE#A1323$B3$C1$DTRUE$EFALSE",
+            f"A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B34$C1230$Dv1.3$EName$FTRUE%A1678$B1$C2$DTRUE$ETRUE$FTRUE#A254$B4$C1$DFALSE$EFALSE$FTRUE#A1323$B3$C1$DTRUE$EFALSE$FTRUE",
             decompressor.QRType.SUBJECTIVE,
             {},
         )
@@ -244,7 +246,7 @@ class TestDecompressor:
         assert "QR missing data fields" in str(excinfo)
         with pytest.raises(IndexError) as excinfo:
             self.test_decompressor.decompress_single_qr(
-                f"A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B34$C1230$Dv1.3$EName$FFALSE%A1678$B1$C2$D3$EFALSE",
+                f"A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B34$C1230$Dv1.3$EName$FFALSE%A1678$B1$C2$D3$EFALSE$FTRUE",
                 decompressor.QRType.SUBJECTIVE,
                 {},
             )
@@ -306,6 +308,7 @@ class TestDecompressor:
                     "field_awareness_score": 2,
                     "was_tippy": True,
                     "climb_after": False,
+                    "did_ferry": False,
                     "ulid": "01GWSXSNSF93BQZ2GRG0C4E7AC",
                 },
                 {
@@ -320,6 +323,7 @@ class TestDecompressor:
                     "field_awareness_score": 1,
                     "was_tippy": False,
                     "climb_after": True,
+                    "did_ferry": False,
                     "ulid": "01GWSXSNSF93BQZ2GRG0C4E7AC",
                 },
                 {
@@ -334,6 +338,7 @@ class TestDecompressor:
                     "field_awareness_score": 1,
                     "was_tippy": True,
                     "climb_after": False,
+                    "did_ferry": False,
                     "ulid": "01GWSXSNSF93BQZ2GRG0C4E7AC",
                 },
             ],
@@ -346,7 +351,7 @@ class TestDecompressor:
                     "override": {},
                 },
                 {
-                    "data": f"*A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B34$C1230$Dv1.3$EName$FTRUE%A1678$B1$C2$DTRUE$EFALSE#A254$B2$C1$DFALSE$ETRUE#A1323$B3$C1$DTRUE$EFALSE",
+                    "data": f"*A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B34$C1230$Dv1.3$EName$FTRUE%A1678$B1$C2$DTRUE$EFALSE$FFALSE#A254$B2$C1$DFALSE$ETRUE$FFALSE#A1323$B3$C1$DTRUE$EFALSE$FFALSE",
                     "ulid": "01GWSXSNSF93BQZ2GRG0C4E7AC",
                     "override": {},
                 },
@@ -487,6 +492,7 @@ class TestDecompressor:
                 "field_awareness_score": 2,
                 "was_tippy": False,
                 "climb_after": True,
+                "did_ferry": False,
                 "ulid": "01GWSYMT48K5P3BFF183GXB9C0",
             },
             {
@@ -501,6 +507,7 @@ class TestDecompressor:
                 "field_awareness_score": 3,
                 "was_tippy": False,
                 "climb_after": True,
+                "did_ferry": False,
                 "ulid": "01GWSYMT48K5P3BFF183GXB9C0",
             },
             {
@@ -515,6 +522,7 @@ class TestDecompressor:
                 "field_awareness_score": 1,
                 "was_tippy": False,
                 "climb_after": True,
+                "did_ferry": False,
                 "ulid": "01GWSYMT48K5P3BFF183GXB9C0",
             },
         ]
@@ -537,14 +545,14 @@ class TestDecompressor:
                     "readable_time": "2023-03-30 19:06:07.725000+00:00",
                 },
                 {
-                    "data": f"*A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B34$C1230$Dv1.3$EName%A1678$B2$C2$DFALSE$ETRUE#A254$B2$C3$DFALSE$ETRUE#A1323$B3$C1$DTRUE$ETRUE",
+                    "data": f"*A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B34$C1230$Dv1.3$EName%A1678$B2$C2$DFALSE$ETRUE$FFALSE#A254$B2$C3$DFALSE$ETRUE$FFALSE#A1323$B3$C1$DTRUE$ETRUE$FFALSE",
                     "blocklisted": True,
                     "override": {},
                     "ulid": "01GWSYM2JP9JMDFCRVCX49PNY0",
                     "readable_time": "2023-03-30 19:06:28.822000+00:00",
                 },
                 {
-                    "data": f"*A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B34$C1230$Dv1.3$EName%A1678$B2$C2$DFALSE$ETRUE#A254$B2$C3$DFALSE$ETRUE#A1323$B3$C1$DFALSE$ETRUE",
+                    "data": f"*A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B34$C1230$Dv1.3$EName%A1678$B2$C2$DFALSE$ETRUE$FFALSE#A254$B2$C3$DFALSE$ETRUE$FFALSE#A1323$B3$C1$DFALSE$ETRUE$FFALSE",
                     "blocklisted": False,
                     "override": {},
                     "ulid": "01GWSYMT48K5P3BFF183GXB9C0",

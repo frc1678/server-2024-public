@@ -815,37 +815,44 @@ class TestOBJTeamCalc:
                 "team_number": "1678",
                 "was_tippy": True,
                 "climb_after": False,
+                "did_ferry": True,
             },
             {
                 "match_number": 2,
                 "team_number": "1678",
                 "was_tippy": False,
                 "climb_after": True,
+                "did_ferry": True,
             },
             {
                 "match_number": 3,
                 "team_number": "1678",
                 "was_tippy": False,
                 "climb_after": True,
+                "did_ferry": True,
             },
             {
                 "match_number": 4,
                 "team_number": "1678",
                 "was_tippy": True,
                 "climb_after": True,
+                "did_ferry": True,
             },
             {
                 "match_number": 5,
                 "team_number": "1678",
                 "was_tippy": True,
                 "climb_after": True,
+                "did_ferry": True,
             },
         ]
         expected_output = {
             "matches_tippy": 3,
             "matches_climb_after": 4,
+            "matches_did_ferry": 5,
             "lfm_matches_tippy": 2,
             "lfm_matches_climb_after": 4,
+            "lfm_matches_did_ferry": 4,
         }
         lfm_tims = [tim for tim in tims if tim["match_number"] > 1]
         assert self.test_calc.calculate_super_counts(tims, lfm_tims) == expected_output
@@ -1390,60 +1397,70 @@ class TestOBJTeamCalc:
                 "team_number": "973",
                 "was_tippy": True,
                 "climb_after": False,
+                "did_ferry": True,
             },
             {
                 "match_number": 2,
                 "team_number": "973",
                 "was_tippy": True,
                 "climb_after": True,
+                "did_ferry": True,
             },
             {
                 "match_number": 3,
                 "team_number": "973",
                 "was_tippy": False,
                 "climb_after": True,
+                "did_ferry": True,
             },
             {
                 "match_number": 4,
                 "team_number": "973",
                 "was_tippy": True,
                 "climb_after": True,
+                "did_ferry": True,
             },
             {
                 "match_number": 5,
                 "team_number": "973",
                 "was_tippy": False,
                 "climb_after": True,
+                "did_ferry": True,
             },
             {
                 "match_number": 1,
                 "team_number": "1678",
                 "was_tippy": True,
                 "climb_after": False,
+                "did_ferry": True,
             },
             {
                 "match_number": 2,
                 "team_number": "1678",
                 "was_tippy": True,
                 "climb_after": True,
+                "did_ferry": True,
             },
             {
                 "match_number": 3,
                 "team_number": "1678",
                 "was_tippy": False,
                 "climb_after": True,
+                "did_ferry": True,
             },
             {
                 "match_number": 4,
                 "team_number": "1678",
                 "was_tippy": True,
                 "climb_after": True,
+                "did_ferry": True,
             },
             {
                 "match_number": 5,
                 "team_number": "1678",
                 "was_tippy": False,
                 "climb_after": True,
+                "did_ferry": True,
             },
         ]
         obj_tims = [
@@ -2263,6 +2280,8 @@ class TestOBJTeamCalc:
                 "lfm_avg_time_from_center_to_speaker": 2.5,
                 "lfm_avg_time_from_far_to_amp": 2.5,
                 "lfm_avg_time_from_far_to_speaker": 2.5,
+                "matches_did_ferry": 5,
+                "lfm_matches_did_ferry": 4,
             },
             {
                 "team_number": "1678",
@@ -2546,6 +2565,8 @@ class TestOBJTeamCalc:
                 "lfm_avg_time_from_center_to_speaker": 2.5,
                 "lfm_avg_time_from_far_to_amp": 2.5,
                 "lfm_avg_time_from_far_to_speaker": 2.5,
+                "matches_did_ferry": 5,
+                "lfm_matches_did_ferry": 4,
             },
         ]
         self.test_server.db.insert_documents("obj_tim", obj_tims)
