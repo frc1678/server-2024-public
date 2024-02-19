@@ -15,8 +15,8 @@ def missing_devices():
 
     prints in color based on missing status.
     """
-    log.info("[yellow]Normally Pixel 3a #1-3 and Lenovo Tab E7 #1-28 should be here.")
-    log.info(
+    console.print("[yellow]Normally Pixel 3a #1-3 and Lenovo Tab E7 #1-28 should be here.")
+    console.print(
         "Lenovo Tab E7 #29-33 are not included in the tablet cases unless tablets have been switched out."
     )
     devices = adb_communicator.get_attached_devices()
@@ -43,16 +43,16 @@ def missing_devices():
                 break
 
         if status == 0:
-            log.warning(f"[red]{adb_communicator.DEVICE_SERIAL_NUMBERS[device]}")
+            console.print(f"[red]{adb_communicator.DEVICE_SERIAL_NUMBERS[device]}")
         elif status == 1:
-            log.warning(f"[yellow]{adb_communicator.DEVICE_SERIAL_NUMBERS[device]}")
+            console.print(f"[yellow]{adb_communicator.DEVICE_SERIAL_NUMBERS[device]}")
         else:
-            log.warning(f"[green]{adb_communicator.DEVICE_SERIAL_NUMBERS[device]}")
+            console.print(f"[green]{adb_communicator.DEVICE_SERIAL_NUMBERS[device]}")
 
     log.info(f"Total Devices Connected: {total_devices_connected}")
     log.info(f"Total Unauthorized Devices: {total_unauthorized_devices}")
     if not devices:
-        log.warning(f"[bright_red]WARNING: No devices connected")
+        console.print(f"[bright_red]WARNING: No devices connected")
 
 
 if __name__ == "__main__":

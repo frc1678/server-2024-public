@@ -296,9 +296,10 @@ class Decompressor(base_calculations.BaseCalculations):
         return output
 
     def decompress_pit_data(self, pit_data, pit_type):
-        """Decompresses obj and subj pit data
+        """Decompresses ONE obj or subj pit data dict
+
         pit_data: a dict of raw pit data
-        pit_type: \"raw_obj_pit\" or \"raw_subj_pit\" """
+        pit_type: raw_obj_pit or raw_subj_pit"""
         # Get pit schema file
         if pit_type == "raw_obj_pit":
             pit_schema = self.OBJ_PIT_SCHEMA
@@ -307,13 +308,14 @@ class Decompressor(base_calculations.BaseCalculations):
 
         decompressed_data = {}
         db = database.Database()
-        # Use team number to find if team already has pit data inserted into the db
+        # Use team number to find if team already has pit data inserted into MongoDB
         current_data = [
             document
             for document in db.find(pit_type)
             if document["team_number"] == pit_data["team_number"]
         ]
 
+        # Enter data into a dictionary
         for name, value in pit_data.items():
             # if variable is an Enum, decompress it
             if "Enum" in pit_schema["schema"][name]["type"]:
@@ -324,7 +326,14 @@ class Decompressor(base_calculations.BaseCalculations):
             else:
                 decompressed_data[name] = value
 
-        if len(current_data) > 0:
+        # Since Front-End doesn't keep variables empty when they don't
+        # have values, we have to iterate through every variable to make
+        # sure there's either (a) data or (b) a "None" placeholder
+        for var in pit_schema["schema"].keys():
+            if var not in decompressed_data:
+                decompressed_data[var] = None
+
+        if current_data:
             team_num = decompressed_data["team_number"]
             current_document = current_data[0]
             for name, value in decompressed_data.items():
@@ -343,7 +352,7 @@ class Decompressor(base_calculations.BaseCalculations):
                         decompressed_data.update({name: current_document[name]})
                     elif current_document[name] != 0 and value != 0:
                         log.warning(
-                            f"Both pit scouts collected data for team: {team_num} for the field: {name} and came up with different values"
+                            f"Both pit scouts collected data on team {team_num} for field {name} and collected different values"
                         )
                 # For the enum strings, they must be compared individually
                 elif name == "drivetrain":

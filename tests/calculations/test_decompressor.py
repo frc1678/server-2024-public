@@ -361,73 +361,65 @@ class TestDecompressor:
     def test_decompress_pit_data(self):
         raw_obj_pit = {
             "team_number": "3448",
-            "drivetrain": 0,
+            "drivetrain": 3,
             "has_auto_vision": True,
             "has_vision_assisted_shot": True,
             "has_hp_indicator": False,
             "can_climb": True,
-            "has_ground_intake": False,
         }
         expected_obj_pit = {
             "team_number": "3448",
             "has_auto_vision": True,
-            "drivetrain": "tank",
+            "drivetrain": "swerve",
             "has_vision_assisted_shot": True,
-            "has_ground_intake": False,
             "has_hp_indicator": False,
             "can_climb": True,
         }
         citrus_seal = {
             "team_number": "3448",
-            "drivetrain": 0,
+            "drivetrain": 3,
             "has_auto_vision": False,
             "has_vision_assisted_shot": True,
             "has_hp_indicator": False,
             "can_climb": False,
-            "has_ground_intake": True,
         }
         new_expected_obj_pit = {
             "team_number": "3448",
-            "drivetrain": "tank",
+            "drivetrain": "swerve",
             "has_auto_vision": True,
             "has_vision_assisted_shot": True,
-            "has_ground_intake": True,
             "has_hp_indicator": False,
             "can_climb": True,
         }
         raw2_obj_pit = {
             "team_number": "1678",
-            "drivetrain": 2,
+            "drivetrain": 3,
             "has_auto_vision": False,
             "has_vision_assisted_shot": True,
             "has_hp_indicator": False,
             "can_climb": True,
-            "has_ground_intake": False,
         }
         expected2_obj_pit = {
             "team_number": "1678",
             "drivetrain": "swerve",
             "has_auto_vision": True,
             "has_vision_assisted_shot": True,
-            "has_ground_intake": True,
             "has_hp_indicator": False,
             "can_climb": True,
         }
         citrus2_seal = {
             "team_number": "1678",
-            "drivetrain": 0,
+            "drivetrain": 3,
             "has_auto_vision": True,
             "has_vision_assisted_shot": True,
             "has_hp_indicator": False,
             "can_climb": False,
-            "has_ground_intake": True,
         }
         new2_expected_obj_pit = {
             "team_number": "1678",
-            "drivetrain": "tank",
+            "drivetrain": "swerve",
             "has_auto_vision": True,
             "has_vision_assisted_shot": True,
-            "has_ground_intake": True,
             "has_hp_indicator": False,
             "can_climb": False,
         }

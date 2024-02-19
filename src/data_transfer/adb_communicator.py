@@ -13,7 +13,6 @@ import qr_code_uploader
 import utils
 import logging
 from calculations import decompressor
-from calculations import base_calculations
 
 log = logging.getLogger(__name__)
 
@@ -139,15 +138,15 @@ def adb_remove_files(tablet_file_path):
 def pull_device_data():
     """Pulls tablet data from attached tablets."""
     # Parses 'adb devices' to find num of devices so that don't try to pull from nothing
-    devices = get_attached_devices()
+    devices = list(map(lambda item: item[0], get_attached_devices()))
     db = database.Database()
+
     # sorts stand strategist devices from others
     ss_devices = []
     for device in devices:
         if device[:2] == "R8":
             ss_devices.append(device)
-    for device in ss_devices:
-        devices.remove(device)
+            devices.remove(device)
     data = {"qr": [], "raw_obj_pit": []}
     if ss_devices == [] and devices == []:
         return data
@@ -231,8 +230,16 @@ def pull_device_data():
 
     # Only raw_obj_pit in the 2024 season, but other years also have raw_subj_pit which is why this iterates through datasets
     for dataset in ["raw_obj_pit"]:
+        pit_data = data[dataset]
+        if pit_data:
+            pit_data = pit_data[0]
+        else:
+            continue
+
         modified_data = []
-        for document in data[dataset]:
+        for team_num, variables in pit_data.items():
+            document = variables
+            document["team_number"] = team_num
             # Decompress pit data before uploading
             document = decompressor.Decompressor.decompress_pit_data(
                 decompressor.Decompressor, document, dataset
@@ -292,8 +299,8 @@ FILENAME_REGEXES = {
     "qr": re.compile(
         r"([0-9]{1,3}_[0-9]{1,4}_[A-Z0-9]+_[0-9]+\.txt)|([0-9]{1,3}_[0-9A-Z]+_[0-9]+\.txt)"
     ),
-    # Format of objective pit file pattern: <team_number>_pit.json
-    "raw_obj_pit": re.compile(r"[0-9]{1,4}_obj_pit\.json"),
+    # All data is located in pit_data.json
+    "raw_obj_pit": re.compile(r"pit_data\.json"),
 }
 
 # Open the tablet serials file to find all device serials

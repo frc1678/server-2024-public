@@ -94,8 +94,6 @@ class Server:
         else:
             return False
 
-    # TODO: make a new input that asks for reinsert
-    # if true, run reinsert.py
     def run(self):
         """Starts server cycles, runs in infinite loop"""
         while True:
