@@ -216,6 +216,8 @@ def pull_device_data():
                                     tim[point] = False
                                 else:
                                     tim[point] = -1 if val["type"] == "int" else ""
+                            if point == "brokenMechanism":
+                                tim[point] = True if tim[point] != "" else False
                         db.update_document(
                             "ss_tim", tim, {"team_number": team_number, "match_number": match}
                         )
