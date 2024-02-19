@@ -197,12 +197,26 @@ def pull_device_data():
             with open(os.path.join(profiles_directory, profile, "team_data.json")) as f:
                 team_data = json.load(f)
                 for team_number, document in team_data.items():
+                    schema = utils.read_schema("schema/calc_ss_team.yml")
+                    for point, value in schema["schema"].items():
+                        if point not in list(document.keys()):
+                            if value["type"] == "int":
+                                document[point] = -1
+                            else:
+                                document[point] = False if value["type"] == "bool" else ""
                     db.update_document("ss_team", document, {"team_number": team_number})
             # Update TIM Data for Stand Strategist
             with open(os.path.join(profiles_directory, profile, "tim_data.json")) as f:
                 tim_data = json.load(f)
                 for match, value in tim_data.items():
                     for team_number, tim in value.items():
+                        schema = utils.read_schema("schema/calc_ss_tim.yml")
+                        for point, val in schema["schema"].items():
+                            if point not in list(tim.keys()):
+                                if val["type"] == "bool":
+                                    tim[point] = False
+                                else:
+                                    tim[point] = -1 if val["type"] == "int" else ""
                         db.update_document(
                             "ss_tim", tim, {"team_number": team_number, "match_number": match}
                         )
