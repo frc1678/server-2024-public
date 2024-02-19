@@ -155,21 +155,36 @@ class ObjTIMCalcs(BaseCalculations):
                     total_time += start["time"] - end["time"]
             return total_time
 
-    def calc_cycle_time(self, tim, score_actions):
-        # Make start time and end time equal to when teleop and endgame started
-        start_time = self.filter_timeline_actions(tim, action_type="to_teleop")[0]["time"]
-        end_time = self.filter_timeline_actions(tim, action_type="to_endgame")[-1]["time"]
-        # Make total time equal to amount of time passed between teleop and endgame
-        total_time = end_time - start_time
-        # Tele actions are all the actions that occured in the time between the start time and end time
-        tele_actions = self.filter_timeline_actions(tim, **{"time": [start_time, end_time]})
-        num_score_actions = 0
-        # Filter for all scoring actions in teleop
-        for action in tele_actions:
-            if action["action_type"] in score_actions:
-                num_score_actions += 1
+    def calc_cycle_times(self, tims):
+        total_times = []
+        calculated_tim = {}
+        for tim in tims:
+            cycle_times = {}
+            for field, value in self.schema["calc_cycle_time"].items():
+                score_actions = value["score_actions"]
+                # Make start time and end time equal to when teleop and endgame started
+                start_time = self.filter_timeline_actions(tim, action_type="to_teleop")[0]["time"]
+                end_time = self.filter_timeline_actions(tim, action_type="to_endgame")[-1]["time"]
+                # Make total time equal to amount of time passed between teleop and endgame
+                total_time = end_time - start_time
+                # Tele actions are all the actions that occured in the time between the start time and end time
+                tele_actions = self.filter_timeline_actions(tim, **{"time": [start_time, end_time]})
+                num_score_actions = 0
+                # Filter for all scoring actions in teleop
+                for action in tele_actions:
+                    if action["action_type"] in score_actions:
+                        num_score_actions += 1
+                cycle_times[field] = (
+                    round(total_time / num_score_actions, 2) if num_score_actions != 0 else 0
+                )
+            total_times.append(cycle_times)
+        unconsolidated_values = []
+        for key in list(total_times[0].keys()):
+            for tim in total_times:
+                unconsolidated_values.append(tim[key])
+            calculated_tim[key] = self.consolidate_nums(unconsolidated_values)
         # Return number of seconds per action
-        return round(total_time / num_score_actions, 2)
+        return calculated_tim
 
     def score_fail_type(self, unconsolidated_tims: List[Dict]):
         for num_1, tim in enumerate(unconsolidated_tims):
@@ -404,6 +419,7 @@ class ObjTIMCalcs(BaseCalculations):
         calculated_tim = {}
         calculated_tim.update(self.calculate_tim_counts(unconsolidated_tims))
         calculated_tim.update(self.calculate_tim_times(unconsolidated_tims))
+        calculated_tim.update(self.calc_cycle_times(unconsolidated_tims))
         calculated_tim.update(self.consolidate_categorical_actions(unconsolidated_tims))
         calculated_tim.update(self.calculate_aggregates(calculated_tim))
         calculated_tim.update(self.calculate_point_values(calculated_tim))

@@ -471,16 +471,11 @@ class TestObjTIMCalcs:
             total_time(self.unconsolidated_tims[2], "start_incap_time", "end_incap_time", 8) == 43
         )
 
-    def test_calc_cycle_time(self):
-        assert 30.5 == self.test_calculator.calc_cycle_time(
-            self.unconsolidated_tims[0], ["score_amp", "score_speaker", "score_amplify"]
-        )
-        assert 18.83 == self.test_calculator.calc_cycle_time(
-            self.unconsolidated_tims[1], ["score_amp", "score_speaker", "score_amplify"]
-        )
-        assert 22.5 == self.test_calculator.calc_cycle_time(
-            self.unconsolidated_tims[2], ["score_amp", "score_speaker", "score_amplify"]
-        )
+    def test_calc_cycle_times(self):
+        after_fails = self.test_calculator.score_fail_type(self.unconsolidated_tims)
+        times = self.test_calculator.calc_cycle_times(after_fails)
+        assert 56 == times["speaker_cycle_time"]
+        assert 28 == times["amp_cycle_time"]
 
     def test_score_fail_type(self):
         score_fails = self.test_calculator.score_fail_type(self.unconsolidated_tims)
@@ -711,6 +706,8 @@ class TestObjTIMCalcs:
         assert len(result) == 1
         calculated_tim = result[0]
         assert calculated_tim["confidence_ranking"] == 3
+        assert calculated_tim["speaker_cycle_time"] == 56
+        assert calculated_tim["amp_cycle_time"] == 28
         assert calculated_tim["incap_time"] == 33
         assert calculated_tim["match_number"] == 42
         assert calculated_tim["team_number"] == "254"
