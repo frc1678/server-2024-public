@@ -146,20 +146,23 @@ def pull_device_data():
     for device in devices:
         if device[:2] == "R8":
             ss_devices.append(device)
-            devices.remove(device)
+    for device in ss_devices:
+        devices.remove(device)
     data = {"qr": [], "raw_obj_pit": []}
     if ss_devices == [] and devices == []:
         return data
-
     device_file_paths = []
     # Stand strategists file paths
     ss_device_file_paths = []
     device_file_path = utils.create_file_path("data/devices/")
-    # Pull all files from the 'Download' folder on the device
-    pull_device_files(
-        device_file_path, "/storage/emulated/0/Documents/StandStrategist/profiles", ss_devices
-    )
-    pull_device_files(device_file_path, "/storage/emulated/0/Download", devices)
+    # Pull all files from the 'StandStrategist' folder on the device (if plugged in)
+    if ss_devices:
+        pull_device_files(
+            device_file_path, "/storage/emulated/0/Documents/StandStrategist/profiles", ss_devices
+        )
+    # Pull all files from the 'Download' folder on the device (if tablets are plugged in)
+    if devices:
+        pull_device_files(device_file_path, "/storage/emulated/0/Download", devices)
     # Iterates through the 'data' folder
     for device_dir in os.listdir(device_file_path):
         if device_dir in DEVICE_SERIAL_NUMBERS.keys():
@@ -167,8 +170,6 @@ def pull_device_data():
                 ss_device_file_paths.append(device_dir)
             else:
                 device_file_paths.append(device_dir)
-
-        # If the folder name is a device serial, it must be a tablet folder
 
     for device in device_file_paths:
         # Iterate through the downloads folder in the device folder
@@ -192,16 +193,25 @@ def pull_device_data():
         profiles = os.listdir(profiles_directory)
 
         for profile in profiles:
+            # Update Team Data for Stand Strategist
             with open(os.path.join(profiles_directory, profile, "team_data.json")) as f:
                 team_data = json.load(f)
-                db.update_document("ss_team", team_data, team_data)
+                for team_number, document in team_data.items():
+                    db.update_document("ss_team", document, {"team_number": team_number})
+            # Update TIM Data for Stand Strategist
             with open(os.path.join(profiles_directory, profile, "tim_data.json")) as f:
                 tim_data = json.load(f)
-                db.update_document("ss_tim", tim_data, tim_data)
+                for match, value in tim_data.items():
+                    for team_number, tim in value.items():
+                        db.update_document(
+                            "ss_tim", tim, {"team_number": team_number, "match_number": match}
+                        )
 
-        log.info(f"{len(team_data)} items uploaded to {team_data}")
-        log.info(f"{len(tim_data)} items uploaded to {tim_data}")
+        log.info(f"{len(team_data)} items uploaded to ss_team")
+        log.info(f"{len(tim_data)} items uploaded to ss_tim")
 
+    if not devices:
+        return
     # Add QRs to database and make sure that only QRs that should be decompressed are added to queue
     data["qr"] = qr_code_uploader.upload_qr_codes(data["qr"])
 
