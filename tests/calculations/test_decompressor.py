@@ -206,7 +206,6 @@ class TestDecompressor:
                 "quickness_score": 1,
                 "field_awareness_score": 2,
                 "was_tippy": True,
-                "played_defense": False,
                 "climb_after": True,
             },
             {
@@ -220,7 +219,6 @@ class TestDecompressor:
                 "quickness_score": 3,
                 "field_awareness_score": 1,
                 "was_tippy": True,
-                "played_defense": False,
                 "climb_after": False,
             },
         ]
@@ -232,7 +230,7 @@ class TestDecompressor:
         )
         # Test subjective qr decompression
         assert expected_subjective == self.test_decompressor.decompress_single_qr(
-            f"A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B34$C1230$Dv1.3$EName$FTRUE%A1678$B1$C2$DTRUE$ETRUE$FFALSE#A254$B4$C1$DFALSE$EFALSE$FTRUE#A1323$B3$C1$DTRUE$EFALSE$FFALSE",
+            f"A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B34$C1230$Dv1.3$EName$FTRUE%A1678$B1$C2$DTRUE$ETRUE#A254$B4$C1$DFALSE$EFALSE#A1323$B3$C1$DTRUE$EFALSE",
             decompressor.QRType.SUBJECTIVE,
             {},
         )
@@ -308,7 +306,6 @@ class TestDecompressor:
                     "field_awareness_score": 2,
                     "was_tippy": True,
                     "climb_after": False,
-                    "played_defense": True,
                     "ulid": "01GWSXSNSF93BQZ2GRG0C4E7AC",
                 },
                 {
@@ -323,7 +320,6 @@ class TestDecompressor:
                     "field_awareness_score": 1,
                     "was_tippy": False,
                     "climb_after": True,
-                    "played_defense": False,
                     "ulid": "01GWSXSNSF93BQZ2GRG0C4E7AC",
                 },
                 {
@@ -338,7 +334,6 @@ class TestDecompressor:
                     "field_awareness_score": 1,
                     "was_tippy": True,
                     "climb_after": False,
-                    "played_defense": False,
                     "ulid": "01GWSXSNSF93BQZ2GRG0C4E7AC",
                 },
             ],
@@ -351,7 +346,7 @@ class TestDecompressor:
                     "override": {},
                 },
                 {
-                    "data": f"*A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B34$C1230$Dv1.3$EName$FTRUE%A1678$B1$C2$DTRUE$EFALSE$FTRUE#A254$B2$C1$DFALSE$ETRUE$FFALSE#A1323$B3$C1$DTRUE$EFALSE$FFALSE",
+                    "data": f"*A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B34$C1230$Dv1.3$EName$FTRUE%A1678$B1$C2$DTRUE$EFALSE#A254$B2$C1$DFALSE$ETRUE#A1323$B3$C1$DTRUE$EFALSE",
                     "ulid": "01GWSXSNSF93BQZ2GRG0C4E7AC",
                     "override": {},
                 },
@@ -491,7 +486,6 @@ class TestDecompressor:
                 "quickness_score": 2,
                 "field_awareness_score": 2,
                 "was_tippy": False,
-                "played_defense": False,
                 "climb_after": True,
                 "ulid": "01GWSYMT48K5P3BFF183GXB9C0",
             },
@@ -506,7 +500,6 @@ class TestDecompressor:
                 "quickness_score": 2,
                 "field_awareness_score": 3,
                 "was_tippy": False,
-                "played_defense": False,
                 "climb_after": True,
                 "ulid": "01GWSYMT48K5P3BFF183GXB9C0",
             },
@@ -521,7 +514,6 @@ class TestDecompressor:
                 "quickness_score": 3,
                 "field_awareness_score": 1,
                 "was_tippy": False,
-                "played_defense": False,
                 "climb_after": True,
                 "ulid": "01GWSYMT48K5P3BFF183GXB9C0",
             },
@@ -545,14 +537,14 @@ class TestDecompressor:
                     "readable_time": "2023-03-30 19:06:07.725000+00:00",
                 },
                 {
-                    "data": f"*A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B34$C1230$Dv1.3$EName$FFALSE%A1678$B2$C2$DFALSE$ETRUE$FFALSE#A254$B2$C3$DFALSE$ETRUE$FFALSE#A1323$B3$C1$DTRUE$ETRUE$FFALSE",
+                    "data": f"*A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B34$C1230$Dv1.3$EName%A1678$B2$C2$DFALSE$ETRUE#A254$B2$C3$DFALSE$ETRUE#A1323$B3$C1$DTRUE$ETRUE",
                     "blocklisted": True,
                     "override": {},
                     "ulid": "01GWSYM2JP9JMDFCRVCX49PNY0",
                     "readable_time": "2023-03-30 19:06:28.822000+00:00",
                 },
                 {
-                    "data": f"*A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B34$C1230$Dv1.3$EName$FFALSE%A1678$B2$C2$DFALSE$ETRUE$FFALSE#A254$B2$C3$DFALSE$ETRUE$FFALSE#A1323$B3$C1$DFALSE$ETRUE$FFALSE",
+                    "data": f"*A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B34$C1230$Dv1.3$EName%A1678$B2$C2$DFALSE$ETRUE#A254$B2$C3$DFALSE$ETRUE#A1323$B3$C1$DFALSE$ETRUE",
                     "blocklisted": False,
                     "override": {},
                     "ulid": "01GWSYMT48K5P3BFF183GXB9C0",
@@ -564,7 +556,7 @@ class TestDecompressor:
         result_obj = self.test_server.db.find("unconsolidated_obj_tim")
         result_sbj = self.test_server.db.find("subj_tim")
         assert len(result_obj) == 1
-        assert len(result_sbj) == 3
+        assert len(result_sbj) == 0
         result_obj = result_obj[0]
         result_obj.pop("_id")
         assert result_obj == expected_obj

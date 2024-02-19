@@ -242,8 +242,6 @@ CORRECT_SCHEMA_DATAPOINT_COLLECTIONS = [
         "mode_preloaded_gamepiece": ["O", "U"],
         "matches_tippy": 49,
         "lfm_matches_tippy": 49,
-        "matches_played_defense": 49,
-        "lfm_matches_played_defense": 49,
         "total_incap": 49,
         "lfm_total_incap": 49,
     },
