@@ -155,6 +155,22 @@ class ObjTIMCalcs(BaseCalculations):
                     total_time += start["time"] - end["time"]
             return total_time
 
+    def calc_cycle_time(self, tim, score_actions):
+        # Make start time and end time equal to when teleop and endgame started
+        start_time = self.filter_timeline_actions(tim, action_type="to_teleop")[0]["time"]
+        end_time = self.filter_timeline_actions(tim, action_type="to_endgame")[-1]["time"]
+        # Make total time equal to amount of time passed between teleop and endgame
+        total_time = end_time - start_time
+        # Tele actions are all the actions that occured in the time between the start time and end time
+        tele_actions = self.filter_timeline_actions(tim, **{"time": [start_time, end_time]})
+        num_score_actions = 0
+        # Filter for all scoring actions in teleop
+        for action in tele_actions:
+            if action["action_type"] in score_actions:
+                num_score_actions += 1
+        # Return number of seconds per action
+        return round(total_time / num_score_actions, 2)
+
     def score_fail_type(self, unconsolidated_tims: List[Dict]):
         for num_1, tim in enumerate(unconsolidated_tims):
             timeline = tim["timeline"]

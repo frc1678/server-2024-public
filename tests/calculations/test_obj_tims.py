@@ -184,13 +184,12 @@ class TestObjTIMCalcs:
             "team_number": "254",
             "scout_id": 17,
             "timeline": [
-                {"in_teleop": True, "time": 2, "action_type": "end_incap_time"},
+                {"in_teleop": False, "time": 2, "action_type": "end_incap_time"},
+                {"in_teleop": True, "time": 15, "action_type": "to_teleop"},
                 {"in_teleop": True, "time": 35, "action_type": "start_incap_time"},
                 {"in_teleop": True, "time": 51, "action_type": "score_speaker"},
                 {"in_teleop": True, "time": 60, "action_type": "score_fail"},
                 {"in_teleop": True, "time": 61, "action_type": "score_speaker"},
-                {"in_teleop": True, "time": 68, "action_type": "score_amp"},
-                {"in_teleop": True, "time": 70, "action_type": "score_speaker"},
                 {"in_teleop": True, "time": 75, "action_type": "intake_amp"},
                 {"in_teleop": True, "time": 79, "action_type": "score_speaker"},
                 {"in_teleop": True, "time": 81, "action_type": "intake_poach"},
@@ -201,6 +200,7 @@ class TestObjTIMCalcs:
                 {"in_teleop": True, "time": 125, "action_type": "amplified"},
                 {"in_teleop": True, "time": 130, "action_type": "end_incap_time"},
                 {"in_teleop": True, "time": 132, "action_type": "start_incap_time"},
+                {"in_teleop": False, "time": 137, "action_type": "to_endgame"},
                 {"in_teleop": False, "time": 138, "action_type": "auto_intake_spike_1"},
                 {"in_teleop": False, "time": 139, "action_type": "auto_intake_spike_2"},
                 {"in_teleop": False, "time": 141, "action_type": "score_amp"},
@@ -240,6 +240,7 @@ class TestObjTIMCalcs:
             "scout_id": 17,
             "timeline": [
                 {"in_teleop": True, "time": 2, "action_type": "end_incap_time"},
+                {"in_teleop": True, "time": 20, "action_type": "to_teleop"},
                 {"in_teleop": True, "time": 35, "action_type": "start_incap_time"},
                 {"in_teleop": True, "time": 50, "action_type": "score_fail"},
                 {"in_teleop": True, "time": 51, "action_type": "score_amp"},
@@ -254,8 +255,7 @@ class TestObjTIMCalcs:
                 {"in_teleop": True, "time": 105, "action_type": "intake_far"},
                 {"in_teleop": True, "time": 117, "action_type": "score_amp"},
                 {"in_teleop": True, "time": 125, "action_type": "amplified"},
-                {"in_teleop": True, "time": 130, "action_type": "end_incap_time"},
-                {"in_teleop": True, "time": 132, "action_type": "start_incap_time"},
+                {"in_teleop": False, "time": 133, "action_type": "to_endgame"},
                 {"in_teleop": False, "time": 138, "action_type": "auto_intake_spike_1"},
                 {"in_teleop": False, "time": 139, "action_type": "auto_intake_spike_2"},
                 {"in_teleop": False, "time": 141, "action_type": "score_amp"},
@@ -290,14 +290,13 @@ class TestObjTIMCalcs:
             "team_number": "254",
             "scout_id": 17,
             "timeline": [
-                {"in_teleop": True, "time": 2, "action_type": "end_incap_time"},
+                {"in_teleop": False, "time": 2, "action_type": "end_incap_time"},
+                {"in_teleop": True, "time": 44, "action_type": "to_teleop"},
                 {"in_teleop": True, "time": 45, "action_type": "start_incap_time"},
                 {"in_teleop": True, "time": 51, "action_type": "score_speaker"},
                 {"in_teleop": True, "time": 60, "action_type": "score_fail"},
                 {"in_teleop": True, "time": 61, "action_type": "score_speaker"},
                 {"in_teleop": True, "time": 63, "action_type": "intake_far"},
-                {"in_teleop": True, "time": 65, "action_type": "score_amplify"},
-                {"in_teleop": True, "time": 75, "action_type": "intake_amp"},
                 {"in_teleop": True, "time": 79, "action_type": "score_speaker"},
                 {"in_teleop": True, "time": 81, "action_type": "intake_poach"},
                 {"in_teleop": True, "time": 94, "action_type": "intake_center"},
@@ -307,6 +306,7 @@ class TestObjTIMCalcs:
                 {"in_teleop": True, "time": 125, "action_type": "score_amplify"},
                 {"in_teleop": True, "time": 130, "action_type": "end_incap_time"},
                 {"in_teleop": True, "time": 132, "action_type": "start_incap_time"},
+                {"in_teleop": False, "time": 134, "action_type": "to_endgame"},
                 {"in_teleop": False, "time": 138, "action_type": "auto_intake_spike_1"},
                 {"in_teleop": False, "time": 139, "action_type": "auto_intake_spike_2"},
                 {"in_teleop": False, "time": 141, "action_type": "score_amp"},
@@ -427,13 +427,12 @@ class TestObjTIMCalcs:
     def test_filter_timeline_actions(self):
         actions = self.test_calculator.filter_timeline_actions(self.unconsolidated_tims[0])
         assert actions == [
-            {"in_teleop": True, "time": 2, "action_type": "end_incap_time"},
+            {"in_teleop": False, "time": 2, "action_type": "end_incap_time"},
+            {"in_teleop": True, "time": 15, "action_type": "to_teleop"},
             {"in_teleop": True, "time": 35, "action_type": "start_incap_time"},
             {"in_teleop": True, "time": 51, "action_type": "score_speaker"},
             {"in_teleop": True, "time": 60, "action_type": "score_fail"},
             {"in_teleop": True, "time": 61, "action_type": "score_speaker"},
-            {"in_teleop": True, "time": 68, "action_type": "score_amp"},
-            {"in_teleop": True, "time": 70, "action_type": "score_speaker"},
             {"in_teleop": True, "time": 75, "action_type": "intake_amp"},
             {"in_teleop": True, "time": 79, "action_type": "score_speaker"},
             {"in_teleop": True, "time": 81, "action_type": "intake_poach"},
@@ -444,6 +443,7 @@ class TestObjTIMCalcs:
             {"in_teleop": True, "time": 125, "action_type": "amplified"},
             {"in_teleop": True, "time": 130, "action_type": "end_incap_time"},
             {"in_teleop": True, "time": 132, "action_type": "start_incap_time"},
+            {"in_teleop": False, "time": 137, "action_type": "to_endgame"},
             {"in_teleop": False, "time": 138, "action_type": "auto_intake_spike_1"},
             {"in_teleop": False, "time": 139, "action_type": "auto_intake_spike_2"},
             {"in_teleop": False, "time": 141, "action_type": "score_amp"},
@@ -471,11 +471,22 @@ class TestObjTIMCalcs:
             total_time(self.unconsolidated_tims[2], "start_incap_time", "end_incap_time", 8) == 43
         )
 
+    def test_calc_cycle_time(self):
+        assert 30.5 == self.test_calculator.calc_cycle_time(
+            self.unconsolidated_tims[0], ["score_amp", "score_speaker", "score_amplify"]
+        )
+        assert 18.83 == self.test_calculator.calc_cycle_time(
+            self.unconsolidated_tims[1], ["score_amp", "score_speaker", "score_amplify"]
+        )
+        assert 22.5 == self.test_calculator.calc_cycle_time(
+            self.unconsolidated_tims[2], ["score_amp", "score_speaker", "score_amplify"]
+        )
+
     def test_score_fail_type(self):
         score_fails = self.test_calculator.score_fail_type(self.unconsolidated_tims)
-        assert score_fails[0]["timeline"][4]["action_type"] == "score_fail_speaker"
-        assert score_fails[1]["timeline"][3]["action_type"] == "score_fail_amp"
-        assert score_fails[2]["timeline"][14]["action_type"] == "score_fail_amplify"
+        assert score_fails[0]["timeline"][5]["action_type"] == "score_fail_speaker"
+        assert score_fails[1]["timeline"][4]["action_type"] == "score_fail_amp"
+        assert score_fails[2]["timeline"][13]["action_type"] == "score_fail_amplify"
 
     def test_calculate_aggregates(self):
         aggregated_values = self.test_calculator.calculate_aggregates(self.calculated_tim_data)
@@ -688,16 +699,9 @@ class TestObjTIMCalcs:
         ]
         assert harmonized_teams == expected_result
 
-    def test_calculate_cycle_times(self):
+    def test_calculate_tim_times(self):
         calculated_tim = self.test_calculator.calculate_tim_times(self.unconsolidated_tims)
-        assert calculated_tim["time_from_amp_to_amp"] == 7
-        assert calculated_tim["time_from_amp_to_speaker"] == 24
-        assert calculated_tim["time_from_poach_to_amp"] == 13
-        assert calculated_tim["time_from_poach_to_speaker"] == 30
-        assert calculated_tim["time_from_center_to_amp"] == 26
-        assert calculated_tim["time_from_center_to_speaker"] == 43
-        assert calculated_tim["time_from_far_to_amp"] == 37
-        assert calculated_tim["time_from_far_to_speaker"] == 39
+        assert calculated_tim["incap_time"] == 33
 
     def test_run_consolidation(self):
         self.test_server.db.insert_documents("unconsolidated_obj_tim", self.unconsolidated_tims)
@@ -713,9 +717,9 @@ class TestObjTIMCalcs:
         assert calculated_tim["auto_total_intakes"] == 8
         assert calculated_tim["auto_total_pieces"] == 4
         assert calculated_tim["tele_total_intakes"] == 4
-        assert calculated_tim["tele_total_pieces"] == 3
+        assert calculated_tim["tele_total_pieces"] == 2
         assert calculated_tim["total_intakes"] == 12
-        assert calculated_tim["total_pieces"] == 7
+        assert calculated_tim["total_pieces"] == 6
         assert calculated_tim["start_position"] == "1"
         assert calculated_tim["has_preload"] == False
 
