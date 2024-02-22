@@ -2,7 +2,6 @@ from calculations import predicted_aim
 from unittest.mock import patch
 import server
 import pytest
-from utils import near
 
 
 class TestPredictedAimCalc:
@@ -78,9 +77,9 @@ class TestPredictedAimCalc:
             {
                 "match_number": 1,
                 "alliance_color_is_red": True,
-                "predicted_score": 308.15,
+                "predicted_score": 259.15,
                 "predicted_rp1": 3.611,
-                "predicted_rp2": 0.49,
+                "predicted_rp2": 0.56,
                 "win_chance": 0.773,
                 "actual_score": 320,
                 "actual_rp1": 0.0,
@@ -92,9 +91,9 @@ class TestPredictedAimCalc:
             {
                 "match_number": 1,
                 "alliance_color_is_red": False,
-                "predicted_score": 257.15,
+                "predicted_score": 239.817,
                 "predicted_rp1": 3.389,
-                "predicted_rp2": 1.0,
+                "predicted_rp2": 0.9,
                 "win_chance": 0.22699999999999998,
                 "actual_score": 278,
                 "actual_rp1": 1.0,
@@ -106,9 +105,9 @@ class TestPredictedAimCalc:
             {
                 "match_number": 2,
                 "alliance_color_is_red": True,
-                "predicted_score": 298.75,
+                "predicted_score": 267.972,
                 "predicted_rp1": 3.778,
-                "predicted_rp2": 0.5,
+                "predicted_rp2": 0.9,
                 "win_chance": 0.736,
                 "actual_score": 0,
                 "actual_rp1": 0.0,
@@ -120,9 +119,9 @@ class TestPredictedAimCalc:
             {
                 "match_number": 2,
                 "alliance_color_is_red": False,
-                "predicted_score": 266.55,
+                "predicted_score": 226.883,
                 "predicted_rp1": 3.222,
-                "predicted_rp2": 0.7,
+                "predicted_rp2": 0.8,
                 "win_chance": 0.264,
                 "actual_score": 0,
                 "actual_rp1": 0.0,
@@ -134,9 +133,9 @@ class TestPredictedAimCalc:
             {
                 "match_number": 3,
                 "alliance_color_is_red": True,
-                "predicted_score": 282.45,
+                "predicted_score": 246.78300000000002,
                 "predicted_rp1": 3.5,
-                "predicted_rp2": 0.7,
+                "predicted_rp2": 0.8,
                 "win_chance": 0.5,
                 "actual_score": 0,
                 "actual_rp1": 0.0,
@@ -148,9 +147,9 @@ class TestPredictedAimCalc:
             {
                 "match_number": 3,
                 "alliance_color_is_red": False,
-                "predicted_score": 282.85,
+                "predicted_score": 242.398,
                 "predicted_rp1": 3.5,
-                "predicted_rp2": 0.7,
+                "predicted_rp2": 0.9,
                 "win_chance": 0.5,
                 "actual_score": 0,
                 "actual_rp1": 0.0,
@@ -165,25 +164,25 @@ class TestPredictedAimCalc:
                 "alliance_num": 1,
                 "picks": ["1678", "254", "4414"],
                 "predicted_auto_score": 35.8,
-                "predicted_tele_score": 253.0,
-                "predicted_stage_score": 24,
-                "predicted_score": 312.8,
+                "predicted_score": 263.8,
+                "predicted_stage_score": 19,
+                "predicted_tele_score": 209.0,
             },
             {
                 "alliance_num": 9,
                 "picks": ["1678", "254", "4414"],
                 "predicted_auto_score": 35.8,
-                "predicted_tele_score": 253.0,
-                "predicted_stage_score": 24,
-                "predicted_score": 312.8,
+                "predicted_score": 263.8,
+                "predicted_stage_score": 19,
+                "predicted_tele_score": 209.0,
             },
             {
                 "alliance_num": 17,
                 "picks": ["1678", "254", "4414"],
                 "predicted_auto_score": 35.8,
-                "predicted_tele_score": 253.0,
-                "predicted_stage_score": 24,
-                "predicted_score": 312.8,
+                "predicted_score": 263.8,
+                "predicted_stage_score": 19,
+                "predicted_tele_score": 209.0,
             },
         ]
         self.expected_results = [
@@ -195,8 +194,8 @@ class TestPredictedAimCalc:
                 "actual_score": 320,
                 "has_actual_data": True,
                 "predicted_rp1": 3.611,
-                "predicted_rp2": 0.49,
-                "predicted_score": 308.15,
+                "predicted_rp2": 0.56,
+                "predicted_score": 259.15,
                 "team_numbers": ["1678", "254", "4414"],
                 "win_chance": 0.773,
                 "won_match": True,
@@ -209,8 +208,8 @@ class TestPredictedAimCalc:
                 "actual_score": 278,
                 "has_actual_data": True,
                 "predicted_rp1": 3.389,
-                "predicted_rp2": 1.0,
-                "predicted_score": 257.15,
+                "predicted_rp2": 0.9,
+                "predicted_score": 239.817,
                 "team_numbers": ["125", "1323", "5940"],
                 "win_chance": 0.22699999999999998,
                 "won_match": False,
@@ -223,8 +222,8 @@ class TestPredictedAimCalc:
                 "actual_score": 0,
                 "has_actual_data": False,
                 "predicted_rp1": 3.778,
-                "predicted_rp2": 0.5,
-                "predicted_score": 298.75,
+                "predicted_rp2": 0.9,
+                "predicted_score": 267.972,
                 "team_numbers": ["1678", "1323", "125"],
                 "win_chance": 0.736,
                 "won_match": False,
@@ -237,8 +236,8 @@ class TestPredictedAimCalc:
                 "actual_score": 0,
                 "has_actual_data": False,
                 "predicted_rp1": 3.222,
-                "predicted_rp2": 0.7,
-                "predicted_score": 266.55,
+                "predicted_rp2": 0.8,
+                "predicted_score": 226.883,
                 "team_numbers": ["254", "4414", "5940"],
                 "win_chance": 0.264,
                 "won_match": False,
@@ -251,8 +250,8 @@ class TestPredictedAimCalc:
                 "actual_score": 0,
                 "has_actual_data": False,
                 "predicted_rp1": 3.5,
-                "predicted_rp2": 0.7,
-                "predicted_score": 282.45,
+                "predicted_rp2": 0.8,
+                "predicted_score": 246.78300000000002,
                 "team_numbers": ["1678", "5940", "4414"],
                 "win_chance": 0.5,
                 "won_match": False,
@@ -265,8 +264,8 @@ class TestPredictedAimCalc:
                 "actual_score": 0,
                 "has_actual_data": False,
                 "predicted_rp1": 3.5,
-                "predicted_rp2": 0.7,
-                "predicted_score": 282.85,
+                "predicted_rp2": 0.9,
+                "predicted_score": 242.398,
                 "team_numbers": ["1323", "254", "125"],
                 "win_chance": 0.5,
                 "won_match": False,
@@ -299,8 +298,9 @@ class TestPredictedAimCalc:
                 "stage_percent_success_all": 50,
                 "parked_percent": 33,
                 "climb_after_percent_success": 0,
-                "trap_percent_success": 100,
+                "trap_percent_success": 80,
                 "endgame_avg_total_points": 5,
+                "avg_cycle_time": 6,
             },
             {
                 "team_number": "254",
@@ -318,8 +318,9 @@ class TestPredictedAimCalc:
                 "stage_percent_success_all": 70,
                 "parked_percent": 0,
                 "climb_after_percent_success": 20,
-                "trap_percent_success": 100,
+                "trap_percent_success": 80,
                 "endgame_avg_total_points": 6,
+                "avg_cycle_time": 8,
             },
             {
                 "team_number": "4414",
@@ -337,8 +338,9 @@ class TestPredictedAimCalc:
                 "stage_percent_success_all": 70,
                 "parked_percent": 0,
                 "climb_after_percent_success": 20,
-                "trap_percent_success": 100,
+                "trap_percent_success": 20,
                 "endgame_avg_total_points": 6,
+                "avg_cycle_time": 7,
             },
             {
                 "team_number": "1323",
@@ -356,8 +358,9 @@ class TestPredictedAimCalc:
                 "stage_percent_success_all": 50,
                 "parked_percent": 33,
                 "climb_after_percent_success": 0,
-                "trap_percent_success": 100,
+                "trap_percent_success": 90,
                 "endgame_avg_total_points": 5,
+                "avg_cycle_time": 9,
             },
             {
                 "team_number": "125",
@@ -377,6 +380,7 @@ class TestPredictedAimCalc:
                 "climb_after_percent_success": 0,
                 "trap_percent_success": 0,
                 "endgame_avg_total_points": 5,
+                "avg_cycle_time": 11,
             },
             {
                 "team_number": "5940",
@@ -396,6 +400,7 @@ class TestPredictedAimCalc:
                 "climb_after_percent_success": 0,
                 "trap_percent_success": 0,
                 "endgame_avg_total_points": 5,
+                "avg_cycle_time": 5,
             },
         ]
         self.tba_team = [
@@ -501,7 +506,7 @@ class TestPredictedAimCalc:
         total_score = 0
         for field in values.__dict__.keys():
             total_score += getattr(values, field) * self.test_calc.POINT_VALUES[field]
-        assert total_score == 309.83
+        assert total_score == 303.83
         # Make sure there are no errors with empty data
         try:
             self.test_calc.calc_alliance_score(
@@ -520,10 +525,10 @@ class TestPredictedAimCalc:
         ):
             assert self.test_calc.get_playoffs_alliances() == self.expected_playoffs_alliances
 
-    def test_calculate_predicted_ensemble_rp(self):
-        assert self.test_calc.calc_ensemble_rp(self.obj_team, ["1678", "254", "4414"]) == 0.49
+    def test_calc_ensemble_rp(self):
+        assert self.test_calc.calc_ensemble_rp(self.obj_team, ["1678", "254", "4414"]) == 0.56
 
-    def test_calculate_predicted_melody_rp(self):
+    def test_calc_melody_rp(self):
         sample_predicted_values = self.blank_predicted_values
         sample_predicted_values.auto_amp = 2
         sample_predicted_values.tele_speaker = 12
@@ -603,7 +608,7 @@ class TestPredictedAimCalc:
             "data_transfer.tba_communicator.tba_request",
             return_value=self.tba_match_data,
         ):
-            assert (self.test_calc.update_predicted_aim(self.aims_list)) == self.expected_updates
+            assert self.test_calc.update_predicted_aim(self.aims_list) == self.expected_updates
 
     def test_update_playoffs_alliances(self):
         """Test that we correctly calculate data for each of the playoff alliances"""
@@ -612,8 +617,7 @@ class TestPredictedAimCalc:
             "calculations.predicted_aim.PredictedAimCalc.get_playoffs_alliances",
             return_value=self.expected_playoffs_alliances,
         ):
-            playoff_update = self.test_calc.update_playoffs_alliances()
-        assert playoff_update == self.expected_playoffs_updates
+            assert self.test_calc.update_playoffs_alliances() == self.expected_playoffs_updates
 
     def test_calc_win_chance(self):
         assert (

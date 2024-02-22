@@ -17,7 +17,6 @@ log.addHandler(server_log)
 
 
 # Data class to score alliance scores, used in prediction calculations
-# @dataclasses.dataclass
 class PredictedAimScores:
     # Allows setting score values when initializing class
     def __init__(self, **kwargs):
@@ -115,20 +114,47 @@ class PredictedAimCalc(BaseCalculations):
 
         return round(auto_score, 3)
 
-    def calc_alliance_tele_score(self, predicted_values):
+    def calc_alliance_tele_score(self, obj_team, team_numbers):
         """Calculates the predicted tele score for an alliance.
 
-        predicted_values is a dataclass which stores the predicted number of notes scored and success rates.
+        predicted_values: dataclass which stores the predicted number of notes scored and success rates.
+
+        obj_team: all the obj_team data from the database
+
+        team_numbers: list of teams in the alliance
 
         This function must be run after predicted_values is populated.
         """
+        tele_schema = self.schema["tele_fields"]
+        alliance_data = []
+
+        for team in team_numbers:
+            obj = list(filter(lambda obj_item: obj_item["team_number"] == team, obj_team))
+            if obj != []:
+                obj = obj[0]
+            else:
+                log.critical(f"No obj_team data found for team {team} in alliance {team_numbers}")
+                alliance_data.append({var: 0 for var in tele_schema.keys()})
+                continue
+            alliance_data.append({var: obj[var] for var in tele_schema.keys()})
+
+        # Calculate average points per piece in an amplified cycle
+        speakers_per_amped = [10 / team["avg_cycle_time"] for team in alliance_data]
+        speakers_per_amped = sum(speakers_per_amped)
+        if speakers_per_amped > 4:
+            speakers_per_amped = 4
+        avg_points_per_piece = (2 + speakers_per_amped * 5) / (2 + speakers_per_amped)
+
+        # Calculate avg points * pieces scored
         tele_score = 0
-        # Uses dataclasses.asdict to create key: value pairs for predicted datapoints
-        for data_field in predicted_values.__dict__.keys():
-            # Filters auto endgame scores
-            if "tele" in data_field:
-                # Adds to tele score
-                tele_score += getattr(predicted_values, data_field) * self.POINT_VALUES[data_field]
+        for team in alliance_data:
+            tele_score += sum(
+                [
+                    team[var] * avg_points_per_piece
+                    for var in tele_schema.keys()
+                    if "cycle_time" not in var
+                ]
+            )
 
         return round(tele_score, 3)
 
@@ -299,10 +325,6 @@ class PredictedAimCalc(BaseCalculations):
         obj_team_data: list of obj_team data from the database
 
         team_numbers: (if calculating for a full alliance) list of three team numbers in the alliance, e.g. ['1678', '254', '4414']
-                        (if calculating a single team) team number contained in a list
-
-        If calculating for a full alliance, returns alliance_data, a list of dictionaries containing variables for each team
-        If calculating for a single team, returns dictionary containing data for that team
         """
         fields = self.schema["endgame_fields"]
 
@@ -310,7 +332,6 @@ class PredictedAimCalc(BaseCalculations):
         alliance_data = []
         # Populate alliance_data with variables needed to calculate the RP
         for team in team_numbers:
-            new_team = {}
             obj_data = list(
                 filter(lambda team_data: team_data["team_number"] == team, obj_team_data)
             )
@@ -323,9 +344,9 @@ class PredictedAimCalc(BaseCalculations):
                 alliance_data.append({field: 0 for field in fields.keys()})
                 continue
             # Collect needed obj_team variables for each team in the alliance
-            for field, vars in fields.items():
-                new_team[field] = obj_data[vars["var"]] / 100
-            alliance_data.append(new_team)
+            alliance_data.append(
+                {field: obj_data[vars["var"]] / 100 for field, vars in fields.items()}
+            )
         return alliance_data
 
     def calc_ensemble_rp(self, obj_team_data, team_numbers):
@@ -341,19 +362,17 @@ class PredictedAimCalc(BaseCalculations):
 
         # Method 1: trap + 2 climb
         # P1 = P(Bc)P(At)
-
         # list of (climb_rate, trap_rate)
         climb_trap_rates = [(team["onstage_rate"], team["trap_rate"]) for team in alliance_data]
         possible_combos = []
         orders = [(0, 1), (1, 0), (1, 2), (2, 1), (0, 2), (2, 0)]
         # Calculate all possible climb + trap combos of different teams
         for order in orders:
-            possible_combos.append(climb_trap_rates[order[0]][0] * climb_trap_rates[order[1]][0])
+            possible_combos.append(climb_trap_rates[order[0]][0] * climb_trap_rates[order[1]][1])
         prob_1 = max(possible_combos)
+
         # Method 2: harmony + climb
         # P2 = P(Ac)P(Bb)P(Cc)
-        # TODO: get climb_after success rate. This can be done during consolidations as we collect if they climb or climb_after in the match.
-        #       For now, assume P(Bb) = |Bb| / (|Bc| - 2), cap at 1
         # list of (climb_rate, climb_after_rate)
         climb_buddy_rates = [
             (team["onstage_rate"], team["climb_after_rate"]) for team in alliance_data
@@ -368,13 +387,13 @@ class PredictedAimCalc(BaseCalculations):
                 * climb_buddy_rates[order[2]][1]
             )
         prob_2 = max(possible_combos)
+
         return round(max(prob_1, prob_2), 3)
 
     def calc_melody_rp(self, predicted_values):
         """Calculates the expected melody RP for an alliance.
 
         predicted_values: populated alliance score dataclass"""
-        # TODO: ADD COOPERTITION
         total_gamepieces = (
             predicted_values.auto_amp
             + predicted_values.auto_speaker
@@ -413,14 +432,10 @@ class PredictedAimCalc(BaseCalculations):
                     alliance_color = "blue"
                 actual_match_dict["actual_score"] = actual_aim[alliance_color]["totalPoints"]
                 # TBA stores RPs as booleans. If the RP is true, they get 1 RP, otherwise they get 0.
-                # TODO: re-implement this when we update to TBA 2024
-                try:
-                    if actual_aim[alliance_color]["melodyBonusAchieved"]:
-                        actual_match_dict["actual_rp1"] = 1.0
-                    if actual_aim[alliance_color]["ensembleBonusAchieved"]:
-                        actual_match_dict["actual_rp2"] = 1.0
-                except:
-                    pass
+                if actual_aim[alliance_color]["melodyBonusAchieved"]:
+                    actual_match_dict["actual_rp1"] = 1.0
+                if actual_aim[alliance_color]["ensembleBonusAchieved"]:
+                    actual_match_dict["actual_rp2"] = 1.0
                 # Gets whether the alliance won the match by checking the winning alliance against the alliance color/
                 actual_match_dict["won_match"] = match["winning_alliance"] == alliance_color
                 # Sets actual_match_data to true once the actual data has been pulled
@@ -483,7 +498,7 @@ class PredictedAimCalc(BaseCalculations):
                 obj_data = list(
                     filter(lambda team_data: team_data["team_number"] == team, obj_team)
                 )
-                if len(obj_data) > 0:
+                if obj_data != []:
                     obj_data = obj_data[0]
                 else:
                     log.critical(
@@ -544,7 +559,7 @@ class PredictedAimCalc(BaseCalculations):
                         filtered_aims_list,
                     )
                 )
-                if len(other_aim) == 1:
+                if other_aim != []:
                     other_aim = other_aim[0]
                 else:
                     log.critical(
@@ -573,17 +588,16 @@ class PredictedAimCalc(BaseCalculations):
                 # Calculate scores
                 update["predicted_score"] = (
                     self.calc_alliance_auto_score(aim_predicted_values, other_aim_predicted_values)
-                    + self.calc_alliance_tele_score(aim_predicted_values)
+                    + self.calc_alliance_tele_score(obj_team, aim["team_list"])
                     + self.calc_alliance_stage_score(obj_team, aim["team_list"])
                 )
                 other_update["predicted_score"] = (
                     self.calc_alliance_auto_score(other_aim_predicted_values, aim_predicted_values)
-                    + self.calc_alliance_tele_score(other_aim_predicted_values)
+                    + self.calc_alliance_tele_score(obj_team, other_aim["team_list"])
                     + self.calc_alliance_stage_score(obj_team, other_aim["team_list"])
                 )
 
                 # Calculate RPs
-                # TODO: check TBA for rp1 and rp2
                 update["predicted_rp1"] = self.calc_melody_rp(aim_predicted_values)
                 update["predicted_rp2"] = self.calc_ensemble_rp(obj_team, aim["team_list"])
                 other_update["predicted_rp1"] = self.calc_melody_rp(other_aim_predicted_values)
@@ -647,7 +661,9 @@ class PredictedAimCalc(BaseCalculations):
             update["predicted_auto_score"] = self.calc_alliance_auto_score(
                 predicted_values, cap=False
             )
-            update["predicted_tele_score"] = self.calc_alliance_tele_score(predicted_values)
+            update["predicted_tele_score"] = self.calc_alliance_tele_score(
+                obj_team, alliance["picks"]
+            )
             update["predicted_stage_score"] = self.calc_alliance_stage_score(
                 obj_team, alliance["picks"]
             )
