@@ -178,8 +178,8 @@ class ObjTIMCalcs(BaseCalculations):
                     round(total_time / num_score_actions, 2) if num_score_actions != 0 else 0
                 )
             total_times.append(cycle_times)
-        unconsolidated_values = []
         for key in list(total_times[0].keys()):
+            unconsolidated_values = []
             for tim in total_times:
                 unconsolidated_values.append(tim[key])
             calculated_tim[key] = self.consolidate_nums(unconsolidated_values)
