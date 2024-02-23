@@ -41,9 +41,11 @@ class TBATeamCalc(base_calculations.BaseCalculations):
         lfm = sorted(matches, key=lambda tim: matches[tim]["match_number"])[-4:]
         out = {}
         for name, keys in self.SCHEMA["counts"].items():
+            match_count = 0
             count = 0
             schema_entry = keys["tim_fields"]
             for match in matches.values():
+                match_count += 1
                 # Check for TBA TIM and objective TIM fields in the match
                 # Skip match if either field is missing to avoid inaccurate data
                 if not ("leave" in match):
@@ -74,6 +76,7 @@ class TBATeamCalc(base_calculations.BaseCalculations):
                         count += 1
 
             out[name] = count
+            out["leave_success_rate"] = out["leave_successes"] / (match_count)
         return out
 
     def calculate_cc(self, cc_type, precision: int = 2) -> Dict[str, float]:
