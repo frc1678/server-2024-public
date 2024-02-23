@@ -17,6 +17,7 @@ def test_predict_alliance():
             "tele_avg_amplified": 11.2,
             "tele_avg_amp": 2.0,
             "avg_trap": 1.0,
+            "avg_cycle_time": 20.0,
             "trap_successes": 1,
             "trap_fails": 3,
             "trap_percent_success": 100,
@@ -36,6 +37,7 @@ def test_predict_alliance():
             "tele_avg_amplified": 8.2,
             "tele_avg_amp": 3.6,
             "avg_trap": 0.2,
+            "avg_cycle_time": 25.0,
             "trap_successes": 2,
             "trap_fails": 1,
             "trap_percent_success": 50,
@@ -55,6 +57,7 @@ def test_predict_alliance():
             "tele_avg_amplified": 4.4,
             "tele_avg_amp": 3.2,
             "avg_trap": 0.6,
+            "avg_cycle_time": 30.0,
             "trap_successes": 0,
             "trap_fails": 3,
             "trap_percent_success": 0,
@@ -81,10 +84,10 @@ def test_predict_alliance():
         },
     ]
     expected_return = {
-        "predicted_score": 156.4,
+        "predicted_score": 113.51599999999999,
         "predicted_auto_score": 4.8,
         "predicted_stage_score": 14,
-        "predicted_tele_score": 137.6,
+        "predicted_tele_score": 94.716,
     }
     assert (
         predict_alliance(

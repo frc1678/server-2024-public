@@ -22,7 +22,7 @@ def predict_alliance(team1, team2, team3, server, obj_team_data, tba_team_data):
     )
     output["predicted_auto_score"] = calc.calc_alliance_auto_score(predicted_values)
     output["predicted_stage_score"] = calc.calc_alliance_stage_score(obj_team_data, team_numbers)
-    output["predicted_tele_score"] = calc.calc_alliance_tele_score(predicted_values)
+    output["predicted_tele_score"] = calc.calc_alliance_tele_score(obj_team_data, team_numbers)
     output["predicted_score"] = (
         output["predicted_auto_score"]
         + output["predicted_stage_score"]
