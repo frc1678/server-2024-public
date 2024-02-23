@@ -64,6 +64,7 @@ class TestOBJTeamCalc:
                 "time_from_center_to_speaker": 0,
                 "time_from_far_to_amp": 0,
                 "time_from_far_to_speaker": 0,
+                "harmonized": True,
             },
             {
                 "match_number": 2,
@@ -108,6 +109,7 @@ class TestOBJTeamCalc:
                 "time_from_center_to_speaker": 0,
                 "time_from_far_to_amp": 0,
                 "time_from_far_to_speaker": 0,
+                "harmonized": True,
             },
             {
                 "match_number": 3,
@@ -152,6 +154,7 @@ class TestOBJTeamCalc:
                 "time_from_center_to_speaker": 0,
                 "time_from_far_to_amp": 0,
                 "time_from_far_to_speaker": 0,
+                "harmonized": True,
             },
             {
                 "match_number": 4,
@@ -196,6 +199,7 @@ class TestOBJTeamCalc:
                 "time_from_center_to_speaker": 0,
                 "time_from_far_to_amp": 0,
                 "time_from_far_to_speaker": 0,
+                "harmonized": True,
             },
             {
                 "match_number": 5,
@@ -240,6 +244,7 @@ class TestOBJTeamCalc:
                 "time_from_center_to_speaker": 0,
                 "time_from_far_to_amp": 0,
                 "time_from_far_to_speaker": 0,
+                "harmonized": True,
             },
         ]
 
@@ -376,6 +381,7 @@ class TestOBJTeamCalc:
                 "time_from_center_to_speaker": 0,
                 "time_from_far_to_amp": 0,
                 "time_from_far_to_speaker": 0,
+                "harmonized": True,
             },
             {
                 "match_number": 2,
@@ -420,6 +426,7 @@ class TestOBJTeamCalc:
                 "time_from_center_to_speaker": 0,
                 "time_from_far_to_amp": 0,
                 "time_from_far_to_speaker": 0,
+                "harmonized": True,
             },
             {
                 "match_number": 3,
@@ -464,6 +471,7 @@ class TestOBJTeamCalc:
                 "time_from_center_to_speaker": 0,
                 "time_from_far_to_amp": 0,
                 "time_from_far_to_speaker": 0,
+                "harmonized": True,
             },
             {
                 "match_number": 4,
@@ -508,6 +516,7 @@ class TestOBJTeamCalc:
                 "time_from_center_to_speaker": 0,
                 "time_from_far_to_amp": 0,
                 "time_from_far_to_speaker": 0,
+                "harmonized": True,
             },
             {
                 "match_number": 5,
@@ -552,6 +561,7 @@ class TestOBJTeamCalc:
                 "time_from_center_to_speaker": 0,
                 "time_from_far_to_amp": 0,
                 "time_from_far_to_speaker": 0,
+                "harmonized": True,
             },
         ]
 
@@ -641,6 +651,7 @@ class TestOBJTeamCalc:
                 "incap_time": 0,
                 "trap": "F",
                 "parked": False,
+                "harmonized": False,
             },
             {
                 "start_position": "2",
@@ -652,6 +663,7 @@ class TestOBJTeamCalc:
                 "match_number": 2,
                 "trap": "F",
                 "parked": True,
+                "harmonized": False,
             },
             {
                 "start_position": "2",
@@ -663,6 +675,7 @@ class TestOBJTeamCalc:
                 "incap_time": 1,
                 "trap": "N",
                 "parked": False,
+                "harmonized": False,
             },
             {
                 "start_position": "0",
@@ -674,6 +687,7 @@ class TestOBJTeamCalc:
                 "incap_time": 0,
                 "trap": "N",
                 "parked": True,
+                "harmonized": False,
             },
             {
                 "start_position": "2",
@@ -685,6 +699,7 @@ class TestOBJTeamCalc:
                 "incap_time": 0,
                 "trap": "S",
                 "parked": False,
+                "harmonized": False,
             },
         ]
         lfm_tims = [tim for tim in tims if tim["match_number"] > 1]
@@ -743,6 +758,8 @@ class TestOBJTeamCalc:
             "lfm_matches_incap_time": 0,
             "lfm_preloaded_starts": 3,
             "lfm_matches_incap_time": 1,
+            "matches_harmonized": 0,
+            "lfm_matches_harmonized": 0,
         }
         assert self.test_calc.calculate_counts(tims, lfm_tims) == expected_output
 
@@ -919,6 +936,7 @@ class TestOBJTeamCalc:
                 "time_from_center_to_speaker": 0,
                 "time_from_far_to_amp": 0,
                 "time_from_far_to_speaker": 0,
+                "harmonized": True,
             },
             {
                 "match_number": 2,
@@ -962,6 +980,7 @@ class TestOBJTeamCalc:
                 "time_from_center_to_speaker": 0,
                 "time_from_far_to_amp": 0,
                 "time_from_far_to_speaker": 0,
+                "harmonized": True,
             },
             {
                 "match_number": 3,
@@ -1005,6 +1024,7 @@ class TestOBJTeamCalc:
                 "time_from_center_to_speaker": 0,
                 "time_from_far_to_amp": 0,
                 "time_from_far_to_speaker": 0,
+                "harmonized": True,
             },
             {
                 "match_number": 4,
@@ -1048,6 +1068,7 @@ class TestOBJTeamCalc:
                 "time_from_center_to_speaker": 0,
                 "time_from_far_to_amp": 0,
                 "time_from_far_to_speaker": 0,
+                "harmonized": True,
             },
             {
                 "match_number": 5,
@@ -1091,6 +1112,7 @@ class TestOBJTeamCalc:
                 "time_from_center_to_speaker": 0,
                 "time_from_far_to_amp": 0,
                 "time_from_far_to_speaker": 0,
+                "harmonized": True,
             },
         ]
         lfm_tims = [tim for tim in tims if tim["match_number"] > 1]
@@ -1545,6 +1567,7 @@ class TestOBJTeamCalc:
                 "time_from_center_to_speaker": 0,
                 "time_from_far_to_amp": 0,
                 "time_from_far_to_speaker": 0,
+                "harmonized": True,
             },
             {
                 "team_number": "973",
@@ -1599,6 +1622,7 @@ class TestOBJTeamCalc:
                 "time_from_center_to_speaker": 0,
                 "time_from_far_to_amp": 0,
                 "time_from_far_to_speaker": 0,
+                "harmonized": True,
             },
             {
                 "team_number": "973",
@@ -1653,6 +1677,7 @@ class TestOBJTeamCalc:
                 "time_from_center_to_speaker": 0,
                 "time_from_far_to_amp": 0,
                 "time_from_far_to_speaker": 0,
+                "harmonized": True,
             },
             {
                 "team_number": "973",
@@ -1707,6 +1732,7 @@ class TestOBJTeamCalc:
                 "time_from_center_to_speaker": 0,
                 "time_from_far_to_amp": 0,
                 "time_from_far_to_speaker": 0,
+                "harmonized": True,
             },
             {
                 "team_number": "973",
@@ -1761,6 +1787,7 @@ class TestOBJTeamCalc:
                 "time_from_center_to_speaker": 10,
                 "time_from_far_to_amp": 10,
                 "time_from_far_to_speaker": 10,
+                "harmonized": True,
             },
             # 1678
             {
@@ -1816,6 +1843,7 @@ class TestOBJTeamCalc:
                 "time_from_center_to_speaker": 10,
                 "time_from_far_to_amp": 10,
                 "time_from_far_to_speaker": 10,
+                "harmonized": True,
             },
             {
                 "team_number": "1678",
@@ -1870,6 +1898,7 @@ class TestOBJTeamCalc:
                 "time_from_center_to_speaker": 0,
                 "time_from_far_to_amp": 0,
                 "time_from_far_to_speaker": 0,
+                "harmonized": True,
             },
             {
                 "team_number": "1678",
@@ -1924,6 +1953,7 @@ class TestOBJTeamCalc:
                 "time_from_center_to_speaker": 0,
                 "time_from_far_to_amp": 0,
                 "time_from_far_to_speaker": 0,
+                "harmonized": True,
             },
             {
                 "team_number": "1678",
@@ -1978,6 +2008,7 @@ class TestOBJTeamCalc:
                 "time_from_center_to_speaker": 0,
                 "time_from_far_to_amp": 0,
                 "time_from_far_to_speaker": 0,
+                "harmonized": True,
             },
             {
                 "team_number": "1678",
@@ -2032,6 +2063,7 @@ class TestOBJTeamCalc:
                 "time_from_center_to_speaker": 10,
                 "time_from_far_to_amp": 10,
                 "time_from_far_to_speaker": 10,
+                "harmonized": True,
             },
         ]
         expected_results = [
@@ -2330,6 +2362,8 @@ class TestOBJTeamCalc:
                 "trap_fails": 5,
                 "trap_percent_success": 0.0,
                 "trap_successes": 0,
+                "matches_harmonized": 5,
+                "lfm_matches_harmonized": 4,
             },
             {
                 "team_number": "1678",
@@ -2626,6 +2660,8 @@ class TestOBJTeamCalc:
                 "trap_fails": 5,
                 "trap_percent_success": 0.0,
                 "trap_successes": 0,
+                "matches_harmonized": 5,
+                "lfm_matches_harmonized": 4,
             },
         ]
         self.test_server.db.insert_documents("obj_tim", obj_tims)
