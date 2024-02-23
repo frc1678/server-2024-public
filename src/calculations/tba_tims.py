@@ -82,6 +82,27 @@ class TBATIMCalc(base_calculations.BaseCalculations):
             )
         return team_list
 
+    @staticmethod
+    def calculate_spotlight(match) -> List[str]:
+        """Given match data, return a list of teams that were spotlit"""
+        spotlit_teams = []
+        # splits into each alliance
+        for alliance in ["red", "blue"]:
+            team_keys = match["alliances"][alliance]["team_keys"]
+            match_data = match["score_breakdown"][alliance]
+            for i in range(3):
+                # check for spotlight
+                if (
+                    match_data[f"endGameRobot{i+1}"] == "StageCenter"
+                    and match_data["micCenterStage"]
+                ):
+                    spotlit_teams.append(team_keys[i][3:])
+                if match_data[f"endGameRobot{i+1}"] == "StageLeft" and match_data["micStageLeft"]:
+                    spotlit_teams.append(team_keys[i][3:])
+                if match_data[f"endGameRobot{i+1}"] == "StageRight" and match_data["micStageRight"]:
+                    spotlit_teams.append(team_keys[i][3:])
+        return spotlit_teams
+
     def calculate_tim(self, team_number: str, match) -> List[Dict[str, Any]]:
         """Given a team number and a match that it's from, calculate that tim"""
         match_number: int = match["match_number"]
@@ -92,6 +113,7 @@ class TBATIMCalc(base_calculations.BaseCalculations):
             log.warning(f"TBA TIM Calculation on {match_number} missing match data")
 
         robot_number, alliance = self.get_robot_number_and_alliance(team_number, match)
+        match_spotlit_teams = self.calculate_spotlight(match)
 
         for calculation, tim_requirements in self.SCHEMA.items():
             # calculation is the name of the field, like "mobility" for example
@@ -116,11 +138,18 @@ class TBATIMCalc(base_calculations.BaseCalculations):
 
             # Fun calc_tba_bool for each calculation, and add it to tim
             if isinstance(tim["match_number"], int):
-                tim[calculation] = self.calc_tba_bool(
-                    match,
-                    alliance,
-                    tim_requirements_copy,
-                )
+                # since spotlight doesn't have a tim_requirements field
+                if calculation != "spotlight":
+                    tim[calculation] = self.calc_tba_bool(
+                        match,
+                        alliance,
+                        tim_requirements_copy,
+                    )
+                else:
+                    if team_number in match_spotlit_teams:
+                        tim[calculation] = True
+                    else:
+                        tim[calculation] = False
         return tim
 
     def run(self):

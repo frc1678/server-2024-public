@@ -23,17 +23,23 @@ TEST_DATA = [
                 "autoLineRobot1": "Yes",
                 "autoLineRobot2": "Yes",
                 "autoLineRobot3": "Yes",
-                "spotlitRobot1": "No",
-                "spotlitRobot2": "No",
-                "spotlitRobot3": "No",
+                "micCenterStage": True,
+                "micStageLeft": True,
+                "micStageRight": False,
+                "endGameRobot1": "StageCenter",
+                "endGameRobot2": "StageLeft",
+                "endGameRobot3": "StageRight",
             },
             "red": {
                 "autoLineRobot1": "Yes",
                 "autoLineRobot2": "Yes",
                 "autoLineRobot3": "No",
-                "spotlitRobot1": "No",
-                "spotlitRobot2": "No",
-                "spotlitRobot3": "No",
+                "micCenterStage": True,
+                "micStageLeft": False,
+                "micStageRight": True,
+                "endGameRobot1": "StageCenter",
+                "endGameRobot2": "StageLeft",
+                "endGameRobot3": "StageRight",
             },
         },
     },
@@ -53,17 +59,23 @@ TEST_DATA = [
                 "autoLineRobot1": "Yes",
                 "autoLineRobot2": "Yes",
                 "autoLineRobot3": "Yes",
-                "spotlitRobot1": "No",
-                "spotlitRobot2": "No",
-                "spotlitRobot3": "No",
+                "micCenterStage": False,
+                "micStageLeft": True,
+                "micStageRight": True,
+                "endGameRobot1": "StageCenter",
+                "endGameRobot2": "StageLeft",
+                "endGameRobot3": "StageRight",
             },
             "red": {
                 "autoLineRobot1": "Yes",
                 "autoLineRobot2": "Yes",
                 "autoLineRobot3": "Yes",
-                "spotlitRobot1": "No",
-                "spotlitRobot2": "No",
-                "spotlitRobot3": "No",
+                "micCenterStage": True,
+                "micStageLeft": True,
+                "micStageRight": True,
+                "endGameRobot1": "StageCenter",
+                "endGameRobot2": "StageLeft",
+                "endGameRobot3": "StageRight",
             },
         },
     },
@@ -74,61 +86,73 @@ TIMS = [
         "team_number": "254",
         "match_number": 1,
         "leave": False,
+        "spotlight": True,
     },
     {
         "team_number": "973",
         "match_number": 1,
         "leave": True,
+        "spotlight": False,
     },
     {
         "team_number": "34",
         "match_number": 1,
         "leave": False,
+        "spotlight": True,
     },
     {
         "team_number": "33",
         "match_number": 1,
         "leave": False,
+        "spotlight": True,
     },
     {
         "team_number": "25",
         "match_number": 1,
         "leave": False,
+        "spotlight": True,
     },
     {
         "team_number": "257",
         "match_number": 1,
         "leave": False,
+        "spotlight": False,
     },
     {
         "team_number": "97",
         "match_number": 2,
         "leave": True,
+        "spotlight": True,
     },
     {
         "team_number": "3",
         "match_number": 2,
         "leave": True,
+        "spotlight": False,
     },
     {
         "team_number": "37",
         "match_number": 2,
         "leave": True,
+        "spotlight": True,
     },
     {
         "team_number": "47",
         "match_number": 2,
         "leave": True,
+        "spotlight": True,
     },
     {
         "team_number": "57",
         "match_number": 2,
         "leave": True,
+        "spotlight": True,
     },
     {
         "team_number": "67",
         "match_number": 2,
         "leave": True,
+        "spotlight": True,
     },
 ]
 
@@ -154,17 +178,11 @@ class TestTBATimCalc:
                     "autoLineRobot1": "Yes",
                     "autoLineRobot2": "Yes",
                     "autoLineRobot3": "Yes",
-                    "spotlitRobot1": "No",
-                    "spotlitRobot2": "No",
-                    "spotlitRobot3": "No",
                 },
                 "red": {
                     "autoLineRobot1": "Yes",
                     "autoLineRobot2": "No",
                     "autoLineRobot3": "Yes",
-                    "spotlitRobot1": "No",
-                    "spotlitRobot2": "No",
-                    "spotlitRobot3": "No",
                 },
             }
         }
@@ -213,6 +231,11 @@ class TestTBATimCalc:
             ["612", "1024", "687", "1678", "254", "413"]
         )
 
+    def test_calculate_spotlight(self):
+        assert sorted(tba_tims.TBATIMCalc.calculate_spotlight(TEST_DATA[0])) == sorted(
+            ["33", "25", "34", "254"]
+        )
+
     def test_calculate_tim(self):
         for match in TEST_DATA:
             for team_number in self.test_calc.get_team_list_from_match(match):
@@ -221,6 +244,7 @@ class TestTBATimCalc:
                 assert isinstance(calc["team_number"], str)
                 assert isinstance(calc["match_number"], int)
                 assert isinstance(calc["leave"], bool)
+                assert isinstance(calc["spotlight"], bool)
 
     def test_run(self):
         entries = self.test_calc.entries_since_last()
