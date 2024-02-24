@@ -9,6 +9,7 @@ import logging
 import json
 import re
 import qr_code_uploader
+from data_transfer import database
 import pyfakefs
 from pyfakefs.fake_filesystem_unittest import fake_os
 from pyfakefs.fake_filesystem_unittest import Patcher
@@ -135,7 +136,7 @@ def test_pull_device_data():
 
     with Patcher() as patcher:
         adb_communicator.pull_device_files = Mock()
-        fake_serials = ["A1B2C3D4", "E5F6G7H8", "I9J1K2L3"]
+        fake_serials = ["A1B2C3D4", "E5F6G7H8", "I9J1K2L3", "RABCDEFG"]
         fake_qr_data = [
             "+A1$B66$C4711453624$D8.1.10$ETom$FFALSE%UTrue$VPARKED$W151AA135AU098AO088AN066AN048AP047AO039AO033AO031AO028AQ$X1$Y21$Z766",
             "+A1$B44$C7978641999$D3.6.7$EAnn$FFALSE%UFalse$VNONE$W135AU126BE103AN090AO077AO076AQ060AO051AO046AP045AO033AN028AP$X1$Y29$Z253",
@@ -147,6 +148,7 @@ def test_pull_device_data():
             "A1B2C3D4": "Fake Lenovo Tab 1",
             "E5F6G7H8": "Fake Lenovo Tab 2",
             "I9J1K2L3": "Fake Lenovo Tab 3",
+            "RABCDEFG": "Fake Lenovo Tab 4",
         }
         adb_communicator.get_attached_devices = Mock(return_value=fake_serials)
         for i in range(3):
@@ -156,16 +158,106 @@ def test_pull_device_data():
         def listdirfix(path):
             if path == fake_dir_path:
                 return fake_serials
+            elif path == f"{fake_dir_path}/{fake_serials[3]}":
+                return ["test_profile1"]
             else:
                 return ["qrdatathing.txt"]
+
+        test_ss_tims_data = [
+            {
+                "team_number": "1678",
+                "match_number": 1,
+                "played_defense": True,
+                "defense_rating": 5,
+            },
+            {
+                "team_number": "1678",
+                "match_number": 2,
+                "played_defense": True,
+                "defense_rating": 4,
+            },
+            {
+                "team_number": "1678",
+                "match_number": 3,
+                "played_defense": True,
+                "defense_rating": 9,
+            },
+            {
+                "team_number": "254",
+                "match_number": 1,
+                "played_defense": True,
+                "defense_rating": 2,
+            },
+            {
+                "team_number": "254",
+                "match_number": 2,
+                "played_defense": False,
+                "defense_rating": 1,
+            },
+            {
+                "team_number": "254",
+                "match_number": 3,
+                "played_defense": False,
+                "defense_rating": 6,
+            },
+        ]
+        test_team_data = {
+            "1678": {
+                "auto_strategies": "testwow",
+                "cant_go_under_stage": True,
+            },
+            "254": {
+                "auto_strategies": "testwow",
+                "cant_go_under_stage": True,
+            },
+        }
+        expected_ss_team = [
+            {
+                "team_number": "1678",
+                "auto_strategies": "testwow",
+                "cant_go_under_stage": True,
+                "intake_source_only": False,
+                "avg_defense_rating": 6.0,
+                "shoot_specific_area_only": "",
+                "strengths": "",
+                "weaknesses": "",
+            },
+            {
+                "team_number": "254",
+                "auto_strategies": "testwow",
+                "cant_go_under_stage": True,
+                "intake_source_only": False,
+                "avg_defense_rating": 3.0,
+                "shoot_specific_area_only": "",
+                "strengths": "",
+                "weaknesses": "",
+            },
+        ]
+        test_db = database.Database()
+        test_db.insert_documents("ss_tim", test_ss_tims_data)
+        database.Database = MagicMock(return_value=test_db)
+        patcher.fs.create_file(
+            f"{fake_dir_path}/RABCDEFG/test_profile1/team_data.json",
+            contents=json.dumps(test_team_data),
+        )
+        patcher.fs.create_file(
+            f"{fake_dir_path}/RABCDEFG/test_profile1/tim_data.json", contents="{}"
+        )
+        patcher.fs.add_real_file(utils.create_file_path("schema/calc_ss_team.yml"))
 
         with patch(
             "pyfakefs.fake_filesystem_unittest.fake_os.FakeOsModule.listdir", side_effect=listdirfix
         ):
             with patch("re.fullmatch", return_value=True):
                 test_data = adb_communicator.pull_device_data()
-
         assert test_data == {"qr": fake_qr_data, "raw_obj_pit": []}
+        result_ss_team = test_db.find("ss_team")
+        inserted_documents = False
+        for document in result_ss_team:
+            document.pop("_id")
+            assert utils.dict_near_in(document, expected_ss_team)
+            inserted_documents = True
+        assert inserted_documents
 
     adb_communicator.pull_device_files = real_pull_device_files
     qr_code_uploader.upload_qr_codes = real_upload_qr_codes

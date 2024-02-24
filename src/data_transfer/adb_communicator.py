@@ -194,12 +194,6 @@ def pull_device_data():
         profiles = os.listdir(profiles_directory)
 
         for profile in profiles:
-            # Update Team Data for Stand Strategist
-            with open(os.path.join(profiles_directory, profile, "team_data.json")) as f:
-                team_data = json.load(f)
-                for team_number, document in team_data.items():
-                    document = decompressor.Decompressor.decompress_ss_team(document)
-                    db.update_document("ss_team", document, {"team_number": team_number})
             # Update TIM Data for Stand Strategist
             with open(os.path.join(profiles_directory, profile, "tim_data.json")) as f:
                 tim_data = json.load(f)
@@ -209,6 +203,19 @@ def pull_device_data():
                         db.update_document(
                             "ss_tim", document, {"team_number": team_number, "match_number": match}
                         )
+            # Update Team Data for Stand Strategist
+            with open(os.path.join(profiles_directory, profile, "team_data.json")) as f:
+                team_data = json.load(f)
+                for team_number, document in team_data.items():
+                    ss_tims = db.find("ss_tim", {"team_number": team_number})
+                    document = decompressor.Decompressor.decompress_ss_team(document)
+                    schema = utils.read_schema("schema/calc_ss_team.yml")
+                    # calculate datapoints that are averages
+                    for point, value in schema["averages"].items():
+                        tim_field = value["tim_fields"][0].split(".")[1]
+                        tim_totals = [tim[tim_field] for tim in ss_tims]
+                        document[point] = sum(tim_totals) / len(tim_totals)
+                    db.update_document("ss_team", document, {"team_number": team_number})
 
         log.info(f"{len(team_data)} items uploaded to ss_team")
         log.info(f"{len(tim_data)} items uploaded to ss_tim")

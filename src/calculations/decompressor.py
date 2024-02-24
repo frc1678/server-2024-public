@@ -402,7 +402,8 @@ class Decompressor(base_calculations.BaseCalculations):
                     if {"match_number": match, "scout_id": id_} not in items_to_ignore:
                         log.warning(f"Scout ID {id_} missing from Match {match}")
 
-    def decompress_ss_team(self, data):
+    @staticmethod
+    def decompress_ss_team(data):
         schema = utils.read_schema("schema/calc_ss_team.yml")
         for point, value in schema["schema"].items():
             if point not in list(data.keys()):
@@ -412,7 +413,8 @@ class Decompressor(base_calculations.BaseCalculations):
                     data[point] = False if value["type"] == "bool" else ""
         return data
 
-    def decompress_ss_tim(self, data):
+    @staticmethod
+    def decompress_ss_tim(data):
         schema = utils.read_schema("schema/calc_ss_tim.yml")
         for point, val in schema["schema"].items():
             if point not in list(data.keys()):
