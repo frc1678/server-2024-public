@@ -402,6 +402,28 @@ class Decompressor(base_calculations.BaseCalculations):
                     if {"match_number": match, "scout_id": id_} not in items_to_ignore:
                         log.warning(f"Scout ID {id_} missing from Match {match}")
 
+    def decompress_ss_team(self, data):
+        schema = utils.read_schema("schema/calc_ss_team.yml")
+        for point, value in schema["schema"].items():
+            if point not in list(data.keys()):
+                if value["type"] == "int":
+                    data[point] = -1
+                else:
+                    data[point] = False if value["type"] == "bool" else ""
+        return data
+
+    def decompress_ss_tim(self, data):
+        schema = utils.read_schema("schema/calc_ss_tim.yml")
+        for point, val in schema["schema"].items():
+            if point not in list(data.keys()):
+                if val["type"] == "bool":
+                    data[point] = False
+                else:
+                    data[point] = -1 if val["type"] == "int" else ""
+            if point == "brokenMechanism":
+                data[point] = True if data[point] != "" else False
+        return data
+
     def run(self):
         # Get calc start time
         start_time = time.time()
@@ -414,6 +436,7 @@ class Decompressor(base_calculations.BaseCalculations):
         # If so, delete one of the qrs
         unique_combinations = set()
         filtered_qrs = []
+
         for qr in decompressed_qrs["subj_tim"]:
             match_number = qr["match_number"]
             alliance_color = qr["alliance_color_is_red"]
