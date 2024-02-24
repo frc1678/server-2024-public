@@ -25,10 +25,12 @@ def delete_tablet_downloads():
     directory = "/storage/emulated/0/Download"
     for device in devices:
         try:
-            utils.run_command(f"adb -s {device} shell rm -r {directory}")
-            log.info(f"Removed Downloads on {DEVICE_SERIAL_NUMBERS[device]} ({device})")
+            utils.run_command(f"adb -s {device[0]} shell rm -r {directory}")
+            log.info(f"Removed Downloads on {DEVICE_SERIAL_NUMBERS[device[0]]} ({device[0]})")
         except:
-            log.info(f"Found no files to delete on {DEVICE_SERIAL_NUMBERS[device]} ({device})")
+            log.info(
+                f"Found no files to delete on {DEVICE_SERIAL_NUMBERS[device[0]]} ({device[0]})"
+            )
 
 
 def get_attached_devices():
@@ -131,8 +133,8 @@ def adb_remove_files(tablet_file_path):
         # Calls 'adb push' command, which uses the Android Debug
         # Bridge (ADB) to copy the match schedule file to the tablet
         # The -s flag specifies the devices by their serial numbers
-        utils.run_command(f"adb -s {device} shell rm -r {tablet_file_path}")
-        log.info(f"removed {tablet_file_path} on {DEVICE_SERIAL_NUMBERS[device]}, ({device})")
+        utils.run_command(f"adb -s {device[0]} shell rm -r {tablet_file_path}")
+        log.info(f"removed {tablet_file_path} on {DEVICE_SERIAL_NUMBERS[device[0]]}, ({device[0]})")
 
 
 def pull_device_data():
@@ -263,7 +265,7 @@ def adb_font_size_enforcer():
     for device in devices:
         # The -s flag specifies the device by its serial number.
         utils.run_command(
-            f"adb -s {device} shell settings put system font_scale 1.30", return_output=False
+            f"adb -s {device[0]} shell settings put system font_scale 1.30", return_output=False
         )
 
 

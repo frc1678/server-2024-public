@@ -59,9 +59,9 @@ if __name__ == "__main__":
     uninstall_match_collection = input("Uninstall match collection from tablets: [y/N]")
     if uninstall_match_collection.upper() == "Y":
         for device in DEVICES:
-            adb_communicator.uninstall_app(device)
+            adb_communicator.uninstall_app(device[0])
             log.info(
-                f"Uninstalled Match Collection from {adb_communicator.DEVICE_SERIAL_NUMBERS[device]}"
+                f"Uninstalled Match Collection from {adb_communicator.DEVICE_SERIAL_NUMBERS[device[0]]}"
             )
             num_cleaned += 1
     log.info(f"{num_cleaned} devices cleaned")

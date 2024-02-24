@@ -29,7 +29,7 @@ def test_delete_tablet_downloads():
     real_get_attached_devices = adb_communicator.get_attached_devices
     real_run_command = utils.run_command
 
-    fake_serials = ["A1B2C3D4", "E5F6G7H8", "I9J1K2L3"]
+    fake_serials = [["A1B2C3D4", "device"], ["E5F6G7H8", "device"], ["I9J1K2L3", "device"]]
     adb_communicator.get_attached_devices = MagicMock(return_value=fake_serials)
     utils.run_command = MagicMock()
     adb_communicator.DEVICE_SERIAL_NUMBERS = {
@@ -39,7 +39,7 @@ def test_delete_tablet_downloads():
     }
     adb_communicator.delete_tablet_downloads()
     for i in fake_serials:
-        utils.run_command.assert_any_call(f"adb -s {i} shell rm -r /storage/emulated/0/Download")
+        utils.run_command.assert_any_call(f"adb -s {i[0]} shell rm -r /storage/emulated/0/Download")
 
     adb_communicator.get_attached_devices = real_get_attached_devices
     utils.run_command = real_run_command
@@ -115,14 +115,14 @@ def test_adb_remove_files():
     real_get_attached_devices = adb_communicator.get_attached_devices
     real_run_command = utils.run_command
 
-    fake_serials = ["A1B2C3D4", "E5F6G7H8", "I9J1K2L3"]
+    fake_serials = [["A1B2C3D4", "device"], ["E5F6G7H8", "device"], ["I9J1K2L3", "device"]]
     adb_communicator.get_attached_devices = MagicMock(return_value=fake_serials)
     utils.run_command = MagicMock()
     fake_tablet_path = "fakedata/fakefile"
 
     adb_communicator.adb_remove_files(fake_tablet_path)
     for i in fake_serials:
-        utils.run_command.assert_any_call(f"adb -s {i} shell rm -r fakedata/fakefile")
+        utils.run_command.assert_any_call(f"adb -s {i[0]} shell rm -r fakedata/fakefile")
 
     adb_communicator.get_attached_devices = real_get_attached_devices
     utils.run_command = real_run_command
@@ -190,14 +190,14 @@ def test_adb_font_size_enforcer():
     real_get_attached_devices = adb_communicator.get_attached_devices
     real_run_command = utils.run_command
 
-    fake_serials = ["A1B2C3D4", "E5F6G7H8", "I9J1K2L3"]
+    fake_serials = [["A1B2C3D4", "device"], ["E5F6G7H8", "device"], ["I9J1K2L3", "device"]]
     adb_communicator.get_attached_devices = MagicMock(return_value=fake_serials)
     utils.run_command = MagicMock()
 
     adb_communicator.adb_font_size_enforcer()
     for i in fake_serials:
         utils.run_command.assert_any_call(
-            f"adb -s {i} shell settings put system font_scale 1.30", return_output=False
+            f"adb -s {i[0]} shell settings put system font_scale 1.30", return_output=False
         )
 
     adb_communicator.get_attached_devices = real_get_attached_devices

@@ -35,15 +35,17 @@ def find_robot_images() -> Dict[str, str]:
 def send_images() -> None:
     """Push images to the Download folder of the viewer phones."""
     for device in adb_communicator.get_attached_devices():
-        if device not in adb_communicator.PHONE_SERIAL_NUMBERS:
+        if device[0] not in adb_communicator.PHONE_SERIAL_NUMBERS:
             continue
         images_sent = 0
         for filename, full_path in find_robot_images().items():
             adb_communicator.push_file(
-                device, full_path, f"storage/emulated/0/Download/robot_pictures/{filename}"
+                device[0], full_path, f"storage/emulated/0/Download/robot_pictures/{filename}"
             )
             images_sent += 1
-        log.info(f"Sent {images_sent} photos to {adb_communicator.DEVICE_SERIAL_NUMBERS[device]}")
+        log.info(
+            f"Sent {images_sent} photos to {adb_communicator.DEVICE_SERIAL_NUMBERS[device[0]]}"
+        )
 
 
 if __name__ == "__main__":

@@ -30,7 +30,7 @@ def missing_devices():
         # Checks if device is connected and connection status
         # `connection` is a list of device serial and connection status
         for connection in devices:
-            if device not in connection:
+            if device not in connection[0]:
                 status = 0
             elif connection[1] == "unauthorized":
                 status = 1
