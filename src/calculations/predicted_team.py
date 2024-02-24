@@ -24,6 +24,7 @@ class PredictedTeamCalc(BaseCalculations):
                 current_values = {}
                 current_values["current_rank"] = team_data["rank"]
                 current_values["current_rps"] = team_data["extra_stats"][0]
+                current_values["matches_played"] = team_data["matches_played"]
                 if team_data["matches_played"] > 0:
                     current_values["current_avg_rps"] = (
                         team_data["extra_stats"][0] / team_data["matches_played"]
@@ -96,9 +97,14 @@ class PredictedTeamCalc(BaseCalculations):
                 predicted_rps += predicted_alliance_rps[aim["match_number"]][aim["alliance_color"]]
         return predicted_rps
 
-    def calculate_predicted_ranks(self, updates, aim_list):
+    def calculate_predicted_ranks(self, updates, aim_list, ranking_data):
         predicted_rps = {update["team_number"]: update["predicted_rps"] for update in updates}
+
+        # stores teams that have finished all their scheduled matches. stores the team and their finishing
+        # rank. like {1678: 2}
+        finished_teams = {}
         for team in predicted_rps.keys():
+            current_team_data = self.calculate_current_values(ranking_data, team)
             scheduled_matches = 0
             for aim in aim_list:
                 if team in aim["team_list"]:
@@ -107,10 +113,19 @@ class PredictedTeamCalc(BaseCalculations):
                 predicted_rps[team] = predicted_rps[team] / scheduled_matches
             else:
                 predicted_rps[team] = 0
+            # adds team to finished teams if their matches played equals their scheduled matches
+            if current_team_data["matches_played"] == scheduled_matches:
+                finished_teams[team] = current_team_data["current_rank"]
+
         predicted_ranks = sorted(predicted_rps.keys(), key=lambda x: predicted_rps[x], reverse=True)
+
         for num, update in enumerate(updates):
             rank = predicted_ranks.index(update["team_number"]) + 1
             updates[num]["predicted_rank"] = rank
+            # if the team has finished, use their finished rank instead of a predicted one
+            if updates[num]["team_number"] in finished_teams:
+                updates[num]["predicted_rank"] = updates[num]["current_rank"]
+
         return updates
 
     def update_predicted_team(self, predicted_aim):
@@ -121,7 +136,6 @@ class PredictedTeamCalc(BaseCalculations):
         predicted_alliance_rps = self.calculate_predicted_alliance_rps(predicted_aim)
         teams = self.get_teams_list()
         aim_list = self.get_aim_list()
-
         for team in teams:
             update = {"team_number": team}
             current_values = self.calculate_current_values(ranking_data, team)
@@ -133,7 +147,7 @@ class PredictedTeamCalc(BaseCalculations):
             )
             update["predicted_rps"] = predicted_rps
             updates.append(update)
-        final_updates = self.calculate_predicted_ranks(updates, aim_list)
+        final_updates = self.calculate_predicted_ranks(updates, aim_list, ranking_data)
 
         return final_updates
 

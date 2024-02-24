@@ -209,7 +209,8 @@ class TestPredictedTeamCalc:
         self.expected_results = [
             {
                 "team_number": "1678",
-                "predicted_rps": 2,
+                "predicted_rps": 2.0,
+                "matches_played": 11,
                 "predicted_rank": 8,
                 "current_rank": 1,
                 "current_rps": 26,
@@ -217,7 +218,8 @@ class TestPredictedTeamCalc:
             },
             {
                 "team_number": "1533",
-                "predicted_rps": 4,
+                "predicted_rps": 4.0,
+                "matches_played": 11,
                 "predicted_rank": 7,
                 "current_rank": 2,
                 "current_rps": 25,
@@ -225,7 +227,8 @@ class TestPredictedTeamCalc:
             },
             {
                 "team_number": "7229",
-                "predicted_rps": 2,
+                "predicted_rps": 2.0,
+                "matches_played": 11,
                 "predicted_rank": 9,
                 "current_rank": 3,
                 "current_rps": 24,
@@ -233,7 +236,8 @@ class TestPredictedTeamCalc:
             },
             {
                 "team_number": "254",
-                "predicted_rps": 6,
+                "predicted_rps": 6.0,
+                "matches_played": 11,
                 "predicted_rank": 1,
                 "current_rank": 4,
                 "current_rps": 23,
@@ -241,7 +245,8 @@ class TestPredictedTeamCalc:
             },
             {
                 "team_number": "971",
-                "predicted_rps": 5,
+                "predicted_rps": 5.0,
+                "matches_played": 11,
                 "predicted_rank": 5,
                 "current_rank": 5,
                 "current_rps": 22,
@@ -249,7 +254,8 @@ class TestPredictedTeamCalc:
             },
             {
                 "team_number": "1323",
-                "predicted_rps": 6,
+                "predicted_rps": 6.0,
+                "matches_played": 11,
                 "predicted_rank": 2,
                 "current_rank": 6,
                 "current_rps": 21,
@@ -257,7 +263,8 @@ class TestPredictedTeamCalc:
             },
             {
                 "team_number": "2056",
-                "predicted_rps": 5,
+                "predicted_rps": 5.0,
+                "matches_played": 11,
                 "predicted_rank": 6,
                 "current_rank": 7,
                 "current_rps": 20,
@@ -265,7 +272,8 @@ class TestPredictedTeamCalc:
             },
             {
                 "team_number": "1114",
-                "predicted_rps": 6,
+                "predicted_rps": 6.0,
+                "matches_played": 11,
                 "predicted_rank": 3,
                 "current_rank": 8,
                 "current_rps": 19,
@@ -273,7 +281,8 @@ class TestPredictedTeamCalc:
             },
             {
                 "team_number": "7179",
-                "predicted_rps": 6,
+                "predicted_rps": 6.0,
+                "matches_played": 11,
                 "predicted_rank": 4,
                 "current_rank": 9,
                 "current_rps": 18,
@@ -378,7 +387,9 @@ class TestPredictedTeamCalc:
         ]
 
     def test_calculate_predicted_ranks(self):
-        updates = self.test_calc.calculate_predicted_ranks(self.updates, self.aim_list)
+        updates = self.test_calc.calculate_predicted_ranks(
+            self.updates, self.aim_list, self.ranking_data["rankings"]
+        )
         for update in updates:
             for result in self.expected_results:
                 if update["team_number"] == result["team_number"]:
