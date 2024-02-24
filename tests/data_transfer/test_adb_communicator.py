@@ -235,6 +235,7 @@ def test_pull_device_data():
         ]
         test_db = database.Database()
         test_db.insert_documents("ss_tim", test_ss_tims_data)
+        real_db = database.Database
         database.Database = MagicMock(return_value=test_db)
         patcher.fs.create_file(
             f"{fake_dir_path}/RABCDEFG/test_profile1/team_data.json",
@@ -258,7 +259,7 @@ def test_pull_device_data():
             assert utils.dict_near_in(document, expected_ss_team)
             inserted_documents = True
         assert inserted_documents
-
+    database.Database = real_db
     adb_communicator.pull_device_files = real_pull_device_files
     qr_code_uploader.upload_qr_codes = real_upload_qr_codes
     adb_communicator.get_attached_devices = real_get_attached_devices
