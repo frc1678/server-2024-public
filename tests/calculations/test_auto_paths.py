@@ -134,7 +134,7 @@ class TestAutoPathCalc:
             "intake_position_1": "spike_1",
             "score_2": "amp",
             "intake_position_2": "spike_2",
-            "score_3": "fail",
+            "score_3": "speaker",
             "score_4": "none",
             "score_5": "none",
             "score_6": "none",
@@ -149,7 +149,7 @@ class TestAutoPathCalc:
             "intake_position_8": "none",
             "leave": True,
             "auto_timeline": [
-                {"in_teleop": False, "time": 146, "action_type": "score_fail"},
+                {"in_teleop": False, "time": 146, "action_type": "score_speaker"},
                 {"in_teleop": False, "time": 147, "action_type": "auto_intake_spike_2"},
                 {"in_teleop": False, "time": 148, "action_type": "score_amp"},
                 {"in_teleop": False, "time": 149, "action_type": "auto_intake_spike_1"},
@@ -229,7 +229,7 @@ class TestAutoPathCalc:
                 {"in_teleop": False, "time": 150, "action_type": "score_speaker"},
             ][::-1],
             "match_numbers_played": [],
-            "path_number": 2,
+            "path_number": 1,
             "num_matches_ran": 2,
         },
         {
@@ -264,7 +264,7 @@ class TestAutoPathCalc:
                 {"in_teleop": False, "time": 150, "action_type": "score_speaker"},
             ][::-1],
             "match_numbers_played": [],
-            "path_number": 2,
+            "path_number": 1,
             "num_matches_ran": 2,
         },
         {
@@ -312,7 +312,7 @@ class TestAutoPathCalc:
             "intake_position_1": "spike_1",
             "score_2": "amp",
             "intake_position_2": "spike_2",
-            "score_3": "fail",
+            "score_3": "speaker",
             "score_4": "none",
             "score_5": "none",
             "score_6": "none",
@@ -327,14 +327,14 @@ class TestAutoPathCalc:
             "intake_position_8": "none",
             "leave": True,
             "auto_timeline": [
-                {"in_teleop": False, "time": 146, "action_type": "score_fail"},
+                {"in_teleop": False, "time": 146, "action_type": "score_speaker"},
                 {"in_teleop": False, "time": 147, "action_type": "auto_intake_spike_2"},
                 {"in_teleop": False, "time": 148, "action_type": "score_amp"},
                 {"in_teleop": False, "time": 149, "action_type": "auto_intake_spike_1"},
                 {"in_teleop": False, "time": 150, "action_type": "score_speaker"},
             ][::-1],
             "match_numbers_played": [],
-            "path_number": 2,
+            "path_number": 1,
             "num_matches_ran": 2,
         },
         {
@@ -369,7 +369,7 @@ class TestAutoPathCalc:
                 {"in_teleop": False, "time": 150, "action_type": "score_fail"},
             ][::-1],
             "match_numbers_played": [],
-            "path_number": 2,
+            "path_number": 1,
             "num_matches_ran": 2,
         },
     ]
@@ -485,7 +485,7 @@ class TestAutoPathCalc:
         },
         {
             # 254, 2
-            "path_number": 2,
+            "path_number": 1,
             "match_numbers_played": [45, 42],
             "num_matches_ran": 2,
             "team_number": "254",
@@ -511,7 +511,7 @@ class TestAutoPathCalc:
             "score_9": "none",
             "score_1_successes": 2,
             "score_2_successes": 2,
-            "score_3_successes": 1,
+            "score_3_successes": 2,
             "score_4_successes": 0,
             "score_5_successes": 0,
             "score_6_successes": 0,
@@ -521,7 +521,7 @@ class TestAutoPathCalc:
         },
         {
             # 1678, 2
-            "path_number": 2,
+            "path_number": 1,
             "match_numbers_played": [46, 43],
             "num_matches_ran": 2,
             "team_number": "1678",
@@ -596,7 +596,7 @@ class TestAutoPathCalc:
         },
         {
             # 254, 2
-            "path_number": 2,
+            "path_number": 1,
             "match_numbers_played": [45, 42],
             "num_matches_ran": 2,
             "team_number": "254",
@@ -622,7 +622,7 @@ class TestAutoPathCalc:
             "score_9": "none",
             "score_1_successes": 2,
             "score_2_successes": 2,
-            "score_3_successes": 1,
+            "score_3_successes": 2,
             "score_4_successes": 0,
             "score_5_successes": 0,
             "score_6_successes": 0,
@@ -631,8 +631,8 @@ class TestAutoPathCalc:
             "score_9_successes": 0,
         },
         {
-            # 1678, 2
-            "path_number": 2,
+            # 1678, 1
+            "path_number": 1,
             "match_numbers_played": [46, 43],
             "num_matches_ran": 2,
             "team_number": "1678",
