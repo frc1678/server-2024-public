@@ -103,6 +103,31 @@ class TBATIMCalc(base_calculations.BaseCalculations):
                     spotlit_teams.append(team_keys[i][3:])
         return spotlit_teams
 
+    @staticmethod
+    def calculate_driver_stations(match) -> Dict[str, str]:
+        "Given match data, return a list for each alliance with each teams driver position"
+        blue_team_keys = match["alliances"]["blue"]["team_keys"]
+        red_team_keys = match["alliances"]["red"]["team_keys"]
+
+        blue_driver_positions = {}
+        blue_driver_positions[blue_team_keys[0][3:]] = "left"
+        blue_driver_positions[blue_team_keys[1][3:]] = "center"
+        blue_driver_positions[blue_team_keys[2][3:]] = "right"
+
+        red_driver_positions = {}
+        red_driver_positions[red_team_keys[0][3:]] = "left"
+        red_driver_positions[red_team_keys[1][3:]] = "center"
+        red_driver_positions[red_team_keys[2][3:]] = "right"
+
+        # if alliance seperation is needed in the future. (this will slightly break the calculation)
+        # driver_stations = {}
+        # driver_stations['blue'] = blue_driver_positions
+        # driver_stations['red'] = red_driver_positions
+
+        # combines the two to make it easier to search through. One team can't play on both sides so it does not break anything
+        blue_driver_positions.update(red_driver_positions)
+        return blue_driver_positions
+
     def calculate_tim(self, team_number: str, match) -> List[Dict[str, Any]]:
         """Given a team number and a match that it's from, calculate that tim"""
         match_number: int = match["match_number"]
@@ -114,7 +139,7 @@ class TBATIMCalc(base_calculations.BaseCalculations):
 
         robot_number, alliance = self.get_robot_number_and_alliance(team_number, match)
         match_spotlit_teams = self.calculate_spotlight(match)
-
+        driver_stations = self.calculate_driver_stations(match)
         for calculation, tim_requirements in self.SCHEMA.items():
             # calculation is the name of the field, like "mobility" for example
             # tim_requirements is dict of stuff including {"type": "bool"} and something like
@@ -123,7 +148,6 @@ class TBATIMCalc(base_calculations.BaseCalculations):
 
             if tim_requirements["type"] != "bool":
                 log.warning(f"Tried to calc bool on {calculation}")
-                continue
 
             # type does not need to be in the final data, so we remove it
             # {"type": "bool", "field": "value"} -> {"field": "value"}
@@ -136,20 +160,27 @@ class TBATIMCalc(base_calculations.BaseCalculations):
                     del tim_requirements_copy[field]
                     tim_requirements_copy[f"{field}{robot_number}"] = expected_value
 
+            # calculate driver stations
+            if calculation == "driver_station":
+                tim[calculation] = driver_stations[team_number]
+                continue
+
             # Fun calc_tba_bool for each calculation, and add it to tim
             if isinstance(tim["match_number"], int):
                 # since spotlight doesn't have a tim_requirements field
-                if calculation != "spotlight":
+
+                if calculation == "spotlight":
+                    if team_number in match_spotlit_teams:
+                        tim[calculation] = True
+                    else:
+                        tim[calculation] = False
+                else:
                     tim[calculation] = self.calc_tba_bool(
                         match,
                         alliance,
                         tim_requirements_copy,
                     )
-                else:
-                    if team_number in match_spotlit_teams:
-                        tim[calculation] = True
-                    else:
-                        tim[calculation] = False
+
         return tim
 
     def run(self):
