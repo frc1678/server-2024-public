@@ -161,12 +161,22 @@ def pull_device_data():
     device_file_path = utils.create_file_path("data/devices/")
     # Pull all files from the 'StandStrategist' folder on the device (if plugged in)
     if ss_devices:
-        pull_device_files(
-            device_file_path, "/storage/emulated/0/Documents/StandStrategist/profiles", ss_devices
-        )
+        try:
+            pull_device_files(
+                device_file_path,
+                "/storage/emulated/0/Documents/StandStrategist/profiles",
+                ss_devices,
+            )
+        except Exception:
+            log.error(
+                "Error in pulling data from stand strategist tablet. Make sure it is authorizied"
+            )
     # Pull all files from the 'Download' folder on the device (if tablets are plugged in)
     if devices:
-        pull_device_files(device_file_path, "/storage/emulated/0/Download", devices)
+        try:
+            pull_device_files(device_file_path, "/storage/emulated/0/Download", devices)
+        except Exception:
+            log.error("Error in pulling data from tablet. Make sure it is authorizied")
     # Iterates through the 'data' folder
     for device_dir in os.listdir(device_file_path):
         if device_dir in DEVICE_SERIAL_NUMBERS.keys():
@@ -209,7 +219,13 @@ def pull_device_data():
                     for team_number, document in value.items():
                         document = decompressor.Decompressor.decompress_ss_tim(document)
                         db.update_document(
-                            "ss_tim", document, {"team_number": team_number, "match_number": match}
+                            "ss_tim",
+                            document,
+                            {
+                                "team_number": team_number,
+                                "match_number": match,
+                                "username": profile,
+                            },
                         )
             # Update Team Data for Stand Strategist
             with open(os.path.join(profiles_directory, profile, "team_data.json")) as f:
@@ -223,7 +239,9 @@ def pull_device_data():
                         tim_field = value["tim_fields"][0].split(".")[1]
                         tim_totals = [tim[tim_field] for tim in ss_tims]
                         document[point] = sum(tim_totals) / len(tim_totals)
-                    db.update_document("ss_team", document, {"team_number": team_number})
+                    db.update_document(
+                        "ss_team", document, {"team_number": team_number, "username": profile}
+                    )
 
         log.info(f"{len(team_data)} items uploaded to ss_team")
         log.info(f"{len(tim_data)} items uploaded to ss_tim")

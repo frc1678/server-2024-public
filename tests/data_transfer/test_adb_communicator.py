@@ -166,36 +166,42 @@ def test_pull_device_data():
         test_ss_tims_data = [
             {
                 "team_number": "1678",
+                "username": "test_profile1",
                 "match_number": 1,
                 "played_defense": True,
                 "defense_rating": 5,
             },
             {
                 "team_number": "1678",
+                "username": "test_profile1",
                 "match_number": 2,
                 "played_defense": True,
                 "defense_rating": 4,
             },
             {
                 "team_number": "1678",
+                "username": "test_profile1",
                 "match_number": 3,
                 "played_defense": True,
                 "defense_rating": 9,
             },
             {
                 "team_number": "254",
+                "username": "test_profile1",
                 "match_number": 1,
                 "played_defense": True,
                 "defense_rating": 2,
             },
             {
                 "team_number": "254",
+                "username": "test_profile1",
                 "match_number": 2,
                 "played_defense": False,
                 "defense_rating": 1,
             },
             {
                 "team_number": "254",
+                "username": "test_profile1",
                 "match_number": 3,
                 "played_defense": False,
                 "defense_rating": 6,
@@ -214,6 +220,7 @@ def test_pull_device_data():
         expected_ss_team = [
             {
                 "team_number": "1678",
+                "username": "test_profile1",
                 "auto_strategies": "testwow",
                 "cant_go_under_stage": True,
                 "intake_source_only": False,
@@ -224,6 +231,7 @@ def test_pull_device_data():
             },
             {
                 "team_number": "254",
+                "username": "test_profile1",
                 "auto_strategies": "testwow",
                 "cant_go_under_stage": True,
                 "intake_source_only": False,
