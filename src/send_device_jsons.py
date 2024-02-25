@@ -138,18 +138,18 @@ if __name__ == "__main__":
         # Wait for USB connection to initialize
         time.sleep(0.1)
         for device in DEVICES:
-            device_name = adb_communicator.DEVICE_SERIAL_NUMBERS[device[0]]
-            if device[0] not in DEVICES_WITH_SCHEDULE and SEND_MATCH_SCHEDULE:
+            device_name = adb_communicator.DEVICE_SERIAL_NUMBERS[device]
+            if device not in DEVICES_WITH_SCHEDULE and SEND_MATCH_SCHEDULE:
                 log.info(f"\nAttempting to load {MATCH_SCHEDULE_LOCAL_PATH} onto {device_name}")
                 if adb_communicator.push_file(
-                    device[0], MATCH_SCHEDULE_LOCAL_PATH, MATCH_SCHEDULE_TABLET_PATH, validate_file
+                    device, MATCH_SCHEDULE_LOCAL_PATH, MATCH_SCHEDULE_TABLET_PATH, validate_file
                 ):
-                    DEVICES_WITH_SCHEDULE.add(device[0])
+                    DEVICES_WITH_SCHEDULE.add(device)
                     log.info(f"Loaded {MATCH_SCHEDULE_LOCAL_PATH} onto {device_name}")
                 else:
                     # Give both serial number and device name in warning
                     log.warning(
-                        f"FAILED sending {MATCH_SCHEDULE_LOCAL_PATH} to {device_name} ({device[0]})"
+                        f"FAILED sending {MATCH_SCHEDULE_LOCAL_PATH} to {device_name} ({device})"
                     )
 
         # Update connected devices before checking if program should exit
