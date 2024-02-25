@@ -123,7 +123,11 @@ write_team_list(TEAM_LIST_LOCAL_PATH)
 if __name__ == "__main__":
     # List of devices to which 'match_schedule.json' has already been sent
     DEVICES_WITH_SCHEDULE = set()
-    DEVICES = set(adb_communicator.get_attached_devices())
+    get_devices = adb_communicator.get_attached_devices()
+    new_get_devices = []
+    for device in get_devices:
+        new_get_devices.append(device[0])
+    DEVICES = set(new_get_devices)
 
     if SEND_MATCH_SCHEDULE:
         log.info(f'{MATCH_SCHEDULE_LOCAL_PATH}"\n')
@@ -149,7 +153,11 @@ if __name__ == "__main__":
                     )
 
         # Update connected devices before checking if program should exit
-        DEVICES = set(adb_communicator.get_attached_devices())
+        get_devices = adb_communicator.get_attached_devices()
+        new_get_devices = []
+        for device in get_devices:
+            new_get_devices.append(device[0])
+        DEVICES = set(new_get_devices)
         if DEVICES == DEVICES_WITH_SCHEDULE:
             # Print blank lines for visual distinction
             log.info("\n")

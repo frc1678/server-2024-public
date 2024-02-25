@@ -20,6 +20,7 @@ log = logging.getLogger(__name__)
 def delete_tablet_downloads():
     """Deletes all data from the Download folder of tablets"""
     devices = get_attached_devices()
+    num_deleted = 0
     # Wait for USB connection to initialize
     time.sleep(0.1)
     directory = "/storage/emulated/0/Download"
@@ -27,10 +28,12 @@ def delete_tablet_downloads():
         try:
             utils.run_command(f"adb -s {device[0]} shell rm -r {directory}")
             log.info(f"Removed Downloads on {DEVICE_SERIAL_NUMBERS[device[0]]} ({device[0]})")
+            num_cleaned += 1
         except:
             log.info(
                 f"Found no files to delete on {DEVICE_SERIAL_NUMBERS[device[0]]} ({device[0]})"
             )
+    log.info(f"Deleted downloaded files from {num_deleted} tablets")
 
 
 def get_attached_devices():

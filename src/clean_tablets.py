@@ -42,21 +42,17 @@ if __name__ == "__main__":
     log.info("Enforced tablet font size")
 
     # Checks if the server operator wants to delete tablet data
-    delete_tablet_data = input("Delete all local tablet data: [y/N]")
+    delete_tablet_data = input("Delete all local tablet data on this computer? (y/N): ")
     if delete_tablet_data.upper() == "Y":
         clean_tablets = TabletClean()
         # Deletes tablet data from local tablet directory
         clean_tablets.clean_local_tablet_directory()
-        log.info(f"Deleted all files in {clean_tablets.tablet_data_path}")
 
-    delete_tablet_downloads = input(
-        "Delete all tablet downloads (includes match schedule and teams list files and downloaded QRs): [y/N]"
-    )
+    delete_tablet_downloads = input("Delete all tablet file downloads? (y/N): ")
     if delete_tablet_downloads.upper() == "Y":
         adb_communicator.delete_tablet_downloads()
-        log.info("Deleted all downloaded files from tablets.")
 
-    uninstall_match_collection = input("Uninstall match collection from tablets: [y/N]")
+    uninstall_match_collection = input("Uninstall match collection from tablets? (y/N): ")
     if uninstall_match_collection.upper() == "Y":
         for device in DEVICES:
             adb_communicator.uninstall_app(device[0])
