@@ -300,7 +300,7 @@ class TestPredictedAimCalc:
                 "climb_after_percent_success": 0,
                 "trap_percent_success": 80,
                 "endgame_avg_total_points": 5,
-                "avg_cycle_time": 6,
+                "avg_expected_speaker_cycle_time": 6,
             },
             {
                 "team_number": "254",
@@ -320,7 +320,7 @@ class TestPredictedAimCalc:
                 "climb_after_percent_success": 20,
                 "trap_percent_success": 80,
                 "endgame_avg_total_points": 6,
-                "avg_cycle_time": 8,
+                "avg_expected_speaker_cycle_time": 8,
             },
             {
                 "team_number": "4414",
@@ -340,7 +340,7 @@ class TestPredictedAimCalc:
                 "climb_after_percent_success": 20,
                 "trap_percent_success": 20,
                 "endgame_avg_total_points": 6,
-                "avg_cycle_time": 7,
+                "avg_expected_speaker_cycle_time": 7,
             },
             {
                 "team_number": "1323",
@@ -360,7 +360,7 @@ class TestPredictedAimCalc:
                 "climb_after_percent_success": 0,
                 "trap_percent_success": 90,
                 "endgame_avg_total_points": 5,
-                "avg_cycle_time": 9,
+                "avg_expected_speaker_cycle_time": 9,
             },
             {
                 "team_number": "125",
@@ -380,7 +380,7 @@ class TestPredictedAimCalc:
                 "climb_after_percent_success": 0,
                 "trap_percent_success": 0,
                 "endgame_avg_total_points": 5,
-                "avg_cycle_time": 11,
+                "avg_expected_speaker_cycle_time": 11,
             },
             {
                 "team_number": "5940",
@@ -400,7 +400,7 @@ class TestPredictedAimCalc:
                 "climb_after_percent_success": 0,
                 "trap_percent_success": 0,
                 "endgame_avg_total_points": 5,
-                "avg_cycle_time": 5,
+                "avg_expected_speaker_cycle_time": 5,
             },
         ]
         self.tba_team = [

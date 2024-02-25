@@ -146,7 +146,9 @@ class PredictedAimCalc(BaseCalculations):
 
         # Calculate average points per piece in an amplified cycle
         speakers_per_amped = [
-            10 / team["avg_cycle_time"] if team["avg_cycle_time"] != 0 else 0
+            10 / team["avg_expected_speaker_cycle_time"]
+            if team["avg_expected_speaker_cycle_time"] != 0
+            else 0
             for team in alliance_data
         ]
         speakers_per_amped = sum(speakers_per_amped)
