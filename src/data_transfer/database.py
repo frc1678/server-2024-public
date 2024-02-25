@@ -34,6 +34,8 @@ VALID_COLLECTIONS = [
     "predicted_team",
     "pickability",
     "raw_obj_pit",
+    "ss_tim",
+    "ss_team",
 ]
 
 # Start mongod and initialize replica set
