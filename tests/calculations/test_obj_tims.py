@@ -197,7 +197,7 @@ class TestObjTIMCalcs:
                 {"in_teleop": True, "time": 105, "action_type": "intake_far"},
                 {"in_teleop": True, "time": 110, "action_type": "score_fail"},
                 {"in_teleop": True, "time": 117, "action_type": "score_speaker"},
-                {"in_teleop": True, "time": 125, "action_type": "amplified"},
+                {"in_teleop": True, "time": 125, "action_type": "score_amplify"},
                 {"in_teleop": True, "time": 130, "action_type": "end_incap_time"},
                 {"in_teleop": True, "time": 132, "action_type": "start_incap_time"},
                 {"in_teleop": False, "time": 137, "action_type": "to_endgame"},
@@ -254,7 +254,7 @@ class TestObjTIMCalcs:
                 {"in_teleop": True, "time": 94, "action_type": "intake_center"},
                 {"in_teleop": True, "time": 105, "action_type": "intake_far"},
                 {"in_teleop": True, "time": 117, "action_type": "score_amp"},
-                {"in_teleop": True, "time": 125, "action_type": "amplified"},
+                {"in_teleop": True, "time": 125, "action_type": "score_amplify"},
                 {"in_teleop": False, "time": 133, "action_type": "to_endgame"},
                 {"in_teleop": False, "time": 138, "action_type": "auto_intake_spike_1"},
                 {"in_teleop": False, "time": 139, "action_type": "auto_intake_spike_2"},
@@ -440,7 +440,7 @@ class TestObjTIMCalcs:
             {"in_teleop": True, "time": 105, "action_type": "intake_far"},
             {"in_teleop": True, "time": 110, "action_type": "score_fail"},
             {"in_teleop": True, "time": 117, "action_type": "score_speaker"},
-            {"in_teleop": True, "time": 125, "action_type": "amplified"},
+            {"in_teleop": True, "time": 125, "action_type": "score_amplify"},
             {"in_teleop": True, "time": 130, "action_type": "end_incap_time"},
             {"in_teleop": True, "time": 132, "action_type": "start_incap_time"},
             {"in_teleop": False, "time": 137, "action_type": "to_endgame"},
@@ -473,9 +473,11 @@ class TestObjTIMCalcs:
 
     def test_calc_cycle_times(self):
         after_fails = self.test_calculator.score_fail_type(self.unconsolidated_tims)
-        times = self.test_calculator.calc_cycle_times(after_fails)
-        assert 56 == times["speaker_cycle_time"]
-        assert 0 == times["amp_cycle_time"]
+        result = self.test_calculator.calc_cycle_times(after_fails)
+        assert result["expected_speaker_cycle_time"] == 0.0031305758411997236
+        assert result["expected_amp_cycle_time"] == 0
+        assert result["expected_speaker_cycles"] == 0
+        assert result["expected_amp_cycles"] == 0
 
     def test_score_fail_type(self):
         score_fails = self.test_calculator.score_fail_type(self.unconsolidated_tims)
@@ -706,19 +708,21 @@ class TestObjTIMCalcs:
         assert len(result) == 1
         calculated_tim = result[0]
         assert calculated_tim["confidence_ranking"] == 3
-        assert calculated_tim["speaker_cycle_time"] == 56
-        assert calculated_tim["amp_cycle_time"] == 0
+        assert calculated_tim["expected_speaker_cycle_time"] == 0.0031305758411997236
+        assert calculated_tim["expected_amp_cycle_time"] == 0
         assert calculated_tim["incap_time"] == 33
         assert calculated_tim["match_number"] == 42
         assert calculated_tim["team_number"] == "254"
         assert calculated_tim["auto_total_intakes"] == 8
         assert calculated_tim["auto_total_pieces"] == 4
         assert calculated_tim["tele_total_intakes"] == 4
-        assert calculated_tim["tele_total_pieces"] == 2
+        assert calculated_tim["tele_total_pieces"] == 3
         assert calculated_tim["total_intakes"] == 12
-        assert calculated_tim["total_pieces"] == 6
+        assert calculated_tim["total_pieces"] == 7
         assert calculated_tim["start_position"] == "1"
         assert calculated_tim["has_preload"] == False
+        assert calculated_tim["expected_speaker_cycles"] == 0
+        assert calculated_tim["expected_amp_cycles"] == 0
 
     @mock.patch.object(
         obj_tims.ObjTIMCalcs,

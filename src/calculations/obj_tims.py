@@ -24,7 +24,7 @@ class ObjTIMCalcs(BaseCalculations):
         super().__init__(server)
         self.watched_collections = ["unconsolidated_obj_tim"]
 
-    def consolidate_nums(self, nums: List[Union[int, float]]) -> int:
+    def consolidate_nums(self, nums: List[Union[int, float]], decimal=False) -> int:
         """Given numbers reported by multiple scouts, estimates actual number
         nums is a list of numbers, representing action counts or times, reported by each scout
         Currently tries to consolidate using only the reports from scouts on one robot,
@@ -38,7 +38,7 @@ class ObjTIMCalcs(BaseCalculations):
         # If two or more scouts agree, automatically go with what they say
         if len(nums) > len(set(nums)):
             # Still need to consolidate, in case there are multiple modes
-            return self.consolidate_nums(self.modes(nums))
+            return self.consolidate_nums(self.modes(nums), decimal)
         # Population standard deviation:
         std_dev = statistics.pstdev(nums)
         # Calculate weighted average, where the weight for each num is its reciprocal square z-score
@@ -46,6 +46,8 @@ class ObjTIMCalcs(BaseCalculations):
         z_scores = [(num - mean) / std_dev for num in nums]
         weights = [1 / z**2 for z in z_scores]
         float_nums = self.avg(nums, weights)
+        if decimal:
+            return float_nums
         return round(float_nums)
 
     def consolidate_bools(self, bools: list) -> bool:
@@ -156,10 +158,11 @@ class ObjTIMCalcs(BaseCalculations):
             return total_time
 
     def calc_cycle_times(self, tims):
-        total_times = []
+        """Return the number of actions per second"""
+        totals = []
         calculated_tim = {}
         for tim in tims:
-            cycle_times = {}
+            cycles = {}
             for field, value in self.schema["calc_cycle_time"].items():
                 score_actions = value["score_actions"]
                 # Make start time and end time equal to when teleop and endgame started
@@ -169,21 +172,39 @@ class ObjTIMCalcs(BaseCalculations):
                 total_time = end_time - start_time
                 # Tele actions are all the actions that occured in the time between the start time and end time
                 tele_actions = self.filter_timeline_actions(tim, **{"time": [start_time, end_time]})
-                num_score_actions = 0
+                num_cycles = 0
                 # Filter for all scoring actions in teleop
-                for action in tele_actions:
-                    if action["action_type"] in score_actions:
-                        num_score_actions += 1
-                cycle_times[field] = (
-                    round(total_time / num_score_actions, 2) if num_score_actions != 0 else 0
-                )
-            total_times.append(cycle_times)
-        for key in list(total_times[0].keys()):
+                for count in range(len(tele_actions) - 1):
+                    if (
+                        tele_actions[count]["action_type"] == "intake_far"
+                        and tele_actions[count + 1]["action_type"] in score_actions
+                    ):
+                        num_cycles += 1
+                    elif (
+                        tele_actions[count]["action_type"] == "intake_center"
+                        and tele_actions[count + 1]["action_type"] in score_actions
+                    ):
+                        num_cycles += 0.5
+                    elif (
+                        tele_actions[count]["action_type"] == "intake_poach"
+                        and tele_actions[count + 1]["action_type"] in score_actions
+                    ):
+                        num_cycles += 0.33
+                    elif (
+                        tele_actions[count]["action_type"] == "intake_amp"
+                        and tele_actions[count + 1]["action_type"] in score_actions
+                    ):
+                        num_cycles += 0.25
+                cycles[f"{field[:-5]}s"] = num_cycles
+                cycles[field] = (num_cycles / total_time) if total_time != 0 else 0
+            totals.append(cycles)
+        for key in list(totals[0].keys()):
             unconsolidated_values = []
-            for tim in total_times:
+            for tim in totals:
                 unconsolidated_values.append(tim[key])
-            calculated_tim[key] = self.consolidate_nums(unconsolidated_values)
-        # Return number of seconds per action
+            print(unconsolidated_values)
+            calculated_tim[key] = self.consolidate_nums(unconsolidated_values, decimal=True)
+        # Return number of actions per second
         return calculated_tim
 
     def score_fail_type(self, unconsolidated_tims: List[Dict]):
@@ -281,7 +302,9 @@ class ObjTIMCalcs(BaseCalculations):
                 if not isinstance(new_count, self.type_check_dict[expected_type]):
                     raise TypeError(f"Expected {new_count} calculation to be a {expected_type}")
                 unconsolidated_counts.append(new_count)
-            calculated_tim[calculation] = self.consolidate_nums(unconsolidated_counts)
+            calculated_tim[calculation] = self.consolidate_nums(
+                unconsolidated_counts, decimal=False
+            )
         return calculated_tim
 
     def calculate_tim_times(self, unconsolidated_tims: List[Dict]) -> dict:
@@ -306,7 +329,9 @@ class ObjTIMCalcs(BaseCalculations):
                         f"Expected {new_cycle_time} calculation to be a {expected_type}"
                     )
                 unconsolidated_cycle_times.append(new_cycle_time)
-            calculated_tim[calculation] = self.consolidate_nums(unconsolidated_cycle_times)
+            calculated_tim[calculation] = self.consolidate_nums(
+                unconsolidated_cycle_times, decimal=False
+            )
         return calculated_tim
 
     def calculate_aggregates(self, calculated_tim: List[Dict]):
