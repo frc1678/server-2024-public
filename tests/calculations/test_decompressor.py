@@ -443,6 +443,67 @@ class TestDecompressor:
             == expected2_obj_pit
         )
 
+    def test_decompress_ss_team(self):
+        input_1 = {
+            "shoot_specific_area_only": "subwoofer",
+            "intake_source_only": True,
+            "cant_go_under_stage": False,
+        }
+        input_2 = {
+            "auto_strategies": "goes to center first",
+            "intake_source_only": False,
+            "cant_go_under_stage": True,
+        }
+        input_3 = {
+            "strengths": "very fast",
+            "weaknesses": "tippy",
+            "intake_source_only": False,
+            "cant_go_under_stage": True,
+        }
+        input_4 = {
+            "strengths": "fast cycles",
+            "intake_source_only": False,
+            "cant_go_under_stage": True,
+        }
+
+        expected_output_1 = {
+            "auto_strategies": "",
+            "cant_go_under_stage": False,
+            "intake_source_only": True,
+            "shoot_specific_area_only": "subwoofer",
+            "strengths": "",
+            "weaknesses": "",
+        }
+        expected_output_2 = {
+            "auto_strategies": "goes to center first",
+            "cant_go_under_stage": True,
+            "intake_source_only": False,
+            "shoot_specific_area_only": "",
+            "strengths": "",
+            "weaknesses": "",
+        }
+        expected_output_3 = {
+            "auto_strategies": "",
+            "cant_go_under_stage": True,
+            "intake_source_only": False,
+            "shoot_specific_area_only": "",
+            "strengths": "very fast",
+            "weaknesses": "tippy",
+        }
+        expected_output_4 = {
+            "auto_strategies": "",
+            "cant_go_under_stage": True,
+            "intake_source_only": False,
+            "shoot_specific_area_only": "",
+            "strengths": "fast cycles",
+            "weaknesses": "",
+        }
+
+        assert decompressor.Decompressor.decompress_ss_team(input_1) == expected_output_1
+        assert decompressor.Decompressor.decompress_ss_team(input_2) == expected_output_2
+        assert decompressor.Decompressor.decompress_ss_team(input_3) == expected_output_3
+        assert decompressor.Decompressor.decompress_ss_team(input_4) == expected_output_4
+
     def test_decompress_ss_tim(self):
         # Creates 8 instances and checks them with their expected outputs.
         input_1 = {"coopertition": True, "played_defense": True}
