@@ -180,9 +180,6 @@ class TBATIMCalc(base_calculations.BaseCalculations):
             # {"taxiRobot": "Yes"}
             tim_requirements_copy = copy.deepcopy(tim_requirements)
 
-            if tim_requirements["type"] != "bool":
-                log.warning(f"Tried to calc bool on {calculation}")
-
             # type does not need to be in the final data, so we remove it
             # {"type": "bool", "field": "value"} -> {"field": "value"}
             del tim_requirements_copy["type"]
