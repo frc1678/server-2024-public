@@ -169,9 +169,6 @@ def pull_device_data():
         pull_device_files(device_file_path, "/storage/emulated/0/Download", devices)
     # Iterates through the 'data' folder
     for device_dir in os.listdir(device_file_path):
-        # TODO: iterate through data/devices (or wherever pulled data is stored)
-        #       and search for folders. For each folder, unpack all files
-        #       and prefix the folder name onto the unpacked files
         if device_dir in DEVICE_SERIAL_NUMBERS.keys():
             if device_dir[:1] == "R":
                 ss_device_file_paths.append(device_dir)
@@ -182,16 +179,21 @@ def pull_device_data():
         # Iterate through the downloads folder in the device folder
         download_directory = os.path.join(device_file_path, device)
         for file in os.listdir(download_directory):
-            for dataset, pattern in FILENAME_REGEXES.items():
-                if re.fullmatch(pattern, file):
-                    with open(os.path.join(download_directory, file)) as data_file:
-                        # QR data is just read
-                        if dataset == "qr":
-                            file_contents = data_file.read().rstrip("\n")
-                        else:
+            if re.fullmatch(FILENAME_REGEXES["qr"], file):
+                # Read QR data
+                with open(os.path.join(download_directory, file)) as data_file:
+                    file_contents = data_file.read().rstrip("\n")
+                    data["qr"].append(file_contents)
+                    break
+            # 'file' is a folder named by an event key containing pit data
+            elif re.fullmatch(re.compile(r"^[0-9]{4}"), file):
+                # Read raw_obj_pit data
+                for new_file in os.listdir(new_path := os.path.join(download_directory, file)):
+                    if re.fullmatch(FILENAME_REGEXES["raw_obj_pit"], new_file):
+                        with open(new_path) as data_file:
                             file_contents = json.load(data_file)
-                        data[dataset].append(file_contents)
-                        break  # Filename will only match one regex
+                            data["qr"].append(file_contents)
+                        break
     # Pulls data from Stand Strategist (ss)
     # Iterates through the 'data' folder
     # Iterates through the devices
@@ -305,7 +307,7 @@ FILENAME_REGEXES = {
         r"([0-9]{1,3}_[0-9]{1,4}_[A-Z0-9]+_[0-9]+\.txt)|([0-9]{1,3}_[0-9A-Z]+_[0-9]+\.txt)"
     ),
     # All data is located in <event_key>_pit_data.json
-    "raw_obj_pit": re.compile(event_key + "_" + r"pit_data\.json"),
+    "raw_obj_pit": re.compile(r"pit_data\.json"),
 }
 
 # Open the tablet serials file to find all device serials
