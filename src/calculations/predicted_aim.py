@@ -93,9 +93,15 @@ class PredictedAimCalc(BaseCalculations):
             # s1 = R / (r1 + 1)
             if auto_amp + auto_speaker + other_auto_amp + other_auto_speaker > 17:
                 # r
-                ratio = (auto_amp + auto_speaker) / (other_auto_amp + other_auto_speaker)
+                try:
+                    ratio = (auto_amp + auto_speaker) / (other_auto_amp + other_auto_speaker)
+                except ZeroDivisionError:
+                    ratio = 1
                 # r1
-                ratio1 = auto_amp / auto_speaker
+                try:
+                    ratio1 = auto_amp / auto_speaker
+                except ZeroDivisionError:
+                    ratio1 = 1
                 # R
                 total_pieces = (17 * ratio) / (ratio + 1)
 
@@ -139,7 +145,10 @@ class PredictedAimCalc(BaseCalculations):
             alliance_data.append({var: obj[var] for var in tele_schema.keys()})
 
         # Calculate average points per piece in an amplified cycle
-        speakers_per_amped = [10 / team["avg_cycle_time"] for team in alliance_data]
+        speakers_per_amped = [
+            10 / team["avg_cycle_time"] if team["avg_cycle_time"] != 0 else 0
+            for team in alliance_data
+        ]
         speakers_per_amped = sum(speakers_per_amped)
         if speakers_per_amped > 4:
             speakers_per_amped = 4
@@ -252,7 +261,10 @@ class PredictedAimCalc(BaseCalculations):
             predicted_values.tele_speaker += team["tele_avg_speaker"]
             predicted_values.tele_speaker_amped += team["tele_avg_amplified"]
             predicted_values.tele_amp += team["tele_avg_amp"]
-            predicted_values.leave += tba_team["leave_successes"] / team["matches_played"]
+            try:
+                predicted_values.leave += tba_team["leave_successes"] / team["matches_played"]
+            except ZeroDivisionError:
+                predicted_values.leave = 0
             predicted_values.park_successes += team["parked_percent"] / 100
             predicted_values.onstage_successes += team["stage_percent_success_all"] / 100
             predicted_values.trap += team["trap_percent_success"] / 100
