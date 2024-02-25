@@ -202,7 +202,6 @@ class ObjTIMCalcs(BaseCalculations):
             unconsolidated_values = []
             for tim in totals:
                 unconsolidated_values.append(tim[key])
-            print(unconsolidated_values)
             calculated_tim[key] = self.consolidate_nums(unconsolidated_values, decimal=True)
         # Return number of actions per second
         return calculated_tim
