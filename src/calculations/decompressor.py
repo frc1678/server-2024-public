@@ -200,7 +200,7 @@ class Decompressor(base_calculations.BaseCalculations):
             return QRType.SUBJECTIVE
         raise ValueError(f"QR type unknown - Invalid first character for QR: {first_char}")
 
-    def decompress_single_qr(self, qr_data, qr_type, override: {}):
+    def decompress_single_qr(self, qr_data, qr_type, override):
         """Decompress a full QR."""
         # Split into generic data and objective/subjective data
         qr_data = qr_data.split(self.SCHEMA["generic_data"]["_section_separator"])
