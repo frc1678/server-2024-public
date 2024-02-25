@@ -104,7 +104,7 @@ class TBATIMCalc(base_calculations.BaseCalculations):
         return spotlit_teams
 
     @staticmethod
-    def calculate_driver_stations(match) -> Dict[str, str]:
+    def calculate_driver_stations(match, seperate_alliances=False) -> Dict[str, str]:
         "Given match data, return a list for each alliance with each teams driver position"
         blue_team_keys = match["alliances"]["blue"]["team_keys"]
         red_team_keys = match["alliances"]["red"]["team_keys"]
@@ -119,14 +119,46 @@ class TBATIMCalc(base_calculations.BaseCalculations):
         red_driver_positions[red_team_keys[1][3:]] = "center"
         red_driver_positions[red_team_keys[2][3:]] = "right"
 
-        # if alliance seperation is needed in the future. (this will slightly break the calculation)
-        # driver_stations = {}
-        # driver_stations['blue'] = blue_driver_positions
-        # driver_stations['red'] = red_driver_positions
+        if seperate_alliances:
+            driver_stations = {}
+            driver_stations["blue"] = blue_driver_positions
+            driver_stations["red"] = red_driver_positions
+            return driver_stations
 
         # combines the two to make it easier to search through. One team can't play on both sides so it does not break anything
         blue_driver_positions.update(red_driver_positions)
         return blue_driver_positions
+
+    def calculate_climbed_opposite(self, match) -> List[str]:
+        "Calculates if a team climbed on the chain opposite to their driver stations"
+
+        # What chain is opposite to which driver station
+        stage_to_opposite = {
+            "left": "StageRight",
+            "right": "StageLeft",
+            "center": "StageCenter",
+        }
+
+        # stores all the teams that have climbed opposite
+        teams_climbed_opposite = []
+        driver_stations = self.calculate_driver_stations(match, True)
+        i = 0
+        for team, station in driver_stations["blue"].items():
+            climb_status = match["score_breakdown"]["blue"][f"endGameRobot{i+1}"]
+
+            if stage_to_opposite[station] == climb_status:
+                teams_climbed_opposite.append(team)
+
+            i += 1
+        i = 0
+        for team, station in driver_stations["red"].items():
+            climb_status = match["score_breakdown"]["red"][f"endGameRobot{i+1}"]
+
+            if stage_to_opposite[station] == climb_status:
+                teams_climbed_opposite.append(team)
+
+            i += 1
+        return teams_climbed_opposite
 
     def calculate_tim(self, team_number: str, match) -> List[Dict[str, Any]]:
         """Given a team number and a match that it's from, calculate that tim"""
@@ -140,6 +172,8 @@ class TBATIMCalc(base_calculations.BaseCalculations):
         robot_number, alliance = self.get_robot_number_and_alliance(team_number, match)
         match_spotlit_teams = self.calculate_spotlight(match)
         driver_stations = self.calculate_driver_stations(match)
+        teams_climbed_opposite = self.calculate_climbed_opposite(match)
+
         for calculation, tim_requirements in self.SCHEMA.items():
             # calculation is the name of the field, like "mobility" for example
             # tim_requirements is dict of stuff including {"type": "bool"} and something like
@@ -163,6 +197,11 @@ class TBATIMCalc(base_calculations.BaseCalculations):
             # calculate driver stations
             if calculation == "driver_station":
                 tim[calculation] = driver_stations[team_number]
+                continue
+
+            # calculate teams climbed opposite
+            if calculation == "climbed_opposite":
+                tim[calculation] = team_number in teams_climbed_opposite
                 continue
 
             # Fun calc_tba_bool for each calculation, and add it to tim
