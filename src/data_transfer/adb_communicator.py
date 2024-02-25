@@ -196,14 +196,16 @@ def pull_device_data():
                     data["qr"].append(file_contents)
                     break
             # 'file' is a folder named by an event key containing pit data
-            elif re.fullmatch(re.compile(r"^[0-9]{4}"), file):
+            elif re.fullmatch(re.compile(f"^{utils.TBA_EVENT_KEY}"), file):
                 # Read raw_obj_pit data
                 for new_file in os.listdir(new_path := os.path.join(download_directory, file)):
                     if re.fullmatch(FILENAME_REGEXES["raw_obj_pit"], new_file):
-                        with open(new_path) as data_file:
-                            file_contents = json.load(data_file)
-                            data["qr"].append(file_contents)
-                        break
+                        for data_file in os.listdir(new_path):
+                            if "pit_data" in data_file:
+                                with open(os.path.join(new_path, data_file)) as f:
+                                    file_contents = json.load(f)
+                                data["raw_obj_pit"].append(file_contents)
+                            break
     # Pulls data from Stand Strategist (ss)
     # Iterates through the 'data' folder
     # Iterates through the devices
