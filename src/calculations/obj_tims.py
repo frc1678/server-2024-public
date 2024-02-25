@@ -158,7 +158,11 @@ class ObjTIMCalcs(BaseCalculations):
             return total_time
 
     def calc_cycle_times(self, tims):
-        """Return the number of actions per second"""
+        """Currently calculates the expected speaker and amp cycle times as well as
+        the number of speaker and amp cycles. Both these calculations weight the different intake to
+        score cycles.
+        TODO: Add expected_speaker_cycles and expected_amp_cycles into the schema as well as the weights for each intake
+        """
         totals = []
         calculated_tim = {}
         for tim in tims:
@@ -173,7 +177,7 @@ class ObjTIMCalcs(BaseCalculations):
                 # Tele actions are all the actions that occured in the time between the start time and end time
                 tele_actions = self.filter_timeline_actions(tim, **{"time": [start_time, end_time]})
                 num_cycles = 0
-                # Filter for all scoring actions in teleop
+                # Filter for all intake actions in teleop then check the next action to see if it is a score
                 for count in range(len(tele_actions) - 1):
                     if (
                         tele_actions[count]["action_type"] == "intake_far"
@@ -195,15 +199,16 @@ class ObjTIMCalcs(BaseCalculations):
                         and tele_actions[count + 1]["action_type"] in score_actions
                     ):
                         num_cycles += 0.25
+                # TODO Use a schema to create expected_speaker_cycles instead of this scuffed f string stuff
                 cycles[f"{field[:-5]}s"] = num_cycles
-                cycles[field] = (num_cycles / total_time) if total_time != 0 else 0
+                # Calculates the cycle time
+                cycles[field] = (total_time / num_cycles) if num_cycles != 0 else 0
             totals.append(cycles)
         for key in list(totals[0].keys()):
             unconsolidated_values = []
             for tim in totals:
                 unconsolidated_values.append(tim[key])
             calculated_tim[key] = self.consolidate_nums(unconsolidated_values, decimal=True)
-        # Return number of actions per second
         return calculated_tim
 
     def score_fail_type(self, unconsolidated_tims: List[Dict]):
@@ -301,9 +306,7 @@ class ObjTIMCalcs(BaseCalculations):
                 if not isinstance(new_count, self.type_check_dict[expected_type]):
                     raise TypeError(f"Expected {new_count} calculation to be a {expected_type}")
                 unconsolidated_counts.append(new_count)
-            calculated_tim[calculation] = self.consolidate_nums(
-                unconsolidated_counts, decimal=False
-            )
+            calculated_tim[calculation] = self.consolidate_nums(unconsolidated_counts)
         return calculated_tim
 
     def calculate_tim_times(self, unconsolidated_tims: List[Dict]) -> dict:
@@ -328,9 +331,7 @@ class ObjTIMCalcs(BaseCalculations):
                         f"Expected {new_cycle_time} calculation to be a {expected_type}"
                     )
                 unconsolidated_cycle_times.append(new_cycle_time)
-            calculated_tim[calculation] = self.consolidate_nums(
-                unconsolidated_cycle_times, decimal=False
-            )
+            calculated_tim[calculation] = self.consolidate_nums(unconsolidated_cycle_times)
         return calculated_tim
 
     def calculate_aggregates(self, calculated_tim: List[Dict]):

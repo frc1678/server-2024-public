@@ -474,7 +474,7 @@ class TestObjTIMCalcs:
     def test_calc_cycle_times(self):
         after_fails = self.test_calculator.score_fail_type(self.unconsolidated_tims)
         result = self.test_calculator.calc_cycle_times(after_fails)
-        assert result["expected_speaker_cycle_time"] == 0.0031305758411997236
+        assert result["expected_speaker_cycle_time"] == 425.5192960894196
         assert result["expected_amp_cycle_time"] == 0
         assert result["expected_speaker_cycles"] == 0
         assert result["expected_amp_cycles"] == 0
@@ -708,7 +708,7 @@ class TestObjTIMCalcs:
         assert len(result) == 1
         calculated_tim = result[0]
         assert calculated_tim["confidence_ranking"] == 3
-        assert calculated_tim["expected_speaker_cycle_time"] == 0.0031305758411997236
+        assert calculated_tim["expected_speaker_cycle_time"] == 425.5192960894196
         assert calculated_tim["expected_amp_cycle_time"] == 0
         assert calculated_tim["incap_time"] == 33
         assert calculated_tim["match_number"] == 42
