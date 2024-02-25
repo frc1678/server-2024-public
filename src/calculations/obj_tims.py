@@ -168,6 +168,9 @@ class ObjTIMCalcs(BaseCalculations):
         for tim in tims:
             cycles = {}
             for field, value in self.schema["calc_cycle_time"].items():
+                if len(tim["timeline"]) == 0:
+                    cycles[field] = 0
+                    continue
                 score_actions = value["score_actions"]
                 # Make start time and end time equal to when teleop and endgame started
                 start_time = self.filter_timeline_actions(tim, action_type="to_teleop")[0]["time"]
