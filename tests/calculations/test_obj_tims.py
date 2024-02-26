@@ -184,35 +184,34 @@ class TestObjTIMCalcs:
             "team_number": "254",
             "scout_id": 17,
             "timeline": [
+                {"in_teleop": False, "time": 148, "action_type": "auto_intake_center_5"},
+                {"in_teleop": True, "time": 135, "action_type": "to_teleop"},
+                {"in_teleop": True, "time": 130, "action_type": "intake_amp"},
+                {"in_teleop": True, "time": 125, "action_type": "score_speaker"},
+                {"in_teleop": True, "time": 120, "action_type": "score_fail"},
+                {"in_teleop": True, "time": 115, "action_type": "score_amp"},
+                {"in_teleop": True, "time": 114, "action_type": "intake_far"},
+                {"in_teleop": True, "time": 110, "action_type": "score_speaker"},
+                {"in_teleop": True, "time": 108, "action_type": "intake_poach"},
+                {"in_teleop": True, "time": 104, "action_type": "score_amp"},
+                {"in_teleop": True, "time": 95, "action_type": "intake_amp"},
+                {"in_teleop": True, "time": 90, "action_type": "score_amp"},
+                {"in_teleop": True, "time": 80, "action_type": "start_incap_time"},
+                {"in_teleop": True, "time": 75, "action_type": "end_incap_time"},
+                {"in_teleop": True, "time": 71, "action_type": "score_amplify"},
+                {"in_teleop": True, "time": 70, "action_type": "score_speaker"},
+                {"in_teleop": True, "time": 63, "action_type": "score_fail"},
+                {"in_teleop": True, "time": 56, "action_type": "intake_far"},
+                {"in_teleop": True, "time": 54, "action_type": "intake_center"},
+                {"in_teleop": True, "time": 40, "action_type": "intake_poach"},
+                {"in_teleop": True, "time": 31, "action_type": "score_speaker"},
+                {"in_teleop": True, "time": 28, "action_type": "intake_amp"},
+                {"in_teleop": True, "time": 20, "action_type": "score_speaker"},
+                {"in_teleop": True, "time": 16, "action_type": "score_fail"},
+                {"in_teleop": True, "time": 14, "action_type": "score_speaker"},
+                {"in_teleop": True, "time": 9, "action_type": "start_incap_time"},
+                {"in_teleop": False, "time": 3, "action_type": "to_endgame"},
                 {"in_teleop": False, "time": 2, "action_type": "end_incap_time"},
-                {"in_teleop": True, "time": 15, "action_type": "to_teleop"},
-                {"in_teleop": True, "time": 35, "action_type": "start_incap_time"},
-                {"in_teleop": True, "time": 51, "action_type": "score_speaker"},
-                {"in_teleop": True, "time": 60, "action_type": "score_fail"},
-                {"in_teleop": True, "time": 61, "action_type": "score_speaker"},
-                {"in_teleop": True, "time": 75, "action_type": "intake_amp"},
-                {"in_teleop": True, "time": 79, "action_type": "score_speaker"},
-                {"in_teleop": True, "time": 81, "action_type": "intake_poach"},
-                {"in_teleop": True, "time": 94, "action_type": "intake_center"},
-                {"in_teleop": True, "time": 105, "action_type": "intake_far"},
-                {"in_teleop": True, "time": 110, "action_type": "score_fail"},
-                {"in_teleop": True, "time": 117, "action_type": "score_speaker"},
-                {"in_teleop": True, "time": 125, "action_type": "score_amplify"},
-                {"in_teleop": True, "time": 130, "action_type": "end_incap_time"},
-                {"in_teleop": True, "time": 132, "action_type": "start_incap_time"},
-                {"in_teleop": False, "time": 137, "action_type": "to_endgame"},
-                {"in_teleop": False, "time": 138, "action_type": "auto_intake_spike_1"},
-                {"in_teleop": False, "time": 139, "action_type": "auto_intake_spike_2"},
-                {"in_teleop": False, "time": 141, "action_type": "score_amp"},
-                {"in_teleop": False, "time": 140, "action_type": "auto_intake_spike_3"},
-                {"in_teleop": False, "time": 142, "action_type": "score_speaker"},
-                {"in_teleop": False, "time": 143, "action_type": "auto_intake_center_1"},
-                {"in_teleop": False, "time": 144, "action_type": "score_amp"},
-                {"in_teleop": False, "time": 145, "action_type": "auto_intake_center_2"},
-                {"in_teleop": False, "time": 147, "action_type": "score_speaker"},
-                {"in_teleop": False, "time": 146, "action_type": "auto_intake_center_3"},
-                {"in_teleop": False, "time": 148, "action_type": "auto_intake_center_4"},
-                {"in_teleop": False, "time": 150, "action_type": "auto_intake_center_5"},
             ],
             "stage_level_left": "N",
             "stage_level_center": "O",
@@ -239,35 +238,34 @@ class TestObjTIMCalcs:
             "team_number": "254",
             "scout_id": 17,
             "timeline": [
-                {"in_teleop": True, "time": 2, "action_type": "end_incap_time"},
-                {"in_teleop": True, "time": 20, "action_type": "to_teleop"},
-                {"in_teleop": True, "time": 35, "action_type": "start_incap_time"},
-                {"in_teleop": True, "time": 50, "action_type": "score_fail"},
-                {"in_teleop": True, "time": 51, "action_type": "score_amp"},
-                {"in_teleop": True, "time": 60, "action_type": "score_fail"},
-                {"in_teleop": True, "time": 61, "action_type": "score_speaker"},
-                {"in_teleop": True, "time": 68, "action_type": "score_amp"},
-                {"in_teleop": True, "time": 70, "action_type": "score_speaker"},
-                {"in_teleop": True, "time": 75, "action_type": "intake_amp"},
-                {"in_teleop": True, "time": 79, "action_type": "score_speaker"},
-                {"in_teleop": True, "time": 81, "action_type": "intake_poach"},
-                {"in_teleop": True, "time": 94, "action_type": "intake_center"},
-                {"in_teleop": True, "time": 105, "action_type": "intake_far"},
-                {"in_teleop": True, "time": 117, "action_type": "score_amp"},
-                {"in_teleop": True, "time": 125, "action_type": "score_amplify"},
-                {"in_teleop": False, "time": 133, "action_type": "to_endgame"},
-                {"in_teleop": False, "time": 138, "action_type": "auto_intake_spike_1"},
-                {"in_teleop": False, "time": 139, "action_type": "auto_intake_spike_2"},
-                {"in_teleop": False, "time": 141, "action_type": "score_amp"},
-                {"in_teleop": False, "time": 140, "action_type": "auto_intake_spike_3"},
-                {"in_teleop": False, "time": 142, "action_type": "score_speaker"},
-                {"in_teleop": False, "time": 143, "action_type": "auto_intake_center_1"},
-                {"in_teleop": False, "time": 144, "action_type": "score_amp"},
-                {"in_teleop": False, "time": 145, "action_type": "auto_intake_center_2"},
-                {"in_teleop": False, "time": 147, "action_type": "score_speaker"},
-                {"in_teleop": False, "time": 146, "action_type": "auto_intake_center_3"},
-                {"in_teleop": False, "time": 148, "action_type": "auto_intake_center_4"},
-                {"in_teleop": False, "time": 150, "action_type": "auto_intake_center_5"},
+                {"in_teleop": False, "time": 148, "action_type": "auto_intake_center_5"},
+                {"in_teleop": True, "time": 135, "action_type": "to_teleop"},
+                {"in_teleop": True, "time": 130, "action_type": "intake_amp"},
+                {"in_teleop": True, "time": 125, "action_type": "score_speaker"},
+                {"in_teleop": True, "time": 120, "action_type": "intake_source"},
+                {"in_teleop": True, "time": 115, "action_type": "score_fail_amp"},
+                {"in_teleop": True, "time": 114, "action_type": "intake_far"},
+                {"in_teleop": True, "time": 110, "action_type": "score_speaker"},
+                {"in_teleop": True, "time": 108, "action_type": "intake_poach"},
+                {"in_teleop": True, "time": 104, "action_type": "score_amp"},
+                {"in_teleop": True, "time": 95, "action_type": "intake_amp"},
+                {"in_teleop": True, "time": 90, "action_type": "score_amp"},
+                {"in_teleop": True, "time": 80, "action_type": "start_incap_time"},
+                {"in_teleop": True, "time": 75, "action_type": "end_incap_time"},
+                {"in_teleop": True, "time": 71, "action_type": "score_amplify"},
+                {"in_teleop": True, "time": 70, "action_type": "score_amp"},
+                {"in_teleop": True, "time": 63, "action_type": "score_fail"},
+                {"in_teleop": True, "time": 56, "action_type": "intake_far"},
+                {"in_teleop": True, "time": 54, "action_type": "intake_center"},
+                {"in_teleop": True, "time": 40, "action_type": "intake_poach"},
+                {"in_teleop": True, "time": 31, "action_type": "score_speaker"},
+                {"in_teleop": True, "time": 28, "action_type": "intake_amp"},
+                {"in_teleop": True, "time": 20, "action_type": "score_speaker"},
+                {"in_teleop": True, "time": 16, "action_type": "score_fail"},
+                {"in_teleop": True, "time": 14, "action_type": "score_speaker"},
+                {"in_teleop": True, "time": 9, "action_type": "start_incap_time"},
+                {"in_teleop": False, "time": 3, "action_type": "to_endgame"},
+                {"in_teleop": False, "time": 2, "action_type": "end_incap_time"},
             ],
             "stage_level_left": "N",
             "stage_level_center": "O",
@@ -285,40 +283,39 @@ class TestObjTIMCalcs:
             "match_number": 42,
             "timestamp": 11,
             "match_collection_version_number": "STR6",
-            "scout_name": "ADRIAN",
+            "scout_name": "JELLY",
             "alliance_color_is_red": False,
             "team_number": "254",
             "scout_id": 17,
             "timeline": [
+                {"in_teleop": False, "time": 148, "action_type": "auto_intake_center_5"},
+                {"in_teleop": True, "time": 135, "action_type": "to_teleop"},
+                {"in_teleop": True, "time": 130, "action_type": "intake_amp"},
+                {"in_teleop": True, "time": 125, "action_type": "score_speaker"},
+                {"in_teleop": True, "time": 120, "action_type": "intake_source"},
+                {"in_teleop": True, "time": 115, "action_type": "score_amp"},
+                {"in_teleop": True, "time": 114, "action_type": "intake_far"},
+                {"in_teleop": True, "time": 110, "action_type": "score_amp"},
+                {"in_teleop": True, "time": 108, "action_type": "intake_poach"},
+                {"in_teleop": True, "time": 104, "action_type": "score_amp"},
+                {"in_teleop": True, "time": 95, "action_type": "intake_amp"},
+                {"in_teleop": True, "time": 90, "action_type": "score_amp"},
+                {"in_teleop": True, "time": 80, "action_type": "start_incap_time"},
+                {"in_teleop": True, "time": 75, "action_type": "end_incap_time"},
+                {"in_teleop": True, "time": 71, "action_type": "score_amplify"},
+                {"in_teleop": True, "time": 70, "action_type": "score_speaker"},
+                {"in_teleop": True, "time": 63, "action_type": "score_fail"},
+                {"in_teleop": True, "time": 56, "action_type": "score_amplify"},
+                {"in_teleop": True, "time": 54, "action_type": "intake_center"},
+                {"in_teleop": True, "time": 40, "action_type": "intake_poach"},
+                {"in_teleop": True, "time": 31, "action_type": "score_speaker"},
+                {"in_teleop": True, "time": 28, "action_type": "intake_amp"},
+                {"in_teleop": True, "time": 20, "action_type": "score_speaker"},
+                {"in_teleop": True, "time": 16, "action_type": "score_fail"},
+                {"in_teleop": True, "time": 14, "action_type": "score_speaker"},
+                {"in_teleop": True, "time": 9, "action_type": "start_incap_time"},
+                {"in_teleop": False, "time": 3, "action_type": "to_endgame"},
                 {"in_teleop": False, "time": 2, "action_type": "end_incap_time"},
-                {"in_teleop": True, "time": 44, "action_type": "to_teleop"},
-                {"in_teleop": True, "time": 45, "action_type": "start_incap_time"},
-                {"in_teleop": True, "time": 51, "action_type": "score_speaker"},
-                {"in_teleop": True, "time": 60, "action_type": "score_fail"},
-                {"in_teleop": True, "time": 61, "action_type": "score_speaker"},
-                {"in_teleop": True, "time": 63, "action_type": "intake_far"},
-                {"in_teleop": True, "time": 79, "action_type": "score_speaker"},
-                {"in_teleop": True, "time": 81, "action_type": "intake_poach"},
-                {"in_teleop": True, "time": 94, "action_type": "intake_center"},
-                {"in_teleop": True, "time": 105, "action_type": "intake_far"},
-                {"in_teleop": True, "time": 110, "action_type": "shoot_other"},
-                {"in_teleop": True, "time": 117, "action_type": "score_fail"},
-                {"in_teleop": True, "time": 125, "action_type": "score_amplify"},
-                {"in_teleop": True, "time": 130, "action_type": "end_incap_time"},
-                {"in_teleop": True, "time": 132, "action_type": "start_incap_time"},
-                {"in_teleop": False, "time": 134, "action_type": "to_endgame"},
-                {"in_teleop": False, "time": 138, "action_type": "auto_intake_spike_1"},
-                {"in_teleop": False, "time": 139, "action_type": "auto_intake_spike_2"},
-                {"in_teleop": False, "time": 141, "action_type": "score_amp"},
-                {"in_teleop": False, "time": 140, "action_type": "auto_intake_spike_3"},
-                {"in_teleop": False, "time": 142, "action_type": "score_speaker"},
-                {"in_teleop": False, "time": 143, "action_type": "auto_intake_center_1"},
-                {"in_teleop": False, "time": 144, "action_type": "score_amp"},
-                {"in_teleop": False, "time": 145, "action_type": "auto_intake_center_2"},
-                {"in_teleop": False, "time": 147, "action_type": "score_speaker"},
-                {"in_teleop": False, "time": 146, "action_type": "auto_intake_center_3"},
-                {"in_teleop": False, "time": 148, "action_type": "auto_intake_center_4"},
-                {"in_teleop": False, "time": 150, "action_type": "auto_intake_center_5"},
             ],
             "stage_level_left": "N",
             "stage_level_center": "O",
@@ -427,63 +424,62 @@ class TestObjTIMCalcs:
     def test_filter_timeline_actions(self):
         actions = self.test_calculator.filter_timeline_actions(self.unconsolidated_tims[0])
         assert actions == [
+            {"in_teleop": False, "time": 148, "action_type": "auto_intake_center_5"},
+            {"in_teleop": True, "time": 135, "action_type": "to_teleop"},
+            {"in_teleop": True, "time": 130, "action_type": "intake_amp"},
+            {"in_teleop": True, "time": 125, "action_type": "score_speaker"},
+            {"in_teleop": True, "time": 120, "action_type": "score_fail"},
+            {"in_teleop": True, "time": 115, "action_type": "score_amp"},
+            {"in_teleop": True, "time": 114, "action_type": "intake_far"},
+            {"in_teleop": True, "time": 110, "action_type": "score_speaker"},
+            {"in_teleop": True, "time": 108, "action_type": "intake_poach"},
+            {"in_teleop": True, "time": 104, "action_type": "score_amp"},
+            {"in_teleop": True, "time": 95, "action_type": "intake_amp"},
+            {"in_teleop": True, "time": 90, "action_type": "score_amp"},
+            {"in_teleop": True, "time": 80, "action_type": "start_incap_time"},
+            {"in_teleop": True, "time": 75, "action_type": "end_incap_time"},
+            {"in_teleop": True, "time": 71, "action_type": "score_amplify"},
+            {"in_teleop": True, "time": 70, "action_type": "score_speaker"},
+            {"in_teleop": True, "time": 63, "action_type": "score_fail"},
+            {"in_teleop": True, "time": 56, "action_type": "intake_far"},
+            {"in_teleop": True, "time": 54, "action_type": "intake_center"},
+            {"in_teleop": True, "time": 40, "action_type": "intake_poach"},
+            {"in_teleop": True, "time": 31, "action_type": "score_speaker"},
+            {"in_teleop": True, "time": 28, "action_type": "intake_amp"},
+            {"in_teleop": True, "time": 20, "action_type": "score_speaker"},
+            {"in_teleop": True, "time": 16, "action_type": "score_fail"},
+            {"in_teleop": True, "time": 14, "action_type": "score_speaker"},
+            {"in_teleop": True, "time": 9, "action_type": "start_incap_time"},
+            {"in_teleop": False, "time": 3, "action_type": "to_endgame"},
             {"in_teleop": False, "time": 2, "action_type": "end_incap_time"},
-            {"in_teleop": True, "time": 15, "action_type": "to_teleop"},
-            {"in_teleop": True, "time": 35, "action_type": "start_incap_time"},
-            {"in_teleop": True, "time": 51, "action_type": "score_speaker"},
-            {"in_teleop": True, "time": 60, "action_type": "score_fail"},
-            {"in_teleop": True, "time": 61, "action_type": "score_speaker"},
-            {"in_teleop": True, "time": 75, "action_type": "intake_amp"},
-            {"in_teleop": True, "time": 79, "action_type": "score_speaker"},
-            {"in_teleop": True, "time": 81, "action_type": "intake_poach"},
-            {"in_teleop": True, "time": 94, "action_type": "intake_center"},
-            {"in_teleop": True, "time": 105, "action_type": "intake_far"},
-            {"in_teleop": True, "time": 110, "action_type": "score_fail"},
-            {"in_teleop": True, "time": 117, "action_type": "score_speaker"},
-            {"in_teleop": True, "time": 125, "action_type": "score_amplify"},
-            {"in_teleop": True, "time": 130, "action_type": "end_incap_time"},
-            {"in_teleop": True, "time": 132, "action_type": "start_incap_time"},
-            {"in_teleop": False, "time": 137, "action_type": "to_endgame"},
-            {"in_teleop": False, "time": 138, "action_type": "auto_intake_spike_1"},
-            {"in_teleop": False, "time": 139, "action_type": "auto_intake_spike_2"},
-            {"in_teleop": False, "time": 141, "action_type": "score_amp"},
-            {"in_teleop": False, "time": 140, "action_type": "auto_intake_spike_3"},
-            {"in_teleop": False, "time": 142, "action_type": "score_speaker"},
-            {"in_teleop": False, "time": 143, "action_type": "auto_intake_center_1"},
-            {"in_teleop": False, "time": 144, "action_type": "score_amp"},
-            {"in_teleop": False, "time": 145, "action_type": "auto_intake_center_2"},
-            {"in_teleop": False, "time": 147, "action_type": "score_speaker"},
-            {"in_teleop": False, "time": 146, "action_type": "auto_intake_center_3"},
-            {"in_teleop": False, "time": 148, "action_type": "auto_intake_center_4"},
-            {"in_teleop": False, "time": 150, "action_type": "auto_intake_center_5"},
         ]
 
     def test_count_timeline_actions(self):
         action_num = self.test_calculator.count_timeline_actions(self.unconsolidated_tims[0])
-        assert action_num == 29
+        assert action_num == 28
 
     def test_total_time_between_actions(self):
         total_time = self.test_calculator.total_time_between_actions
         assert (
-            total_time(self.unconsolidated_tims[0], "start_incap_time", "end_incap_time", 8) == 33
+            total_time(self.unconsolidated_tims[0], "start_incap_time", "end_incap_time", 1) == 12
         )
         assert (
-            total_time(self.unconsolidated_tims[2], "start_incap_time", "end_incap_time", 8) == 43
+            total_time(self.unconsolidated_tims[2], "start_incap_time", "end_incap_time", 1) == 12
         )
 
     def test_calc_cycle_times(self):
         after_fails = self.test_calculator.score_fail_type(self.unconsolidated_tims)
         result = self.test_calculator.calc_cycle_times(after_fails)
-        assert result["expected_speaker_cycle_time"] == 425.5192960894196
-        assert result["expected_amp_cycle_time"] == 0
-        assert result["expected_speaker_cycles"] == 0
-        assert result["expected_amp_cycles"] == 0
+        assert result["expected_speaker_cycle_time"] == 72
+        assert result["expected_amp_cycle_time"] == 228
+        assert result["expected_speaker_cycles"] == 2
+        assert result["expected_amp_cycles"] == 1
 
     def test_score_fail_type(self):
         score_fails = self.test_calculator.score_fail_type(self.unconsolidated_tims)
-        assert score_fails[0]["timeline"][5]["action_type"] == "score_fail_speaker"
-        assert score_fails[1]["timeline"][4]["action_type"] == "score_fail_amp"
-        assert score_fails[2]["timeline"][13]["action_type"] == "score_fail_amplify"
+        assert score_fails[0]["timeline"][5]["action_type"] == "score_fail_amp"
+        assert score_fails[1]["timeline"][5]["action_type"] == "score_fail_amp"
+        assert score_fails[2]["timeline"][17]["action_type"] == "score_fail_amplify"
 
     def test_calculate_aggregates(self):
         aggregated_values = self.test_calculator.calculate_aggregates(self.calculated_tim_data)
@@ -698,7 +694,7 @@ class TestObjTIMCalcs:
 
     def test_calculate_tim_times(self):
         calculated_tim = self.test_calculator.calculate_tim_times(self.unconsolidated_tims)
-        assert calculated_tim["incap_time"] == 33
+        assert calculated_tim["incap_time"] == 0
 
     def test_run_consolidation(self):
         self.test_server.db.insert_documents("unconsolidated_obj_tim", self.unconsolidated_tims)
@@ -708,21 +704,21 @@ class TestObjTIMCalcs:
         assert len(result) == 1
         calculated_tim = result[0]
         assert calculated_tim["confidence_ranking"] == 3
-        assert calculated_tim["expected_speaker_cycle_time"] == 425.5192960894196
-        assert calculated_tim["expected_amp_cycle_time"] == 0
-        assert calculated_tim["incap_time"] == 33
+        assert calculated_tim["expected_speaker_cycle_time"] == 72
+        assert calculated_tim["expected_amp_cycle_time"] == 228
+        assert calculated_tim["incap_time"] == 0
         assert calculated_tim["match_number"] == 42
         assert calculated_tim["team_number"] == "254"
-        assert calculated_tim["auto_total_intakes"] == 8
-        assert calculated_tim["auto_total_pieces"] == 4
-        assert calculated_tim["tele_total_intakes"] == 4
-        assert calculated_tim["tele_total_pieces"] == 3
-        assert calculated_tim["total_intakes"] == 12
-        assert calculated_tim["total_pieces"] == 7
+        assert calculated_tim["auto_total_intakes"] == 1
+        assert calculated_tim["auto_total_pieces"] == 0
+        assert calculated_tim["tele_total_intakes"] == 8
+        assert calculated_tim["tele_total_pieces"] == 8
+        assert calculated_tim["total_intakes"] == 9
+        assert calculated_tim["total_pieces"] == 8
         assert calculated_tim["start_position"] == "1"
         assert calculated_tim["has_preload"] == False
-        assert calculated_tim["expected_speaker_cycles"] == 0
-        assert calculated_tim["expected_amp_cycles"] == 0
+        assert calculated_tim["expected_speaker_cycles"] == 2
+        assert calculated_tim["expected_amp_cycles"] == 1
 
     @mock.patch.object(
         obj_tims.ObjTIMCalcs,

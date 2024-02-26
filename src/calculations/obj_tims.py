@@ -176,9 +176,9 @@ class ObjTIMCalcs(BaseCalculations):
                 start_time = self.filter_timeline_actions(tim, action_type="to_teleop")[0]["time"]
                 end_time = self.filter_timeline_actions(tim, action_type="to_endgame")[-1]["time"]
                 # Make total time equal to amount of time passed between teleop and endgame
-                total_time = end_time - start_time
+                total_time = start_time - end_time
                 # Tele actions are all the actions that occured in the time between the start time and end time
-                tele_actions = self.filter_timeline_actions(tim, **{"time": [start_time, end_time]})
+                tele_actions = self.filter_timeline_actions(tim, **{"time": [end_time, start_time]})
                 num_cycles = 0
                 # Filter for all intake actions in teleop then check the next action to see if it is a score
                 for count in range(len(tele_actions) - 1):
