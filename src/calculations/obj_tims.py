@@ -230,7 +230,8 @@ class ObjTIMCalcs(BaseCalculations):
 
                 # Use the calc field to determine if we are calculating cycle time or number of cycles
                 if value["calc"] == "time":
-                    cycles[field] = (total_time / num_cycles) if num_cycles != 0 else 0
+                    # If there are no cycles, then set the cycle time to 135
+                    cycles[field] = (total_time / num_cycles) if num_cycles != 0 else 135
                 elif value["calc"] == "num":
                     cycles[field] = num_cycles
             totals.append(cycles)
