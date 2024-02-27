@@ -34,7 +34,10 @@ class ObjTIMCalcs(BaseCalculations):
         mean = self.avg(nums)
         if len(nums) == 0 or mean in nums:
             # Avoid getting a divide by zero error when calculating standard deviation
-            return round(mean)
+            if decimal:
+                return round(mean, 2)
+            else:
+                return round(mean)
         # If two or more scouts agree, automatically go with what they say
         if len(nums) > len(set(nums)):
             # Still need to consolidate, in case there are multiple modes
@@ -47,7 +50,7 @@ class ObjTIMCalcs(BaseCalculations):
         weights = [1 / z**2 for z in z_scores]
         float_nums = self.avg(nums, weights)
         if decimal:
-            return float_nums
+            return round(float_nums, 2)
         return round(float_nums)
 
     def consolidate_bools(self, bools: list) -> bool:
@@ -157,17 +160,17 @@ class ObjTIMCalcs(BaseCalculations):
                     total_time += start["time"] - end["time"]
             return total_time
 
-    def calc_cycle_times(self, tims):
+    def calculate_expected_fields(self, tims):
         """Currently calculates the expected speaker and amp cycle times as well as
         the number of speaker and amp cycles. Both these calculations weight the different intake to
         score cycles.
-        TODO: Add expected_speaker_cycles and expected_amp_cycles into the schema as well as the weights for each intake
+        TODO: Add the weights for each intake into the schema
         """
         totals = []
         calculated_tim = {}
         for tim in tims:
             cycles = {}
-            for field, value in self.schema["calc_cycle_time"].items():
+            for field, value in self.schema["calculate_expected_fields"].items():
                 if len(tim["timeline"]) == 0:
                     cycles[field] = 0
                     continue
@@ -181,37 +184,64 @@ class ObjTIMCalcs(BaseCalculations):
                 tele_actions = self.filter_timeline_actions(tim, **{"time": [end_time, start_time]})
                 num_cycles = 0
                 # Filter for all intake actions in teleop then check the next action to see if it is a score
-                for count in range(len(tele_actions) - 1):
+                # If the score is failed, the timeline appears as "fail", then the location
+                for count in range(len(tele_actions)):
+                    if tele_actions[count]["action_type"] == "intake_far":
+                        if tele_actions[count + 1]["action_type"] in score_actions or (
+                            tele_actions[count + 1]["action_type"] == "fail"
+                            and tele_actions[count + 2]["action_type"] in score_actions
+                        ):
+                            num_cycles += 1
+                        # Special scenario for intake_far, if they ferry or drop, it is a 0.75 cycle (only for expected cycle too)
+                        # Uses the include_ferry_and_drop field to determine whether or not to do this
+                        # TODO: Make a better schema for this, or come up with a way to make this less hardcoded
+                        elif (
+                            tele_actions[count + 1]["action_type"] in ["ferry", "drop"]
+                            and value["include_ferry_and_drop"]
+                        ):
+                            num_cycles += 0.75
+                    elif tele_actions[count]["action_type"] == "intake_center":
+                        if tele_actions[count + 1]["action_type"] in score_actions or (
+                            tele_actions[count + 1]["action_type"] == "fail"
+                            and tele_actions[count + 2]["action_type"] in score_actions
+                        ):
+                            num_cycles += 0.5
+                    elif tele_actions[count]["action_type"] == "intake_poach":
+                        if tele_actions[count + 1]["action_type"] in score_actions or (
+                            tele_actions[count + 1]["action_type"] == "fail"
+                            and tele_actions[count + 2]["action_type"] in score_actions
+                        ):
+                            num_cycles += 0.33
+                    elif tele_actions[count]["action_type"] == "intake_amp":
+                        if tele_actions[count + 1]["action_type"] in score_actions or (
+                            tele_actions[count + 1]["action_type"] == "fail"
+                            and tele_actions[count + 2]["action_type"] in score_actions
+                        ):
+                            num_cycles += 0.25
+
+                    # If a robot has a piece out of a auto and scores it check to see if we should include it, if so add 1
+                    # to_teleop is the first timeline field, so check when count == 1
                     if (
-                        tele_actions[count]["action_type"] == "intake_far"
-                        and tele_actions[count + 1]["action_type"] in score_actions
+                        count == 1
+                        and not value["ignore_shot_out_of_auto"]
+                        and tele_actions[count]["action_type"] in score_actions
                     ):
                         num_cycles += 1
-                    elif (
-                        tele_actions[count]["action_type"] == "intake_center"
-                        and tele_actions[count + 1]["action_type"] in score_actions
-                    ):
-                        num_cycles += 0.5
-                    elif (
-                        tele_actions[count]["action_type"] == "intake_poach"
-                        and tele_actions[count + 1]["action_type"] in score_actions
-                    ):
-                        num_cycles += 0.33
-                    elif (
-                        tele_actions[count]["action_type"] == "intake_amp"
-                        and tele_actions[count + 1]["action_type"] in score_actions
-                    ):
-                        num_cycles += 0.25
-                # TODO Use a schema to create expected_speaker_cycles instead of this scuffed f string stuff
-                cycles[f"{field[:-5]}s"] = num_cycles
-                # Calculates the cycle time
-                cycles[field] = (total_time / num_cycles) if num_cycles != 0 else 0
+
+                # Use the calc field to determine if we are calculating cycle time or number of cycles
+                if value["calc"] == "time":
+                    cycles[field] = (total_time / num_cycles) if num_cycles != 0 else 0
+                elif value["calc"] == "num":
+                    cycles[field] = num_cycles
             totals.append(cycles)
+
+        # Consolidate the values from each tim to produce one number
         for key in list(totals[0].keys()):
             unconsolidated_values = []
             for tim in totals:
                 unconsolidated_values.append(tim[key])
-            calculated_tim[key] = self.consolidate_nums(unconsolidated_values, decimal=True)
+            # Set decimal to True, so it returns a float
+            calculated_tim[key] = self.consolidate_nums(unconsolidated_values, True)
         return calculated_tim
 
     def score_fail_type(self, unconsolidated_tims: List[Dict]):
@@ -219,7 +249,7 @@ class ObjTIMCalcs(BaseCalculations):
             timeline = tim["timeline"]
             # Collects the data for score_fails for amp, and speaker.
             for num, action_dict in enumerate(timeline):
-                if action_dict["action_type"] == "score_fail":
+                if action_dict["action_type"] == "fail":
                     if (
                         unconsolidated_tims[num_1]["timeline"][num + 1]["action_type"]
                         == "score_speaker"
@@ -447,7 +477,7 @@ class ObjTIMCalcs(BaseCalculations):
         calculated_tim = {}
         calculated_tim.update(self.calculate_tim_counts(unconsolidated_tims))
         calculated_tim.update(self.calculate_tim_times(unconsolidated_tims))
-        calculated_tim.update(self.calc_cycle_times(unconsolidated_tims))
+        calculated_tim.update(self.calculate_expected_fields(unconsolidated_tims))
         calculated_tim.update(self.consolidate_categorical_actions(unconsolidated_tims))
         calculated_tim.update(self.calculate_aggregates(calculated_tim))
         calculated_tim.update(self.calculate_point_values(calculated_tim))
