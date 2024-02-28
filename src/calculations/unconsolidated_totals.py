@@ -47,7 +47,7 @@ class UnconsolidatedTotals(BaseCalculations):
             timeline = tim["timeline"]
             # Collects the data for score_fails for amp, and speaker.
             for num, action_dict in enumerate(timeline):
-                if action_dict["action_type"] == "score_fail":
+                if action_dict["action_type"] == "fail":
                     for score_type, new_value in self.schema["fail_actions"].items():
                         if (
                             unconsolidated_tims[num_1]["timeline"][num + 1]["action_type"]

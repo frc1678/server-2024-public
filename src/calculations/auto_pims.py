@@ -16,6 +16,7 @@ log.addHandler(server_log)
 
 class AutoPIMCalc(BaseCalculations):
     schema = utils.read_schema("schema/calc_auto_pim.yml")
+    obj_tim_schema = utils.read_schema("schema/calc_obj_tim_schema.yml")
 
     def __init__(self, server):
         super().__init__(server)
@@ -155,6 +156,24 @@ class AutoPIMCalc(BaseCalculations):
         log.fatal(f"auto_pims: {action} is not a valid action type")
         return "none"
 
+    def score_fail_type(self, unconsolidated_tims: List[Dict]):
+        """This function is required in auto_pims because the unconsolidated_obj_tim collection has timelines
+        which have not had fails calculated yet, but fails need to be calculated so that successes works"""
+        for num_1, tim in enumerate(unconsolidated_tims):
+            timeline = tim["timeline"]
+            # Collects the data for score_fails for amp, and speaker.
+            for num, action_dict in enumerate(timeline):
+                if action_dict["action_type"] == "fail":
+                    for score_type, new_value in self.obj_tim_schema["fail_actions"].items():
+                        if (
+                            unconsolidated_tims[num_1]["timeline"][num + 1]["action_type"]
+                            == score_type
+                        ):
+                            unconsolidated_tims[num_1]["timeline"][num + 1][
+                                "action_type"
+                            ] = new_value["name"]
+        return unconsolidated_tims
+
     def calculate_auto_pims(self, tims: List[dict]) -> List[dict]:
         """Calculates auto data for the given tims, which looks like
         [{"team_number": 1678, "match_number": 42}, {"team_number": 1706, "match_number": 56}, ...]"""
@@ -175,7 +194,9 @@ class AutoPIMCalc(BaseCalculations):
             tim.update(
                 {
                     "auto_timeline": self.consolidate_timelines(
-                        *self.get_unconsolidated_auto_timelines(unconsolidated_obj_tims)
+                        *self.get_unconsolidated_auto_timelines(
+                            self.score_fail_type(unconsolidated_obj_tims)
+                        )
                     )
                 }
             )
