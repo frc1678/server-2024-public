@@ -122,7 +122,7 @@ class ObjTIMCalcs(BaseCalculations):
         min_time is the minimum number of seconds between the two types of actions that we want to count
         """
         # Separate calculation for scoring cycle times
-        if start_action == "score":
+        if start_action == "score" or "intake" in start_action:
             scoring_actions = self.filter_timeline_actions(tim, action_type=start_action)
             cycle_times = []
 
