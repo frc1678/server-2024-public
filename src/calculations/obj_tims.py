@@ -192,7 +192,7 @@ class ObjTIMCalcs(BaseCalculations):
                             and tele_actions[count + 2]["action_type"] in score_actions
                         ):
                             num_cycles += 1
-                        # Special scenario for intake_far, if they ferry or drop, it is a 0.75 cycle (only for expected cycle too)
+                        # Special scenario for intake_far, if they ferry or drop, it is 0.75 of the cycle (only for expected cycle too)
                         # Uses the include_ferry_and_drop field to determine whether or not to do this
                         # TODO: Make a better schema for this, or come up with a way to make this less hardcoded
                         elif (
@@ -206,18 +206,33 @@ class ObjTIMCalcs(BaseCalculations):
                             and tele_actions[count + 2]["action_type"] in score_actions
                         ):
                             num_cycles += 0.5
+                        elif (
+                            tele_actions[count + 1]["action_type"] in ["ferry", "drop"]
+                            and value["include_ferry_and_drop"]
+                        ):
+                            num_cycles += 0.375
                     elif tele_actions[count]["action_type"] == "intake_poach":
                         if tele_actions[count + 1]["action_type"] in score_actions or (
                             tele_actions[count + 1]["action_type"] == "fail"
                             and tele_actions[count + 2]["action_type"] in score_actions
                         ):
                             num_cycles += 0.33
+                        elif (
+                            tele_actions[count + 1]["action_type"] in ["ferry", "drop"]
+                            and value["include_ferry_and_drop"]
+                        ):
+                            num_cycles += 0.2475
                     elif tele_actions[count]["action_type"] == "intake_amp":
                         if tele_actions[count + 1]["action_type"] in score_actions or (
                             tele_actions[count + 1]["action_type"] == "fail"
                             and tele_actions[count + 2]["action_type"] in score_actions
                         ):
                             num_cycles += 0.25
+                        elif (
+                            tele_actions[count + 1]["action_type"] in ["ferry", "drop"]
+                            and value["include_ferry_and_drop"]
+                        ):
+                            num_cycles += 0.1875
 
                     # If a robot has a piece out of a auto and scores it check to see if we should include it, if so add 1
                     # to_teleop is the first timeline field, so check when count == 1
