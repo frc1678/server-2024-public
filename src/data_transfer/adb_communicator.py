@@ -196,7 +196,7 @@ def pull_device_data():
                     data["qr"].append(file_contents)
                     break
             # 'file' is a folder named by an event key containing pit data
-            elif re.fullmatch(re.compile(f"^{utils.TBA_EVENT_KEY}"), file):
+            elif re.fullmatch(re.compile(f"^{db.name}"), file):
                 # Read raw_obj_pit data
                 for new_file in os.listdir(new_path := os.path.join(download_directory, file)):
                     if re.fullmatch(FILENAME_REGEXES["raw_obj_pit"], new_file):
