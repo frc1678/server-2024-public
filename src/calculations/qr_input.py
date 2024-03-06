@@ -38,15 +38,15 @@ class QRInput(calculations.base_calculations.BaseCalculations):
                 qr.add(qr_code)
             else:
                 log.warning(f'Invalid QR code not uploaded: "{qr_code}"')
+
         if qr != set():
-            ulid = ULID()
             qr = [
                 {
                     "data": qr_code,
                     "blocklisted": False,
                     "override": {},
-                    "ulid": str(ulid),
-                    "readable_time": str(ulid.datetime),
+                    "ulid": str(ULID()),
+                    "readable_time": str(ULID().datetime),
                 }
                 for qr_code in qr
             ]
