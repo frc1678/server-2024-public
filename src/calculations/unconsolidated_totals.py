@@ -184,15 +184,32 @@ class UnconsolidatedTotals(BaseCalculations):
         updates = self.update_calcs(unique_tims)
         if len(updates) > 1:
             for document in updates:
-                self.server.db.update_document(
-                    "unconsolidated_totals",
-                    document,
-                    {
-                        "team_number": document["team_number"],
-                        "match_number": document["match_number"],
-                        "scout_name": document["scout_name"],
-                    },
-                )
+                real_match = [
+                    match
+                    for match in tba_match_data
+                    if match["match_number"] == document["match_number"]
+                ]
+                real_teams = [
+                    team[3:]
+                    for team in (
+                        real_match[0]["alliances"]["red"]["team_keys"]
+                        + real_match[0]["alliances"]["blue"]["team_keys"]
+                    )
+                ]
+                if document["team_number"] in real_teams:
+                    self.server.db.update_document(
+                        "unconsolidated_totals",
+                        document,
+                        {
+                            "team_number": document["team_number"],
+                            "match_number": document["match_number"],
+                            "scout_name": document["scout_name"],
+                        },
+                    )
+                else:
+                    team_number = document["team_number"]
+                    match_number = document["match_number"]
+                    log.warning(f"{team_number} not found in match {match_number}")
         end_time = time.time()
         # Get total calc time
         total_time = end_time - start_time

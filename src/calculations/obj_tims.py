@@ -565,14 +565,31 @@ class ObjTIMCalcs(BaseCalculations):
         else:
             for update in updates:
                 if update != {}:
-                    self.server.db.update_document(
-                        "obj_tim",
-                        update,
-                        {
-                            "team_number": update["team_number"],
-                            "match_number": update["match_number"],
-                        },
-                    )
+                    real_match = [
+                        match
+                        for match in tba_match_data
+                        if match["match_number"] == update["match_number"]
+                    ]
+                    real_teams = [
+                        team[3:]
+                        for team in (
+                            real_match[0]["alliances"]["red"]["team_keys"]
+                            + real_match[0]["alliances"]["blue"]["team_keys"]
+                        )
+                    ]
+                    if update["team_number"] in real_teams:
+                        self.server.db.update_document(
+                            "obj_tim",
+                            update,
+                            {
+                                "team_number": update["team_number"],
+                                "match_number": update["match_number"],
+                            },
+                        )
+                    else:
+                        team_number = update["team_number"]
+                        match_number = update["match_number"]
+                        log.warning(f"{team_number} not found in match {match_number}")
             end_time = time.time()
             # Get total calc time
             total_time = end_time - start_time

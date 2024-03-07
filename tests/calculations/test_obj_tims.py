@@ -170,6 +170,18 @@ class TestObjTIMCalcs:
                     },
                 },
             },
+            "alliances": {
+                "blue": {
+                    "team_keys": [
+                        "frc254",
+                    ]
+                },
+                "red": {
+                    "team_keys": [
+                        "frc254",
+                    ]
+                },
+            },
         },
     ]
     unconsolidated_tims = [
