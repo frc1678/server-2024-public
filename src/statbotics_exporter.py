@@ -116,4 +116,4 @@ if __name__ == "__main__":
     else:
         team_or_match = "all"
     # Currently, csv shows up in server but the file path can be changed
-    write_data("", key, team_or_match)
+    write_data("data/exports", key, team_or_match)
