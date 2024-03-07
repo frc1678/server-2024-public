@@ -124,7 +124,18 @@ class SimPrecisionCalc(BaseCalculations):
 
         for match in tba_match_data:
             if match["match_number"] == match_number:
-                tba_match_data = match["score_breakdown"][alliance_color]
+                if match["score_breakdown"]:
+                    tba_match_data = match["score_breakdown"][alliance_color]
+                else:
+                    log.warning(
+                        f"No TBA score_breakdown for match {match['match_number']}, waiting 4min"
+                    )
+                    time.sleep(120)
+                    cont = input("2 minutes have passed. Do you want to continue the loop? (y/N): ")
+                    if cont.lower() != "y":
+                        time.sleep(120)
+                        log.info("Waiting for 2 more minutes")
+                    tba_match_data = match["score_breakdown"][alliance_color]
 
         total = 0
         for datapoint in tba_points:
@@ -194,20 +205,43 @@ class SimPrecisionCalc(BaseCalculations):
         tba_match_data: List[dict] = tba_communicator.tba_request(
             f"event/{utils.TBA_EVENT_KEY}/matches"
         )
+        # When we're running server at competition, we have to wait until TBA updates
+        # match data, which usually takes ~4 minutes after the match is finished. If we
+        # run server before TBA updates, the line above (that pulls TBA data) will crash
+        # server. Hence, the code below checks if TBA has updated. If not, it waits for a
+        # few minutes and continues running.
+        latest_match = max([s["match_number"] for s in unconsolidated_sims])
+        latest_tba_match = max(
+            [t["match_number"] for t in tba_match_data if t["score_breakdown"] is not None]
+        )
+        if latest_match > latest_tba_match:
+            log.warning(f"NO TBA MATCH DATA FOR MATCH f{latest_match}, waiting for 2min")
+            time.sleep(120)
+            cont = input("2 minutes have passed. Keep waiting? (y/N): ")
+            if cont.lower() == "y":
+                wait = int(input("How many minutes do you want to wait? (1 - 10): "))
+                if not 1 <= wait <= 10:
+                    wait = 5
+                time.sleep(wait * 60)
+            log.info("Continuing server loop")
+            tba_match_data: List[dict] = tba_communicator.tba_request(
+                f"event/{utils.TBA_EVENT_KEY}/matches"
+            )
+
         updates = []
         for sim in unconsolidated_sims:
             sim_data = self.server.db.find("unconsolidated_totals", sim)[0]
-            update = {}
-            update["scout_name"] = sim_data["scout_name"]
-            update["match_number"] = sim_data["match_number"]
-            update["team_number"] = sim_data["team_number"]
+            update = {
+                "scout_name": sim_data["scout_name"],
+                "match_number": sim_data["match_number"],
+                "team_number": sim_data["team_number"],
+            }
             for match in tba_match_data:
                 if (
                     match["match_number"] == sim_data["match_number"]
                     and match["comp_level"] == "qm"
-                    and match["score_breakdown"] != {}
                 ):
-                    # Convert match timestamp from Unix time (on TBA) to human readable
+                    # Convert match timestamp from Unix time (on TBA) to human-readable
                     update["timestamp"] = datetime.fromtimestamp(match["actual_time"])
                     break
             else:

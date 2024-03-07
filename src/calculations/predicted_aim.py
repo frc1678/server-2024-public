@@ -492,15 +492,13 @@ class PredictedAimCalc(BaseCalculations):
 
         return filtered_aims_list
 
-    def calc_win_chance(self, obj_team, team_list, alliance_color):
-        """Calculates predicted win probabilities for an alliance,
+    def calc_win_chance(self, obj_team, team_list):
+        """Calculates predicted win probabilities for a RED alliance
 
         obj_teams: list of all existing obj_team dicts
 
         team_list: dict containing team numbers in the alliance
                     looks like {"R": [1678, 254, 4414], "B": [125, 6800, 1323]}
-
-        alliance_color: "R" or "B"
         """
         # Sets up data needed to calculate win chance
         schema_fields = self.schema["win_chance"]
@@ -548,10 +546,7 @@ class PredictedAimCalc(BaseCalculations):
             return 1 if dist["mean"] > 0 else 0
 
         # Return win chance
-        if alliance_color == "R":
-            return prob_red_wins
-        else:
-            return 1 - prob_red_wins
+        return prob_red_wins
 
     def update_predicted_aim(self, aims_list):
         "Updates predicted and actual data with new obj_team and tba_team data"
@@ -620,22 +615,24 @@ class PredictedAimCalc(BaseCalculations):
                 )
 
                 # Calculate win chance
-                update["win_chance"] = self.calc_win_chance(
-                    obj_team,
-                    {
-                        aim["alliance_color"]: aim["team_list"],
-                        other_aim["alliance_color"]: other_aim["team_list"],
-                    },
-                    aim["alliance_color"],
-                )
-                other_update["win_chance"] = self.calc_win_chance(
-                    obj_team,
-                    {
-                        other_aim["alliance_color"]: other_aim["team_list"],
-                        aim["alliance_color"]: aim["team_list"],
-                    },
-                    other_aim["alliance_color"],
-                )
+                if aim["alliance_color"] == "R":
+                    update["win_chance"] = self.calc_win_chance(
+                        obj_team,
+                        {
+                            aim["alliance_color"]: aim["team_list"],
+                            other_aim["alliance_color"]: other_aim["team_list"],
+                        },
+                    )
+                    other_update["win_chance"] = 1 - update["win_chance"]
+                else:
+                    other_update["win_chance"] = self.calc_win_chance(
+                        obj_team,
+                        {
+                            other_aim["alliance_color"]: other_aim["team_list"],
+                            aim["alliance_color"]: aim["team_list"],
+                        },
+                    )
+                    update["win_chance"] = 1 - other_update["win_chance"]
 
                 # Calculate actual values
                 update.update(self.get_actual_values(aim, tba_match_data))

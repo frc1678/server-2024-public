@@ -71,6 +71,7 @@ class QRInput(calculations.base_calculations.BaseCalculations):
         # Upload qr codes as list
         if qr_codes != "":
             self.upload_qr_codes(qr_codes.strip().split("\n"))
+            log.info("qr_input: uploaded all new raw QRs to local DB")
         adb_communicator.pull_device_data()
         end_time = time.time()
         # Get total calc time

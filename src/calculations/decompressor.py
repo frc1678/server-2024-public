@@ -257,11 +257,6 @@ class Decompressor(base_calculations.BaseCalculations):
             if set(decompressed_document.keys()) != self.OBJECTIVE_QR_FIELDS:
                 raise ValueError("QR missing data fields", qr_type)
             decompressed_document.update({"override": override})
-            log.info(
-                f'Match: {decompressed_document["match_number"]} '
-                f'Team: {decompressed_document["team_number"]} '
-                f'Scout_ID: {decompressed_document["scout_id"]}'
-            )
         return decompressed_data
 
     def decompress_qrs(self, split_qrs):
@@ -454,6 +449,7 @@ class Decompressor(base_calculations.BaseCalculations):
                 # Updating doesn't work because unconsolidated_obj_tim doesn't have unique keys
                 self.server.db.delete_data(collection)
             self.server.db.insert_documents(collection, decompressed_qrs[collection])
+        log.info("UPLOADED ALL RAW QRS TO LOCAL DB")
         end_time = time.time()
         # Get total calc time
         total_time = end_time - start_time

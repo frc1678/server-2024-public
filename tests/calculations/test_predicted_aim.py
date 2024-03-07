@@ -622,13 +622,14 @@ class TestPredictedAimCalc:
     def test_calc_win_chance(self):
         assert (
             self.test_calc.calc_win_chance(
-                self.obj_team, {"R": ["1678", "254", "4414"], "B": ["125", "1323", "5940"]}, "R"
+                self.obj_team, {"R": ["1678", "254", "4414"], "B": ["125", "1323", "5940"]}
             )
             == 0.773
         )
         assert (
-            self.test_calc.calc_win_chance(
-                self.obj_team, {"R": ["1678", "125", "1323"], "B": ["254", "4414", "5940"]}, "B"
+            1
+            - self.test_calc.calc_win_chance(
+                self.obj_team, {"R": ["1678", "125", "1323"], "B": ["254", "4414", "5940"]}
             )
             == 0.264
         )
