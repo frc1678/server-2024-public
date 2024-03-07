@@ -21,7 +21,7 @@ def find_robot_images() -> Dict[str, str]:
         # Check folder names to only look for images from phones
         if device not in adb_communicator.PHONE_SERIAL_NUMBERS:
             continue
-        device_dir = utils.create_file_path(f"data/devices/{device}/")
+        device_dir = utils.create_file_path(f"data/devices/{device}/robot_pictures/")
         for file in os.listdir(device_dir):
             full_local_path = os.path.join(device_dir, file)
             # Tries to match the file name with the regular expression
@@ -40,7 +40,7 @@ def send_images() -> None:
         images_sent = 0
         for filename, full_path in find_robot_images().items():
             adb_communicator.push_file(
-                device[0], full_path, f"storage/emulated/0/Download/robot_pictures/{filename}"
+                device[0], full_path, f"storage/emulated/0/Download/{filename}"
             )
             images_sent += 1
         log.info(
