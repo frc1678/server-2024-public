@@ -113,9 +113,10 @@ class PredictedTeamCalc(BaseCalculations):
                 predicted_rps[team] = predicted_rps[team] / scheduled_matches
             else:
                 predicted_rps[team] = 0
-            # adds team to finished teams if their matches played equals their scheduled matches
-            if current_team_data["matches_played"] == scheduled_matches:
-                finished_teams[team] = current_team_data["current_rank"]
+            if current_team_data != None:
+                # adds team to finished teams if their matches played equals their scheduled matches
+                if current_team_data["matches_played"] == scheduled_matches:
+                    finished_teams[team] = current_team_data["current_rank"]
 
         predicted_ranks = sorted(predicted_rps.keys(), key=lambda x: predicted_rps[x], reverse=True)
 
@@ -123,8 +124,9 @@ class PredictedTeamCalc(BaseCalculations):
             rank = predicted_ranks.index(update["team_number"]) + 1
             updates[num]["predicted_rank"] = rank
             # if the team has finished, use their finished rank instead of a predicted one
-            if updates[num]["team_number"] in finished_teams:
-                updates[num]["predicted_rank"] = updates[num]["current_rank"]
+            if current_team_data != None:
+                if updates[num]["team_number"] in finished_teams:
+                    updates[num]["predicted_rank"] = updates[num]["current_rank"]
 
         return updates
 
