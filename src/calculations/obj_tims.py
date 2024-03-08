@@ -164,13 +164,13 @@ class ObjTIMCalcs(BaseCalculations):
         """Currently calculates the expected speaker and amp cycle times as well as
         the number of speaker and amp cycles. Both these calculations weight the different intake to
         score cycles.
-        TODO: Add the weights for each intake into the schema
         """
         totals = []
         calculated_tim = {}
+        intake_weights = self.schema["calculate_expected_fields"]["intake_weights"]
         for tim in tims:
             cycles = {}
-            for field, value in self.schema["calculate_expected_fields"].items():
+            for field, value in self.schema["calculate_expected_fields"]["calcs"].items():
                 if len(tim["timeline"]) == 0:
                     cycles[field] = 0
                     continue
@@ -186,63 +186,36 @@ class ObjTIMCalcs(BaseCalculations):
                 # Filter for all intake actions in teleop then check the next action to see if it is a score
                 # If the score is failed, the timeline appears as "fail", then the location
                 for count in range(len(tele_actions)):
-                    if tele_actions[count]["action_type"] == "intake_far":
+                    # Last action will always be to endgame, so we can ignore the last and 2nd to last actions
+                    # Otherwise, there will be an index error
+                    if len(tele_actions) - count > 1:
                         if tele_actions[count + 1]["action_type"] in score_actions or (
                             tele_actions[count + 1]["action_type"] == "fail"
                             and tele_actions[count + 2]["action_type"] in score_actions
+                        ):
+                            # If it is fail, the cycle must already be counted
+                            if tele_actions[count]["action_type"] != "fail":
+                                # Add intake weight type in schema
+                                num_cycles += intake_weights[tele_actions[count]["action_type"]][
+                                    "normal"
+                                ]
+                        # Special scenario if they ferry or drop, it is a lower percentage of the cycle (only for expected cycle too)
+                        # Uses the include_ferry_and_drop field to determine whether or not to do this
+                        elif (
+                            tele_actions[count + 1]["action_type"] in ["ferry", "drop"]
+                            and value["include_ferry_and_drop"]
+                        ):
+                            num_cycles += intake_weights[tele_actions[count]["action_type"]][
+                                "ferry_drop"
+                            ]
+                        # If a robot has a piece out of a auto and scores it check to see if we should include it, if so add 1
+                        # to_teleop is the first timeline field, so check when count == 1
+                        if (
+                            count == 1
+                            and not value["ignore_shot_out_of_auto"]
+                            and tele_actions[count]["action_type"] in score_actions
                         ):
                             num_cycles += 1
-                        # Special scenario for intake_far, if they ferry or drop, it is 0.75 of the cycle (only for expected cycle too)
-                        # Uses the include_ferry_and_drop field to determine whether or not to do this
-                        # TODO: Make a better schema for this, or come up with a way to make this less hardcoded
-                        elif (
-                            tele_actions[count + 1]["action_type"] in ["ferry", "drop"]
-                            and value["include_ferry_and_drop"]
-                        ):
-                            num_cycles += 0.75
-                    elif tele_actions[count]["action_type"] == "intake_center":
-                        if tele_actions[count + 1]["action_type"] in score_actions or (
-                            tele_actions[count + 1]["action_type"] == "fail"
-                            and tele_actions[count + 2]["action_type"] in score_actions
-                        ):
-                            num_cycles += 0.5
-                        elif (
-                            tele_actions[count + 1]["action_type"] in ["ferry", "drop"]
-                            and value["include_ferry_and_drop"]
-                        ):
-                            num_cycles += 0.375
-                    elif tele_actions[count]["action_type"] == "intake_poach":
-                        if tele_actions[count + 1]["action_type"] in score_actions or (
-                            tele_actions[count + 1]["action_type"] == "fail"
-                            and tele_actions[count + 2]["action_type"] in score_actions
-                        ):
-                            num_cycles += 0.33
-                        elif (
-                            tele_actions[count + 1]["action_type"] in ["ferry", "drop"]
-                            and value["include_ferry_and_drop"]
-                        ):
-                            num_cycles += 0.2475
-                    elif tele_actions[count]["action_type"] == "intake_amp":
-                        if tele_actions[count + 1]["action_type"] in score_actions or (
-                            tele_actions[count + 1]["action_type"] == "fail"
-                            and tele_actions[count + 2]["action_type"] in score_actions
-                        ):
-                            num_cycles += 0.25
-                        elif (
-                            tele_actions[count + 1]["action_type"] in ["ferry", "drop"]
-                            and value["include_ferry_and_drop"]
-                        ):
-                            num_cycles += 0.1875
-
-                    # If a robot has a piece out of a auto and scores it check to see if we should include it, if so add 1
-                    # to_teleop is the first timeline field, so check when count == 1
-                    if (
-                        count == 1
-                        and not value["ignore_shot_out_of_auto"]
-                        and tele_actions[count]["action_type"] in score_actions
-                    ):
-                        num_cycles += 1
-
                 # Use the calc field to determine if we are calculating cycle time or number of cycles
                 if value["calc"] == "time":
                     # If there are no cycles, then set the cycle time to 135
