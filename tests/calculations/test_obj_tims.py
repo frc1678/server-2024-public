@@ -751,6 +751,7 @@ class TestObjTIMCalcs:
         assert calculated_tim["expected_cycle_time"] == 24.04
         assert calculated_tim["expected_notes"] == 4.16
         assert calculated_tim["expected_cycles"] == 5.49
+        assert calculated_tim["climbed"] == True
 
     @mock.patch.object(
         obj_tims.ObjTIMCalcs,

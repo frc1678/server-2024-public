@@ -477,6 +477,11 @@ class ObjTIMCalcs(BaseCalculations):
         calculated_tim["alliance_color_is_red"] = unconsolidated_tims[0]["alliance_color_is_red"]
         # confidence_rating is the number of scouts that scouted one robot
         calculated_tim["confidence_ranking"] = len(unconsolidated_tims)
+        calculated_tim["climbed"] = "O" in [
+            calculated_tim["stage_level_left"],
+            calculated_tim["stage_level_center"],
+            calculated_tim["stage_level_right"],
+        ]
         return calculated_tim
 
     def update_calcs(self, tims: List[Dict[str, Union[str, int]]]) -> List[dict]:
