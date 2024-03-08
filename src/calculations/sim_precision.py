@@ -235,6 +235,7 @@ class SimPrecisionCalc(BaseCalculations):
                 "scout_name": sim_data["scout_name"],
                 "match_number": sim_data["match_number"],
                 "team_number": sim_data["team_number"],
+                "alliance_color_is_red": sim_data["alliance_color_is_red"],
             }
             for match in tba_match_data:
                 if (
@@ -275,6 +276,7 @@ class SimPrecisionCalc(BaseCalculations):
                 {
                     "scout_name": update["scout_name"],
                     "match_number": update["match_number"],
+                    "alliance_color_is_red": update["alliance_color_is_red"],
                 },
             )
         end_time = time.time()

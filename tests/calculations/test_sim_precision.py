@@ -281,6 +281,7 @@ class TestSimPrecisionCalc:
                 "match_number": 1,
                 "team_number": "1678",
                 "sim_precision": 5,
+                "alliance_color_is_red": True,
             }
         ]
         with patch(
@@ -291,7 +292,13 @@ class TestSimPrecisionCalc:
             return_value={"sim_precision": 5},
         ):
             updates = self.test_calc.update_sim_precision_calcs(
-                [{"scout_name": "ALISON LIN", "match_number": 1}]
+                [
+                    {
+                        "scout_name": "ALISON LIN",
+                        "match_number": 1,
+                        "alliance_color_is_red": True,
+                    }
+                ]
             )
             # Remove timestamp field since it's difficult to test, figure out later
             updates[0].pop("timestamp")
@@ -319,25 +326,29 @@ class TestSimPrecisionCalc:
                 "scout_name": "ALISON LIN",
                 "match_number": 1,
                 "team_number": "1678",
-                "sim_precision": 3.666666666666667,
+                "sim_precision": 3.666666666666668,
+                "alliance_color_is_red": True,
             },
             {
                 "scout_name": "NATHAN MILLS",
                 "match_number": 1,
                 "team_number": "1678",
                 "sim_precision": -21.333333333333336,
+                "alliance_color_is_red": True,
             },
             {
                 "scout_name": "KATHY LI",
                 "match_number": 1,
                 "team_number": "4414",
                 "sim_precision": -8.833333333333333,
+                "alliance_color_is_red": True,
             },
             {
                 "scout_name": "KATE UNGER",
                 "match_number": 1,
                 "team_number": "589",
                 "sim_precision": -8.833333333333333,
+                "alliance_color_is_red": True,
             },
         ]
         self.test_server.db.delete_data("unconsolidated_totals")
@@ -349,7 +360,13 @@ class TestSimPrecisionCalc:
         ):
             self.test_calc.run()
         sim_precision_result = self.test_server.db.find("sim_precision")
-        fields_to_keep = {"sim_precision", "scout_name", "match_number", "team_number"}
+        fields_to_keep = {
+            "sim_precision",
+            "scout_name",
+            "match_number",
+            "team_number",
+            "alliance_color_is_red",
+        }
         schema = read_schema("schema/calc_sim_precision_schema.yml")
         calculations = schema["calculations"]
         for document in sim_precision_result:
