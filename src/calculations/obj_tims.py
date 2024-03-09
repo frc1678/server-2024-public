@@ -193,8 +193,8 @@ class ObjTIMCalcs(BaseCalculations):
                             tele_actions[count + 1]["action_type"] == "fail"
                             and tele_actions[count + 2]["action_type"] in score_actions
                         ):
-                            # If it is fail, the cycle must already be counted
-                            if tele_actions[count]["action_type"] != "fail":
+                            # If it is fail, the cycle must already be counted, also prevents crashing if it is the first action
+                            if tele_actions[count]["action_type"] != "fail" and count > 0:
                                 # Add intake weight type in schema
                                 num_cycles += intake_weights[tele_actions[count]["action_type"]][
                                     "normal"
