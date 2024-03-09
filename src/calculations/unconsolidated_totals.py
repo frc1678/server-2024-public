@@ -321,16 +321,17 @@ class UnconsolidatedTotals(BaseCalculations):
         updates = self.update_calcs(unique_tims)
         if len(updates) > 1:
             for document in updates:
-                real_match = [
+                real_matches = [
                     match
                     for match in tba_match_data
                     if match["match_number"] == document["match_number"]
                 ]
                 real_teams = [
                     team[3:]
+                    for real_match in real_matches
                     for team in (
-                        real_match[0]["alliances"]["red"]["team_keys"]
-                        + real_match[0]["alliances"]["blue"]["team_keys"]
+                        real_match["alliances"]["red"]["team_keys"]
+                        + real_match["alliances"]["blue"]["team_keys"]
                     )
                 ]
                 if document["team_number"] in real_teams:

@@ -274,16 +274,17 @@ class ObjTIMCalcs(BaseCalculations):
         else:
             for update in updates:
                 if update != {}:
-                    real_match = [
+                    real_matches = [
                         match
                         for match in tba_match_data
                         if match["match_number"] == update["match_number"]
                     ]
                     real_teams = [
                         team[3:]
+                        for real_match in real_matches
                         for team in (
-                            real_match[0]["alliances"]["red"]["team_keys"]
-                            + real_match[0]["alliances"]["blue"]["team_keys"]
+                            real_match["alliances"]["red"]["team_keys"]
+                            + real_match["alliances"]["blue"]["team_keys"]
                         )
                     ]
                     if update["team_number"] in real_teams:
