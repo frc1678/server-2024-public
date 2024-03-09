@@ -446,54 +446,54 @@ class TestDecompressor:
     def test_decompress_ss_team(self):
         input_1 = {
             "shoot_specific_area_only": "subwoofer",
-            "intake_source_only": True,
-            "cant_go_under_stage": False,
+            "can_intake_ground": True,
+            "can_go_under_stage": False,
         }
         input_2 = {
             "auto_strategies": "goes to center first",
-            "intake_source_only": False,
-            "cant_go_under_stage": True,
+            "can_intake_ground": False,
+            "can_go_under_stage": True,
         }
         input_3 = {
             "strengths": "very fast",
             "weaknesses": "tippy",
-            "intake_source_only": False,
-            "cant_go_under_stage": True,
+            "can_intake_ground": False,
+            "can_go_under_stage": True,
         }
         input_4 = {
             "strengths": "fast cycles",
-            "intake_source_only": False,
-            "cant_go_under_stage": True,
+            "can_intake_ground": False,
+            "can_go_under_stage": True,
         }
 
         expected_output_1 = {
             "auto_strategies": "",
-            "cant_go_under_stage": False,
-            "intake_source_only": True,
+            "can_go_under_stage": False,
+            "can_intake_ground": True,
             "shoot_specific_area_only": "subwoofer",
             "strengths": "",
             "weaknesses": "",
         }
         expected_output_2 = {
             "auto_strategies": "goes to center first",
-            "cant_go_under_stage": True,
-            "intake_source_only": False,
+            "can_go_under_stage": True,
+            "can_intake_ground": False,
             "shoot_specific_area_only": "",
             "strengths": "",
             "weaknesses": "",
         }
         expected_output_3 = {
             "auto_strategies": "",
-            "cant_go_under_stage": True,
-            "intake_source_only": False,
+            "can_go_under_stage": True,
+            "can_intake_ground": False,
             "shoot_specific_area_only": "",
             "strengths": "very fast",
             "weaknesses": "tippy",
         }
         expected_output_4 = {
             "auto_strategies": "",
-            "cant_go_under_stage": True,
-            "intake_source_only": False,
+            "can_go_under_stage": True,
+            "can_intake_ground": False,
             "shoot_specific_area_only": "",
             "strengths": "fast cycles",
             "weaknesses": "",

@@ -210,11 +210,11 @@ def test_pull_device_data():
         test_team_data = {
             "1678": {
                 "auto_strategies": "testwow",
-                "cant_go_under_stage": True,
+                "can_go_under_stage": True,
             },
             "254": {
                 "auto_strategies": "testwow",
-                "cant_go_under_stage": True,
+                "can_go_under_stage": True,
             },
         }
         expected_ss_team = [
@@ -222,8 +222,8 @@ def test_pull_device_data():
                 "team_number": "1678",
                 "username": "test_profile1",
                 "auto_strategies": "testwow",
-                "cant_go_under_stage": True,
-                "intake_source_only": False,
+                "can_go_under_stage": True,
+                "can_intake_ground": False,
                 "avg_defense_rating": 6.0,
                 "shoot_specific_area_only": "",
                 "strengths": "",
@@ -233,8 +233,8 @@ def test_pull_device_data():
                 "team_number": "254",
                 "username": "test_profile1",
                 "auto_strategies": "testwow",
-                "cant_go_under_stage": True,
-                "intake_source_only": False,
+                "can_go_under_stage": True,
+                "can_intake_ground": False,
                 "avg_defense_rating": 3.0,
                 "shoot_specific_area_only": "",
                 "strengths": "",
