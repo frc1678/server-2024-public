@@ -22,7 +22,7 @@ class ObjTIMCalcs(BaseCalculations):
 
     def __init__(self, server):
         super().__init__(server)
-        self.watched_collections = ["unconsolidated_obj_tim"]
+        self.watched_collections = ["unconsolidated_totals"]
 
     def consolidate_nums(self, nums: List[Union[int, float]], decimal=False) -> int:
         """Given numbers reported by multiple scouts, estimates actual number
@@ -88,295 +88,24 @@ class ObjTIMCalcs(BaseCalculations):
             final_categorical_actions[category] = list(actions)[round(category_avg)]
         return final_categorical_actions
 
-    def filter_timeline_actions(self, tim: dict, **filters) -> list:
-        """Removes timeline actions that don't meet the filters and returns all the actions that do"""
-        actions = tim["timeline"]
-        for field, required_value in filters.items():
-            if field == "time":
-                # Times are given as closed intervals: either [0,134] or [135,150]
-                actions = filter(
-                    lambda action: required_value[0] <= action["time"] <= required_value[1],
-                    actions,
-                )
-            elif required_value == "score":
-                # Removes actions for which required_value is not contained within action[field] (eg score and score_cone_high)
-                actions = filter(lambda action: str(required_value) in str(action[field]), actions)
-            else:
-                # Removes actions for which action[field] != required_value
-                actions = filter(lambda action: action[field] == required_value, actions)
-            # filter returns an iterable object
-            actions = list(actions)
-        return actions
-
-    def count_timeline_actions(self, tim: dict, **filters) -> int:
-        """Returns the number of actions in one TIM timeline that meets the required filters"""
-        return len(self.filter_timeline_actions(tim, **filters))
-
-    def total_time_between_actions(
-        self, tim: dict, start_action: str, end_action: str, min_time: int
-    ) -> int:
-        """Returns total number of seconds spent between two types of actions for a given TIM
-
-        start_action and end_action are the names (types) of those two actions,
-        such as start_incap and end_climb.
-        min_time is the minimum number of seconds between the two types of actions that we want to count
-        """
-        # Separate calculation for scoring cycle times
-        if start_action == "score" or "intake" in start_action:
-            scoring_actions = self.filter_timeline_actions(tim, action_type=start_action)
-            cycle_times = []
-
-            # Calculates time difference between every pair of scoring actions
-            for i in range(1, len(scoring_actions)):
-                cycle_times.append(scoring_actions[i - 1]["time"] - scoring_actions[i]["time"])
-
-            # Calculate median cycle time (if cycle times is not an empty list)
-            if cycle_times:
-                median_cycle_time = statistics.median(cycle_times)
-            else:
-                median_cycle_time = 0
-
-            # Cycle time has to be an integer
-            return round(median_cycle_time)
-
-        # Other time calculations (incap)
-        else:
-            start_actions = self.filter_timeline_actions(tim, action_type=start_action)
-            end_actions = []
-            # Takes multiple end actions
-            if isinstance(end_action, list):
-                for action in end_action:
-                    end_actions = end_actions + self.filter_timeline_actions(
-                        tim, action_type=action
-                    )
-            else:
-                end_actions = self.filter_timeline_actions(tim, action_type=end_action)
-            # Match scout app should automatically add an end action at the end of the match,
-            # if there isn't already an end action after the last start action. That way there are the
-            # same number of start actions and end actions.
-            total_time = 0
-            for start, end in zip(start_actions, end_actions):
-                if start["time"] - end["time"] >= min_time:
-                    total_time += start["time"] - end["time"]
-            return total_time
-
-    def calculate_expected_fields(self, tims):
-        """Currently calculates the expected speaker and amp cycle times as well as
-        the number of speaker and amp cycles. Both these calculations weight the different intake to
-        score cycles.
-        """
-        totals = []
-        calculated_tim = {}
-        intake_weights = self.schema["intake_weights"]
-        for tim in tims:
-            cycles = {}
-            for field, value in self.schema["calculate_expected_fields"].items():
-                if len(tim["timeline"]) == 0:
-                    cycles[field] = 0
-                    continue
-                score_actions = value["score_actions"]
-                # Make start time and end time equal to when teleop and endgame started
-                start_time = self.filter_timeline_actions(tim, action_type="to_teleop")[0]["time"]
-                end_time = self.filter_timeline_actions(tim, action_type="to_endgame")[-1]["time"]
-                # Make total time equal to amount of time passed between teleop and endgame
-                total_time = start_time - end_time
-                # Tele actions are all the actions that occured in the time between the start time and end time
-                tele_actions = self.filter_timeline_actions(tim, **{"time": [end_time, start_time]})
-                num_cycles = 0
-                # Filter for all intake actions in teleop then check the next action to see if it is a score
-                # If the score is failed, the timeline appears as "fail", then the location
-                for count in range(len(tele_actions)):
-                    # Last action will always be to endgame, so we can ignore the last and 2nd to last actions
-                    # Otherwise, there will be an index error
-                    if len(tele_actions) - count > 1:
-                        if tele_actions[count + 1]["action_type"] in score_actions or (
-                            tele_actions[count + 1]["action_type"] == "fail"
-                            and tele_actions[count + 2]["action_type"] in score_actions
-                        ):
-                            # If it is fail, the cycle must already be counted, also prevents crashing if it is the first action
-                            if tele_actions[count]["action_type"] != "fail" and count > 0:
-                                # Add intake weight type in schema
-                                num_cycles += intake_weights[tele_actions[count]["action_type"]][
-                                    "normal"
-                                ]
-                        # Special scenario if they ferry or drop, it is a lower percentage of the cycle (only for expected cycle too)
-                        # Uses the include_ferry_and_drop field to determine whether or not to do this
-                        elif (
-                            tele_actions[count + 1]["action_type"] in ["ferry", "drop"]
-                            and value["include_ferry_and_drop"]
-                        ):
-                            num_cycles += intake_weights[tele_actions[count]["action_type"]][
-                                "ferry_drop"
-                            ]
-                        # If a robot has a piece out of a auto and scores it check to see if we should include it, if so add 1
-                        # to_teleop is the first timeline field, so check when count == 1
-                        if (
-                            count == 1
-                            and not value["ignore_shot_out_of_auto"]
-                            and tele_actions[count]["action_type"] in score_actions
-                        ):
-                            num_cycles += 1
-                # Use the calc field to determine if we are calculating cycle time or number of cycles
-                if value["calc"] == "time":
-                    # If there are no cycles, then set the cycle time to 135
-                    cycles[field] = (total_time / num_cycles) if num_cycles != 0 else 135
-                elif value["calc"] == "num":
-                    cycles[field] = num_cycles
-            totals.append(cycles)
-
-        # Consolidate the values from each tim to produce one number
-        for key in list(totals[0].keys()):
-            unconsolidated_values = []
-            for tim in totals:
-                unconsolidated_values.append(tim[key])
-            # Set decimal to True, so it returns a float
-            calculated_tim[key] = self.consolidate_nums(unconsolidated_values, True)
-        return calculated_tim
-
-    def score_fail_type(self, unconsolidated_tims: List[Dict]):
-        for num_1, tim in enumerate(unconsolidated_tims):
-            timeline = tim["timeline"]
-            # Collects the data for score_fails for amp, and speaker.
-            for num, action_dict in enumerate(timeline):
-                if action_dict["action_type"] == "fail":
-                    if (
-                        unconsolidated_tims[num_1]["timeline"][num + 1]["action_type"]
-                        == "score_speaker"
-                    ):
-                        unconsolidated_tims[num_1]["timeline"][num + 1][
-                            "action_type"
-                        ] = "score_fail_speaker"
-                    if (
-                        unconsolidated_tims[num_1]["timeline"][num + 1]["action_type"]
-                        == "score_amp"
-                    ):
-                        unconsolidated_tims[num_1]["timeline"][num + 1][
-                            "action_type"
-                        ] = "score_fail_amp"
-                    if (
-                        unconsolidated_tims[num_1]["timeline"][num + 1]["action_type"]
-                        == "score_amplify"
-                    ):
-                        unconsolidated_tims[num_1]["timeline"][num + 1][
-                            "action_type"
-                        ] = "score_fail_amplify"
-        return unconsolidated_tims
-
-    def calculate_tim_counts(self, unconsolidated_tims: List[Dict]) -> dict:
-        """Given a list of unconsolidated TIMs, returns the calculated count based data fields"""
-        calculated_tim = {}
-        self.score_fail_type(unconsolidated_tims)
-        for calculation, filters in self.schema["timeline_counts"].items():
-            unconsolidated_counts = []
-            # Variable type of a calculation is in the schema, but it's not a filter
-            filters_ = copy.deepcopy(filters)
-            expected_type = filters_.pop("type")
-            for tim in unconsolidated_tims:
-                # Override timeline counts at consolidation
-                new_count = 0
-                if calculation not in tim["override"]:  # If no overrides
-                    new_count = self.count_timeline_actions(tim, **filters_)
-                else:
-                    for key in list(tim["override"].keys()):
-                        if (
-                            key == calculation
-                        ):  # If datapoint in overrides matches calculation being counted
-                            # if override begins with += or -=, add or subtract respectively instead of just setting
-                            if isinstance(tim["override"][calculation], str):
-                                # removing "+=" and setting override[edited_datapoint] to the right type
-                                if tim["override"][calculation][0:2] == "+=":
-                                    tim["override"][calculation] = tim["override"][calculation][2:]
-                                    if tim["override"][calculation].isdecimal():
-                                        tim["override"][calculation] = int(
-                                            tim["override"][calculation]
-                                        )
-                                    elif (
-                                        "." in tim["override"][calculation]
-                                        and tim["override"][calculation]
-                                        .replace(".", "0", 1)
-                                        .isdecimal()
-                                    ):
-                                        tim["override"][calculation] = float(
-                                            tim["override"][calculation]
-                                        )
-                                    # "adding" to the original value
-                                    tim["override"][calculation] += self.count_timeline_actions(
-                                        tim, **filters_
-                                    )
-                                elif tim["override"][calculation][0:2] == "-=":
-                                    # removing "-=" and setting override[edited_datapoint] to the right type
-                                    tim["override"][calculation] = tim["override"][calculation][2:]
-                                    if tim["override"][calculation].isdecimal():
-                                        tim["override"][calculation] = int(
-                                            tim["override"][calculation]
-                                        )
-                                    elif (
-                                        "." in tim["override"][calculation]
-                                        and tim["override"][calculation]
-                                        .replace(".", "0", 1)
-                                        .isdecimal()
-                                    ):
-                                        tim["override"][calculation] = float(
-                                            tim["override"][calculation]
-                                        )
-                                    # "subtracting" to the original value
-                                    tim["override"][calculation] *= -1
-                                    tim["override"][calculation] += self.count_timeline_actions(
-                                        tim, **filters_
-                                    )
-                            new_count = tim["override"][calculation]
-                if not isinstance(new_count, self.type_check_dict[expected_type]):
-                    raise TypeError(f"Expected {new_count} calculation to be a {expected_type}")
-                unconsolidated_counts.append(new_count)
-            calculated_tim[calculation] = self.consolidate_nums(unconsolidated_counts)
-        return calculated_tim
-
-    def calculate_tim_times(self, unconsolidated_tims: List[Dict]) -> dict:
-        """Given a list of unconsolidated TIMs, returns the calculated time data fields"""
-        calculated_tim = {}
-        for calculation, action_types in self.schema["timeline_cycle_time"].items():
-            unconsolidated_cycle_times = []
-            # Variable type of a calculation is in the schema, but it's not a filter
-            filters_ = copy.deepcopy(action_types)
-            expected_type = filters_.pop("type")
-            for tim in unconsolidated_tims:
-                # action_types is a list of dictionaries, where each dictionary is
-                # "action_type" to the name of either the start or end action
-                new_cycle_time = self.total_time_between_actions(
-                    tim,
-                    action_types["start_action"],
-                    action_types["end_action"],
-                    action_types["minimum_time"],
-                )
-                if not isinstance(new_cycle_time, self.type_check_dict[expected_type]):
-                    raise TypeError(
-                        f"Expected {new_cycle_time} calculation to be a {expected_type}"
-                    )
-                unconsolidated_cycle_times.append(new_cycle_time)
-            calculated_tim[calculation] = self.consolidate_nums(unconsolidated_cycle_times)
-        return calculated_tim
-
-    def calculate_aggregates(self, calculated_tim: List[Dict]):
-        """Given a list of consolidated tims by calculate_tim_counts, return consolidated aggregates"""
-        final_aggregates = {}
-        # Get each aggregate and its associated counts
-        for aggregate, filters in self.schema["aggregates"].items():
-            total_count = 0
-            aggregate_counts = filters["counts"]
-            # Add up all the counts for each aggregate and add them to the final dictionary
-            for count in aggregate_counts:
-                total_count += (
-                    calculated_tim[count]
-                    if count in calculated_tim
-                    else final_aggregates[count]
-                    if count in final_aggregates
-                    else 0
-                )
-                final_aggregates[aggregate] = total_count
-        return final_aggregates
+    def consolidate_unconsolidated_numbers(self, unconsolidated_totals: List[Dict]):
+        """Given a list of unconsolidated totals dictionaries, consolidate the non-categorical datapoints"""
+        consolidated_totals = {}
+        for datapoint in unconsolidated_totals[0].keys():
+            unconsolidated_data = []
+            if datapoint not in ["team_number", "match_number", "scout_name"]:
+                # since non-int or float datapoints are all categorical actions, and there's already another function to consolidate those
+                if isinstance(unconsolidated_totals[0][datapoint], (int, float)) and not isinstance(
+                    unconsolidated_totals[0][datapoint], bool
+                ):
+                    for tim in unconsolidated_totals:
+                        unconsolidated_data.append(tim[datapoint])
+                    # consolidate data
+                    consolidated_totals[datapoint] = self.consolidate_nums(unconsolidated_data)
+        return consolidated_totals
 
     def calculate_point_values(self, calculated_tim: List[Dict]):
-        """Given a list of consolidated tims by calculate_tim_counts, return consolidated point values"""
+        """Given a list of consolidated tims, return consolidated point values"""
         final_points = {}
         # Get each point data point
         for point_datapoint_section, filters in self.schema["point_calculations"].items():
@@ -469,11 +198,8 @@ class ObjTIMCalcs(BaseCalculations):
             log.warning("calculate_tim: zero TIMs given")
             return {}
         calculated_tim = {}
-        calculated_tim.update(self.calculate_tim_counts(unconsolidated_tims))
-        calculated_tim.update(self.calculate_tim_times(unconsolidated_tims))
-        calculated_tim.update(self.calculate_expected_fields(unconsolidated_tims))
         calculated_tim.update(self.consolidate_categorical_actions(unconsolidated_tims))
-        calculated_tim.update(self.calculate_aggregates(calculated_tim))
+        calculated_tim.update(self.consolidate_unconsolidated_numbers(unconsolidated_tims))
         calculated_tim.update(self.calculate_point_values(calculated_tim))
         # Use any of the unconsolidated TIMs to get the team and match number,
         # since that should be the same for each unconsolidated TIM
@@ -494,7 +220,7 @@ class ObjTIMCalcs(BaseCalculations):
         {'team_number': '1678', 'match_number': 69}"""
         calculated_tims = []
         for tim in tims:
-            unconsolidated_obj_tims = self.server.db.find("unconsolidated_obj_tim", tim)
+            unconsolidated_obj_tims = self.server.db.find("unconsolidated_totals", tim)
             calculated_tim = self.calculate_tim(unconsolidated_obj_tims)
             calculated_tims.append(calculated_tim)
         harmonized_teams = self.calculate_harmony(calculated_tims)

@@ -184,170 +184,204 @@ class TestObjTIMCalcs:
             },
         },
     ]
-    unconsolidated_tims = [
+    unconsolidated_totals = [
         {
-            "schema_version": 6,
-            "serial_number": "STR6",
-            "match_number": 42,
-            "timestamp": 5,
-            "match_collection_version_number": "STR5",
             "scout_name": "EDWIN",
-            "alliance_color_is_red": True,
+            "match_number": 42,
             "team_number": "254",
-            "scout_id": 17,
-            "timeline": [
-                {"in_teleop": False, "time": 148, "action_type": "auto_intake_center_5"},
-                {"in_teleop": False, "time": 147, "action_type": "score_speaker"},
-                {"in_teleop": True, "time": 135, "action_type": "to_teleop"},
-                {"in_teleop": True, "time": 130, "action_type": "intake_amp"},
-                {"in_teleop": True, "time": 125, "action_type": "score_speaker"},
-                {"in_teleop": True, "time": 120, "action_type": "intake_far"},
-                {"in_teleop": True, "time": 115, "action_type": "score_amp"},
-                {"in_teleop": True, "time": 114, "action_type": "intake_far"},
-                {"in_teleop": True, "time": 110, "action_type": "score_speaker"},
-                {"in_teleop": True, "time": 108, "action_type": "intake_poach"},
-                {"in_teleop": True, "time": 104, "action_type": "score_amp"},
-                {"in_teleop": True, "time": 95, "action_type": "intake_amp"},
-                {"in_teleop": True, "time": 90, "action_type": "score_amp"},
-                {"in_teleop": True, "time": 80, "action_type": "start_incap_time"},
-                {"in_teleop": True, "time": 75, "action_type": "end_incap_time"},
-                {"in_teleop": True, "time": 71, "action_type": "intake_poach"},
-                {"in_teleop": True, "time": 70, "action_type": "fail"},
-                {"in_teleop": True, "time": 63, "action_type": "score_amplify"},
-                {"in_teleop": True, "time": 56, "action_type": "intake_far"},
-                {"in_teleop": True, "time": 54, "action_type": "score_amp"},
-                {"in_teleop": True, "time": 40, "action_type": "intake_poach"},
-                {"in_teleop": True, "time": 31, "action_type": "score_speaker"},
-                {"in_teleop": True, "time": 28, "action_type": "intake_amp"},
-                {"in_teleop": True, "time": 20, "action_type": "fail"},
-                {"in_teleop": True, "time": 16, "action_type": "score_amp"},
-                {"in_teleop": True, "time": 14, "action_type": "intake_far"},
-                {"in_teleop": True, "time": 12, "action_type": "ferry"},
-                {"in_teleop": True, "time": 9, "action_type": "start_incap_time"},
-                {"in_teleop": False, "time": 3, "action_type": "to_endgame"},
-                {"in_teleop": False, "time": 2, "action_type": "end_incap_time"},
-            ],
-            "stage_level_left": "N",
-            "stage_level_center": "O",
-            "stage_level_right": "N",
-            "start_position": "1",
-            "trap": "N",
-            "parked": True,
-            "has_preload": False,
-            "override": {"failed_scores": 0},
+            "alliance_color_is_red": True,
+            "auto_speaker": 2,
+            "auto_total_intakes": 8,
+            "auto_amp": 2,
+            "tele_intakes_amp": 1,
+            "tele_intakes_poach": 1,
+            "tele_intakes_center": 1,
+            "tele_intakes_far": 1,
+            "tele_speaker": 3,
+            "tele_amplified": 0,
+            "tele_ferry": 0,
+            "tele_failed_amp": 0,
+            "tele_failed_speaker": 2,
+            "tele_failed_amplified": 0,
+            "auto_failed_amp": 0,
+            "auto_failed_speaker": 0,
+            "tele_amp": 1,
+            "auto_intake_spike_1": 1,
+            "auto_intake_spike_2": 1,
+            "auto_intake_spike_3": 1,
+            "auto_intake_center_1": 1,
+            "auto_intake_center_2": 1,
+            "auto_intake_center_3": 1,
+            "auto_intake_center_4": 1,
+            "auto_intake_center_5": 1,
+            "tele_drop": 0,
+            "auto_intakes_spike": 3,
+            "auto_intakes_center": 5,
+            "auto_total_pieces": 4,
+            "auto_total_failed_pieces": 0,
+            "tele_total_intakes": 4,
+            "tele_total_pieces": 4,
+            "tele_total_failed_pieces": 2,
+            "total_intakes": 12,
+            "total_pieces": 8,
             "stage_level_left": "N",
             "stage_level_center": "F",
             "stage_level_right": "O",
+            "start_position": "1",
             "trap": "F",
+            "has_preload": False,
             "parked": True,
+            "incap_time": 33,
+            "median_cycle_time": 0,
+            "time_from_amp_to_amp": 7,
+            "time_from_amp_to_speaker": 24,
+            "time_from_poach_to_amp": 13,
+            "time_from_poach_to_speaker": 30,
+            "time_from_center_to_amp": 26,
+            "time_from_center_to_speaker": 43,
+            "time_from_far_to_amp": 37,
+            "time_from_far_to_speaker": 54,
+            "expected_speaker_cycle_time": 49.62,
+            "expected_amp_cycle_time": 36.87,
+            "expected_speaker_cycles": 2.66,
+            "expected_amp_cycles": 3.58,
+            "expected_speaker_notes": 1.58,
+            "expected_amp_notes": 2.58,
+            "expected_cycle_time": 24.04,
+            "expected_notes": 4.16,
+            "expected_cycles": 5.49,
         },
         {
-            "schema_version": 6,
-            "serial_number": "STR2",
-            "match_number": 42,
-            "timestamp": 6,
-            "match_collection_version_number": "STR1",
             "scout_name": "RAY",
-            "alliance_color_is_red": True,
+            "match_number": 42,
             "team_number": "254",
-            "scout_id": 17,
-            "timeline": [
-                {"in_teleop": False, "time": 148, "action_type": "auto_intake_center_5"},
-                {"in_teleop": False, "time": 147, "action_type": "score_speaker"},
-                {"in_teleop": True, "time": 135, "action_type": "to_teleop"},
-                {"in_teleop": True, "time": 130, "action_type": "intake_amp"},
-                {"in_teleop": True, "time": 125, "action_type": "score_speaker"},
-                {"in_teleop": True, "time": 120, "action_type": "intake_far"},
-                {"in_teleop": True, "time": 115, "action_type": "score_amp"},
-                {"in_teleop": True, "time": 114, "action_type": "intake_far"},
-                {"in_teleop": True, "time": 110, "action_type": "score_speaker"},
-                {"in_teleop": True, "time": 108, "action_type": "intake_poach"},
-                {"in_teleop": True, "time": 104, "action_type": "score_amp"},
-                {"in_teleop": True, "time": 95, "action_type": "intake_amp"},
-                {"in_teleop": True, "time": 90, "action_type": "score_amp"},
-                {"in_teleop": True, "time": 80, "action_type": "start_incap_time"},
-                {"in_teleop": True, "time": 75, "action_type": "end_incap_time"},
-                {"in_teleop": True, "time": 71, "action_type": "intake_poach"},
-                {"in_teleop": True, "time": 70, "action_type": "fail"},
-                {"in_teleop": True, "time": 63, "action_type": "score_amplify"},
-                {"in_teleop": True, "time": 56, "action_type": "intake_far"},
-                {"in_teleop": True, "time": 54, "action_type": "score_amp"},
-                {"in_teleop": True, "time": 40, "action_type": "intake_poach"},
-                {"in_teleop": True, "time": 31, "action_type": "score_speaker"},
-                {"in_teleop": True, "time": 28, "action_type": "intake_amp"},
-                {"in_teleop": True, "time": 20, "action_type": "fail"},
-                {"in_teleop": True, "time": 16, "action_type": "score_amp"},
-                {"in_teleop": True, "time": 14, "action_type": "intake_far"},
-                {"in_teleop": True, "time": 12, "action_type": "ferry"},
-                {"in_teleop": True, "time": 9, "action_type": "start_incap_time"},
-                {"in_teleop": False, "time": 3, "action_type": "to_endgame"},
-                {"in_teleop": False, "time": 2, "action_type": "end_incap_time"},
-            ],
+            "alliance_color_is_red": True,
+            "auto_speaker": 2,
+            "auto_total_intakes": 8,
+            "auto_amp": 2,
+            "tele_intakes_amp": 1,
+            "tele_intakes_poach": 1,
+            "tele_intakes_center": 1,
+            "tele_intakes_far": 1,
+            "tele_speaker": 2,
+            "tele_amplified": 0,
+            "tele_ferry": 0,
+            "tele_failed_amp": 1,
+            "tele_failed_speaker": 1,
+            "tele_failed_amplified": 0,
+            "auto_failed_amp": 0,
+            "auto_failed_speaker": 0,
+            "tele_amp": 2,
+            "auto_intake_spike_1": 1,
+            "auto_intake_spike_2": 1,
+            "auto_intake_spike_3": 1,
+            "auto_intake_center_1": 1,
+            "auto_intake_center_2": 1,
+            "auto_intake_center_3": 1,
+            "auto_intake_center_4": 1,
+            "auto_intake_center_5": 1,
+            "tele_drop": 0,
+            "auto_intakes_spike": 3,
+            "auto_intakes_center": 5,
+            "auto_total_pieces": 4,
+            "auto_total_failed_pieces": 0,
+            "tele_total_intakes": 4,
+            "tele_total_pieces": 4,
+            "tele_total_failed_pieces": 2,
+            "total_intakes": 12,
+            "total_pieces": 8,
             "stage_level_left": "N",
             "stage_level_center": "O",
             "stage_level_right": "N",
             "start_position": "3",
             "trap": "S",
             "has_preload": False,
-            "parked": False,
-            "override": {"failed_scores": 0},
             "parked": True,
+            "incap_time": 33,
+            "median_cycle_time": 0,
+            "time_from_amp_to_amp": 7,
+            "time_from_amp_to_speaker": 5,
+            "time_from_poach_to_amp": 13,
+            "time_from_poach_to_speaker": 11,
+            "time_from_center_to_amp": 26,
+            "time_from_center_to_speaker": 24,
+            "time_from_far_to_amp": 37,
+            "time_from_far_to_speaker": 35,
+            "expected_speaker_cycle_time": 49.62,
+            "expected_amp_cycle_time": 36.87,
+            "expected_speaker_cycles": 2.66,
+            "expected_amp_cycles": 3.58,
+            "expected_speaker_notes": 1.58,
+            "expected_amp_notes": 2.58,
+            "expected_cycle_time": 24.04,
+            "expected_notes": 4.16,
+            "expected_cycles": 5.49,
         },
         {
-            "schema_version": 6,
-            "serial_number": "STR5",
+            "scout_name": "ADRIAN",
             "match_number": 42,
-            "timestamp": 11,
-            "match_collection_version_number": "STR6",
-            "scout_name": "JELLY",
-            "alliance_color_is_red": False,
             "team_number": "254",
-            "scout_id": 17,
-            "timeline": [
-                {"in_teleop": False, "time": 148, "action_type": "auto_intake_center_5"},
-                {"in_teleop": False, "time": 147, "action_type": "score_speaker"},
-                {"in_teleop": True, "time": 135, "action_type": "to_teleop"},
-                {"in_teleop": True, "time": 130, "action_type": "intake_amp"},
-                {"in_teleop": True, "time": 125, "action_type": "score_speaker"},
-                {"in_teleop": True, "time": 120, "action_type": "intake_far"},
-                {"in_teleop": True, "time": 115, "action_type": "score_amp"},
-                {"in_teleop": True, "time": 114, "action_type": "intake_far"},
-                {"in_teleop": True, "time": 110, "action_type": "score_speaker"},
-                {"in_teleop": True, "time": 108, "action_type": "intake_poach"},
-                {"in_teleop": True, "time": 104, "action_type": "score_amp"},
-                {"in_teleop": True, "time": 95, "action_type": "intake_amp"},
-                {"in_teleop": True, "time": 90, "action_type": "score_amp"},
-                {"in_teleop": True, "time": 80, "action_type": "start_incap_time"},
-                {"in_teleop": True, "time": 75, "action_type": "end_incap_time"},
-                {"in_teleop": True, "time": 71, "action_type": "intake_poach"},
-                {"in_teleop": True, "time": 70, "action_type": "fail"},
-                {"in_teleop": True, "time": 63, "action_type": "score_amplify"},
-                {"in_teleop": True, "time": 56, "action_type": "intake_far"},
-                {"in_teleop": True, "time": 54, "action_type": "score_amp"},
-                {"in_teleop": True, "time": 40, "action_type": "intake_poach"},
-                {"in_teleop": True, "time": 31, "action_type": "score_speaker"},
-                {"in_teleop": True, "time": 28, "action_type": "intake_amp"},
-                {"in_teleop": True, "time": 20, "action_type": "fail"},
-                {"in_teleop": True, "time": 16, "action_type": "score_amp"},
-                {"in_teleop": True, "time": 14, "action_type": "intake_far"},
-                {"in_teleop": True, "time": 12, "action_type": "ferry"},
-                {"in_teleop": True, "time": 9, "action_type": "start_incap_time"},
-                {"in_teleop": False, "time": 3, "action_type": "to_endgame"},
-                {"in_teleop": False, "time": 2, "action_type": "end_incap_time"},
-            ],
-            "stage_level_left": "N",
-            "stage_level_center": "O",
-            "stage_level_right": "N",
-            "start_position": "1",
-            "trap": "F",
-            "has_preload": False,
-            "parked": True,
-            "override": {"failed_scores": 0},
+            "alliance_color_is_red": False,
+            "auto_speaker": 2,
+            "auto_total_intakes": 8,
+            "auto_amp": 2,
+            "tele_intakes_amp": 1,
+            "tele_intakes_poach": 1,
+            "tele_intakes_center": 1,
+            "tele_intakes_far": 2,
+            "tele_speaker": 2,
+            "tele_amplified": 1,
+            "tele_ferry": 0,
+            "tele_failed_amp": 0,
+            "tele_failed_speaker": 1,
+            "tele_failed_amplified": 1,
+            "auto_failed_amp": 0,
+            "auto_failed_speaker": 0,
+            "tele_amp": 0,
+            "auto_intake_spike_1": 1,
+            "auto_intake_spike_2": 1,
+            "auto_intake_spike_3": 1,
+            "auto_intake_center_1": 1,
+            "auto_intake_center_2": 1,
+            "auto_intake_center_3": 1,
+            "auto_intake_center_4": 1,
+            "auto_intake_center_5": 1,
+            "tele_drop": 0,
+            "auto_intakes_spike": 3,
+            "auto_intakes_center": 5,
+            "auto_total_pieces": 4,
+            "auto_total_failed_pieces": 0,
+            "tele_total_intakes": 5,
+            "tele_total_pieces": 3,
+            "tele_total_failed_pieces": 1,
+            "total_intakes": 13,
+            "total_pieces": 7,
             "stage_level_left": "F",
             "stage_level_center": "O",
             "stage_level_right": "N",
+            "start_position": "1",
             "trap": "O",
+            "has_preload": False,
             "parked": False,
+            "incap_time": 43,
+            "median_cycle_time": 0,
+            "time_from_amp_to_amp": 0,
+            "time_from_amp_to_speaker": 24,
+            "time_from_poach_to_amp": 0,
+            "time_from_poach_to_speaker": 30,
+            "time_from_center_to_amp": 0,
+            "time_from_center_to_speaker": 43,
+            "time_from_far_to_amp": 0,
+            "time_from_far_to_speaker": 38,
+            "expected_speaker_cycle_time": 49.62,
+            "expected_amp_cycle_time": 36.87,
+            "expected_speaker_cycles": 2.66,
+            "expected_amp_cycles": 3.58,
+            "expected_speaker_notes": 1.58,
+            "expected_amp_notes": 2.58,
+            "expected_cycle_time": 24.04,
+            "expected_notes": 4.16,
+            "expected_cycles": 5.49,
         },
     ]
 
@@ -401,7 +435,7 @@ class TestObjTIMCalcs:
         "auto_total_pieces": 4,
         "auto_total_failed_pieces": 0,
         "tele_total_intakes": 4,
-        "tele_total_pieces": 3,
+        "tele_total_pieces": 4,
         "tele_total_failed_pieces": 1,
         "total_intakes": 12,
         "total_pieces": 7,
@@ -438,89 +472,6 @@ class TestObjTIMCalcs:
         assert self.test_calculator.consolidate_bools([False, True, True]) == True
         assert self.test_calculator.consolidate_bools([False, False, True]) == False
         assert self.test_calculator.consolidate_bools([False, False, False]) == False
-
-    def test_filter_timeline_actions(self):
-        actions = self.test_calculator.filter_timeline_actions(self.unconsolidated_tims[0])
-        assert actions == [
-            {"in_teleop": False, "time": 148, "action_type": "auto_intake_center_5"},
-            {"in_teleop": False, "time": 147, "action_type": "score_speaker"},
-            {"in_teleop": True, "time": 135, "action_type": "to_teleop"},
-            {"in_teleop": True, "time": 130, "action_type": "intake_amp"},
-            {"in_teleop": True, "time": 125, "action_type": "score_speaker"},
-            {"in_teleop": True, "time": 120, "action_type": "intake_far"},
-            {"in_teleop": True, "time": 115, "action_type": "score_amp"},
-            {"in_teleop": True, "time": 114, "action_type": "intake_far"},
-            {"in_teleop": True, "time": 110, "action_type": "score_speaker"},
-            {"in_teleop": True, "time": 108, "action_type": "intake_poach"},
-            {"in_teleop": True, "time": 104, "action_type": "score_amp"},
-            {"in_teleop": True, "time": 95, "action_type": "intake_amp"},
-            {"in_teleop": True, "time": 90, "action_type": "score_amp"},
-            {"in_teleop": True, "time": 80, "action_type": "start_incap_time"},
-            {"in_teleop": True, "time": 75, "action_type": "end_incap_time"},
-            {"in_teleop": True, "time": 71, "action_type": "intake_poach"},
-            {"in_teleop": True, "time": 70, "action_type": "fail"},
-            {"in_teleop": True, "time": 63, "action_type": "score_amplify"},
-            {"in_teleop": True, "time": 56, "action_type": "intake_far"},
-            {"in_teleop": True, "time": 54, "action_type": "score_amp"},
-            {"in_teleop": True, "time": 40, "action_type": "intake_poach"},
-            {"in_teleop": True, "time": 31, "action_type": "score_speaker"},
-            {"in_teleop": True, "time": 28, "action_type": "intake_amp"},
-            {"in_teleop": True, "time": 20, "action_type": "fail"},
-            {"in_teleop": True, "time": 16, "action_type": "score_amp"},
-            {"in_teleop": True, "time": 14, "action_type": "intake_far"},
-            {"in_teleop": True, "time": 12, "action_type": "ferry"},
-            {"in_teleop": True, "time": 9, "action_type": "start_incap_time"},
-            {"in_teleop": False, "time": 3, "action_type": "to_endgame"},
-            {"in_teleop": False, "time": 2, "action_type": "end_incap_time"},
-        ]
-
-    def test_count_timeline_actions(self):
-        action_num = self.test_calculator.count_timeline_actions(self.unconsolidated_tims[0])
-        assert action_num == 30
-
-    def test_total_time_between_actions(self):
-        total_time = self.test_calculator.total_time_between_actions
-        assert (
-            total_time(self.unconsolidated_tims[0], "start_incap_time", "end_incap_time", 1) == 12
-        )
-        assert (
-            total_time(self.unconsolidated_tims[2], "start_incap_time", "end_incap_time", 1) == 12
-        )
-
-    def test_calculate_expected_fields(self):
-        # Fails must be calculated first in order for the calculation to work
-        after_fails = self.test_calculator.score_fail_type(self.unconsolidated_tims)
-        result = self.test_calculator.calculate_expected_fields(after_fails)
-        assert result["expected_cycle_time"] == 24.04
-        assert result["expected_speaker_cycle_time"] == 49.62
-        assert result["expected_amp_cycle_time"] == 36.87
-        assert result["expected_cycles"] == 5.49
-        assert result["expected_speaker_cycles"] == 2.66
-        assert result["expected_amp_cycles"] == 3.58
-        assert result["expected_notes"] == 4.16
-        assert result["expected_speaker_notes"] == 1.58
-        assert result["expected_amp_notes"] == 2.58
-
-    def test_score_fail_type(self):
-        score_fails = self.test_calculator.score_fail_type(self.unconsolidated_tims)
-        assert score_fails[0]["timeline"][17]["action_type"] == "score_fail_amplify"
-        assert score_fails[1]["timeline"][17]["action_type"] == "score_fail_amplify"
-        assert score_fails[2]["timeline"][24]["action_type"] == "score_fail_amp"
-
-    def test_calculate_aggregates(self):
-        aggregated_values = self.test_calculator.calculate_aggregates(self.calculated_tim_data)
-        assert aggregated_values == {
-            "auto_total_intakes": 8,
-            "auto_intakes_spike": 3,
-            "auto_intakes_center": 5,
-            "auto_total_pieces": 4,
-            "auto_total_failed_pieces": 0,
-            "tele_total_intakes": 4,
-            "tele_total_pieces": 3,
-            "tele_total_failed_pieces": 1,
-            "total_intakes": 12,
-            "total_pieces": 7,
-        }
 
     def test_calculate_point_values(self):
         point_values = self.test_calculator.calculate_point_values(self.calculated_tim_data)
@@ -718,39 +669,42 @@ class TestObjTIMCalcs:
         ]
         assert harmonized_teams == expected_result
 
-    def test_calculate_tim_times(self):
-        calculated_tim = self.test_calculator.calculate_tim_times(self.unconsolidated_tims)
-        assert calculated_tim["incap_time"] == 0
-
     def test_run_consolidation(self):
-        self.test_server.db.insert_documents("unconsolidated_obj_tim", self.unconsolidated_tims)
+        self.test_server.db.insert_documents("unconsolidated_totals", self.unconsolidated_totals)
         with patch("data_transfer.tba_communicator.tba_request", return_value=self.tba_test_data):
             self.test_calculator.run()
         result = self.test_server.db.find("obj_tim")
         assert len(result) == 1
         calculated_tim = result[0]
+        print(result)
         assert calculated_tim["confidence_ranking"] == 3
-        assert calculated_tim["expected_speaker_cycle_time"] == 49.62
-        assert calculated_tim["expected_amp_cycle_time"] == 36.87
-        assert calculated_tim["incap_time"] == 0
+        assert calculated_tim["expected_speaker_cycle_time"] == 50
+        assert calculated_tim["expected_amp_cycle_time"] == 37
+        assert calculated_tim["incap_time"] == 33
         assert calculated_tim["match_number"] == 42
         assert calculated_tim["team_number"] == "254"
-        assert calculated_tim["auto_total_intakes"] == 1
-        assert calculated_tim["auto_total_pieces"] == 1
-        assert calculated_tim["tele_total_intakes"] == 10
-        assert calculated_tim["tele_total_pieces"] == 7
-        assert calculated_tim["total_intakes"] == 11
+        assert calculated_tim["auto_total_intakes"] == 8
+        assert calculated_tim["auto_total_pieces"] == 4
+        assert calculated_tim["tele_total_intakes"] == 4
+        assert calculated_tim["tele_total_pieces"] == 4
+        assert calculated_tim["total_intakes"] == 12
         assert calculated_tim["total_pieces"] == 8
-        assert calculated_tim["tele_ferry"] == 1
         assert calculated_tim["start_position"] == "1"
         assert calculated_tim["has_preload"] == False
-        assert calculated_tim["expected_speaker_cycles"] == 2.66
-        assert calculated_tim["expected_amp_cycles"] == 3.58
-        assert calculated_tim["expected_speaker_notes"] == 1.58
-        assert calculated_tim["expected_amp_notes"] == 2.58
-        assert calculated_tim["expected_cycle_time"] == 24.04
-        assert calculated_tim["expected_notes"] == 4.16
-        assert calculated_tim["expected_cycles"] == 5.49
+        assert calculated_tim["expected_speaker_cycles"] == 3
+        assert calculated_tim["expected_amp_cycles"] == 4
+        assert calculated_tim["expected_speaker_notes"] == 2
+        assert calculated_tim["expected_amp_notes"] == 3
+        assert calculated_tim["expected_cycle_time"] == 24
+        assert calculated_tim["expected_notes"] == 4
+        assert calculated_tim["expected_cycles"] == 5
+        assert calculated_tim["expected_speaker_cycles"] == 3
+        assert calculated_tim["expected_amp_cycles"] == 4
+        assert calculated_tim["expected_speaker_notes"] == 2
+        assert calculated_tim["expected_amp_notes"] == 3
+        assert calculated_tim["expected_cycle_time"] == 24
+        assert calculated_tim["expected_notes"] == 4
+        assert calculated_tim["expected_cycles"] == 5
         assert calculated_tim["climbed"] == True
 
     @mock.patch.object(
