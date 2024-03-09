@@ -169,20 +169,28 @@ class TestPredictedAimCalc:
                 "predicted_tele_score": 209.0,
             },
             {
-                "alliance_num": 9,
-                "picks": ["1678", "254", "4414"],
-                "predicted_auto_score": 35.8,
-                "predicted_score": 263.8,
-                "predicted_stage_score": 19,
-                "predicted_tele_score": 209.0,
+                "alliance_num": 2,
+                "picks": ["189", "345", "200"],
+                "predicted_auto_score": 0,
+                "predicted_score": 0.0,
+                "predicted_stage_score": 0,
+                "predicted_tele_score": 0.0,
             },
             {
-                "alliance_num": 17,
-                "picks": ["1678", "254", "4414"],
-                "predicted_auto_score": 35.8,
-                "predicted_score": 263.8,
-                "predicted_stage_score": 19,
-                "predicted_tele_score": 209.0,
+                "alliance_num": 10,
+                "picks": ["189", "345", "100"],
+                "predicted_auto_score": 0,
+                "predicted_score": 0.0,
+                "predicted_stage_score": 0,
+                "predicted_tele_score": 0.0,
+            },
+            {
+                "alliance_num": 18,
+                "picks": ["189", "200", "100"],
+                "predicted_auto_score": 0,
+                "predicted_score": 0.0,
+                "predicted_stage_score": 0,
+                "predicted_tele_score": 0.0,
             },
         ]
         self.expected_results = [
@@ -273,8 +281,9 @@ class TestPredictedAimCalc:
         ]
         self.expected_playoffs_alliances = [
             {"alliance_num": 1, "picks": ["1678", "254", "4414"]},
-            {"alliance_num": 9, "picks": ["1678", "254", "4414"]},
-            {"alliance_num": 17, "picks": ["1678", "254", "4414"]},
+            {"alliance_num": 2, "picks": ["189", "345", "200"]},
+            {"alliance_num": 10, "picks": ["189", "345", "100"]},
+            {"alliance_num": 18, "picks": ["189", "200", "100"]},
         ]
         self.full_predicted_values = predicted_aim.PredictedAimScores(
             park_successes=1.5,
@@ -485,7 +494,18 @@ class TestPredictedAimCalc:
                     "record": {"losses": 2, "wins": 6, "ties": 1},
                     "status": "won",
                 },
-            }
+            },
+            {
+                "name": "Alliance 2",
+                "decines": [],
+                "picks": ["frc189", "frc345", "frc200", "frc100"],
+                "status": {
+                    "playoff_average": None,
+                    "level": "f",
+                    "record": {"losses": 2, "wins": 6, "ties": 1},
+                    "status": "won",
+                },
+            },
         ]
         self.test_server.db.insert_documents("obj_team", self.obj_team)
         self.test_server.db.insert_documents("tba_team", self.tba_team)
@@ -658,7 +678,7 @@ class TestPredictedAimCalc:
             assert document in self.expected_results
 
         result2 = self.test_server.db.find("predicted_alliances")
-        assert len(result2) == 3
+        assert len(result2) == 4
 
         for document in result2:
             del document["_id"]

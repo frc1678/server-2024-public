@@ -294,43 +294,52 @@ class PredictedAimCalc(BaseCalculations):
             # Get alliance number (enumerate function is zero-indexed so each number has to be incremented by one)
             alliance_num = num + 1
             # Add captain, 1st, and 2nd pick
-            playoffs_alliances.append(
-                {
-                    "alliance_num": alliance_num,
-                    "picks": [team[3:] for team in alliance["picks"][:3]],
-                }
-            )
-            # Add captain, 1st, and 3rd pick
-            playoffs_alliances.append(
-                {
-                    "alliance_num": alliance_num + 8,
-                    "picks": [
-                        team[3:]
-                        for team in (
-                            alliance["picks"][:2]
-                            + [
-                                alliance["picks"][3]
+            if len(alliance["picks"]) == 3:
+                playoffs_alliances.append(
+                    {
+                        "alliance_num": alliance_num,
+                        "picks": [team[3:] for team in alliance["picks"][:3]],
+                    }
+                )
+            elif len(alliance["picks"]) > 3:
+                # Add captain, 1st, and 2nd pick
+                playoffs_alliances.append(
+                    {
+                        "alliance_num": alliance_num,
+                        "picks": [team[3:] for team in alliance["picks"][:3]],
+                    }
+                )
+                # Add captain, 1st, and 3rd pick
+                playoffs_alliances.append(
+                    {
+                        "alliance_num": alliance_num + 8,
+                        "picks": [
+                            team[3:]
+                            for team in (
+                                alliance["picks"][:2]
+                                + [
+                                    alliance["picks"][3]
+                                    if len(alliance["picks"]) > 3
+                                    else alliance["picks"][2]
+                                ]
+                            )
+                        ],
+                    }
+                )
+                # Add captain, 2nd, and 3rd pick
+                playoffs_alliances.append(
+                    {
+                        "alliance_num": alliance_num + 16,
+                        "picks": [
+                            team[3:]
+                            for team in (
+                                [alliance["picks"][0]] + alliance["picks"][2:4]
                                 if len(alliance["picks"]) > 3
-                                else alliance["picks"][2]
-                            ]
-                        )
-                    ],
-                }
-            )
-            # Add captain, 2nd, and 3rd pick
-            playoffs_alliances.append(
-                {
-                    "alliance_num": alliance_num + 16,
-                    "picks": [
-                        team[3:]
-                        for team in (
-                            [alliance["picks"][0]] + alliance["picks"][2:4]
-                            if len(alliance["picks"]) > 3
-                            else alliance["picks"][:3]
-                        )
-                    ],
-                }
-            )
+                                else alliance["picks"][:3]
+                            )
+                        ],
+                    }
+                )
         return playoffs_alliances
 
     def get_endgame_fields(self, obj_team_data, team_numbers):
