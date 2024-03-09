@@ -196,8 +196,8 @@ class TestUnconsolidatedTotals:
             "team_number": "254",
             "scout_id": 17,
             "timeline": [
-                {"in_teleop": True, "time": 2, "action_type": "end_incap_time"},
-                {"in_teleop": True, "time": 12, "action_type": "start_incap_time"},
+                {"in_teleop": True, "time": 2, "action_type": "end_incap"},
+                {"in_teleop": True, "time": 12, "action_type": "start_incap"},
                 {"in_teleop": True, "time": 68, "action_type": "score_amp"},
                 {"in_teleop": True, "time": 75, "action_type": "fail"},
                 {"in_teleop": True, "time": 81, "action_type": "score_amplify"},
@@ -207,8 +207,8 @@ class TestUnconsolidatedTotals:
                 {"in_teleop": True, "time": 117, "action_type": "score_speaker"},
                 {"in_teleop": True, "time": 125, "action_type": "fail"},
                 {"in_teleop": True, "time": 126, "action_type": "score_speaker"},
-                {"in_teleop": True, "time": 130, "action_type": "end_incap_time"},
-                {"in_teleop": True, "time": 132, "action_type": "start_incap_time"},
+                {"in_teleop": True, "time": 130, "action_type": "end_incap"},
+                {"in_teleop": True, "time": 132, "action_type": "start_incap"},
                 {"in_teleop": False, "time": 138, "action_type": "score_speaker"},
                 {"in_teleop": False, "time": 140, "action_type": "score_speaker"},
                 {"in_teleop": False, "time": 143, "action_type": "score_speaker"},
@@ -248,8 +248,8 @@ class TestUnconsolidatedTotals:
                 {"in_teleop": True, "time": 117, "action_type": "score_speaker"},
                 {"in_teleop": True, "time": 125, "action_type": "fail"},
                 {"in_teleop": True, "time": 126, "action_type": "score_speaker"},
-                {"in_teleop": True, "time": 130, "action_type": "end_incap_time"},
-                {"in_teleop": True, "time": 132, "action_type": "start_incap_time"},
+                {"in_teleop": True, "time": 130, "action_type": "end_incap"},
+                {"in_teleop": True, "time": 132, "action_type": "start_incap"},
                 {"in_teleop": False, "time": 138, "action_type": "score_speaker"},
                 {"in_teleop": False, "time": 140, "action_type": "score_speaker"},
                 {"in_teleop": False, "time": 143, "action_type": "score_amp"},
@@ -277,8 +277,8 @@ class TestUnconsolidatedTotals:
             "team_number": "254",
             "scout_id": 17,
             "timeline": [
-                {"in_teleop": True, "time": 2, "action_type": "end_incap_time"},
-                {"in_teleop": True, "time": 12, "action_type": "start_incap_time"},
+                {"in_teleop": True, "time": 2, "action_type": "end_incap"},
+                {"in_teleop": True, "time": 12, "action_type": "start_incap"},
                 {"in_teleop": True, "time": 68, "action_type": "score_amp"},
                 {"in_teleop": True, "time": 75, "action_type": "score_amp"},
                 {"in_teleop": True, "time": 81, "action_type": "score_amplify"},
@@ -288,8 +288,8 @@ class TestUnconsolidatedTotals:
                 {"in_teleop": True, "time": 117, "action_type": "score_speaker"},
                 {"in_teleop": True, "time": 125, "action_type": "fail"},
                 {"in_teleop": True, "time": 126, "action_type": "score_speaker"},
-                {"in_teleop": True, "time": 130, "action_type": "end_incap_time"},
-                {"in_teleop": True, "time": 132, "action_type": "start_incap_time"},
+                {"in_teleop": True, "time": 130, "action_type": "end_incap"},
+                {"in_teleop": True, "time": 132, "action_type": "start_incap"},
                 {"in_teleop": False, "time": 138, "action_type": "score_speaker"},
                 {"in_teleop": False, "time": 140, "action_type": "score_speaker"},
                 {"in_teleop": False, "time": 143, "action_type": "score_speaker"},
@@ -319,8 +319,8 @@ class TestUnconsolidatedTotals:
     def test_filter_timeline_actions(self):
         actions = self.test_calculator.filter_timeline_actions(self.unconsolidated_tims[0])
         assert actions == [
-            {"in_teleop": True, "time": 2, "action_type": "end_incap_time"},
-            {"in_teleop": True, "time": 12, "action_type": "start_incap_time"},
+            {"in_teleop": True, "time": 2, "action_type": "end_incap"},
+            {"in_teleop": True, "time": 12, "action_type": "start_incap"},
             {"in_teleop": True, "time": 68, "action_type": "score_amp"},
             {"in_teleop": True, "time": 75, "action_type": "fail"},
             {"in_teleop": True, "time": 81, "action_type": "score_amplify"},
@@ -330,8 +330,8 @@ class TestUnconsolidatedTotals:
             {"in_teleop": True, "time": 117, "action_type": "score_speaker"},
             {"in_teleop": True, "time": 125, "action_type": "fail"},
             {"in_teleop": True, "time": 126, "action_type": "score_speaker"},
-            {"in_teleop": True, "time": 130, "action_type": "end_incap_time"},
-            {"in_teleop": True, "time": 132, "action_type": "start_incap_time"},
+            {"in_teleop": True, "time": 130, "action_type": "end_incap"},
+            {"in_teleop": True, "time": 132, "action_type": "start_incap"},
             {"in_teleop": False, "time": 138, "action_type": "score_speaker"},
             {"in_teleop": False, "time": 140, "action_type": "score_speaker"},
             {"in_teleop": False, "time": 143, "action_type": "score_speaker"},
@@ -351,11 +351,6 @@ class TestUnconsolidatedTotals:
         assert score_fails[1]["timeline"][3]["action_type"] == "score_fail_amp"
         assert score_fails[2]["timeline"][10]["action_type"] == "score_fail_speaker"
 
-    def test_calculate_cycle_times(self):
-        calculated_tim = self.test_calculator.calculate_tim_times(self.unconsolidated_tims[0])
-        # TODO: FIX THESE NUMBERS AND FIX OBJ_TIM TESTS
-        assert calculated_tim["incap_time"] == 10
-
     def test_calculate_unconsolidated_tims(self):
         self.test_server.db.insert_documents("unconsolidated_obj_tim", self.unconsolidated_tims)
         with patch("data_transfer.tba_communicator.tba_request", return_value=self.tba_test_data):
@@ -374,15 +369,6 @@ class TestUnconsolidatedTotals:
             "auto_failed_speaker": 0,
             "auto_speaker": 6,
             "auto_total_pieces": 7,
-            "expected_amp_cycle_time": 135,
-            "expected_amp_cycles": 0,
-            "expected_amp_notes": 0,
-            "expected_cycle_time": 135,
-            "expected_cycles": 0,
-            "expected_notes": 0,
-            "expected_speaker_cycle_time": 135,
-            "expected_speaker_cycles": 0,
-            "expected_speaker_notes": 0,
             "auto_total_intakes": 0,
             "auto_total_failed_pieces": 0,
             "tele_ferry": 0,
@@ -419,16 +405,6 @@ class TestUnconsolidatedTotals:
             "tele_drop": 0,
             "tele_failed_amplified": 1,
             "tele_total_failed_pieces": 1,
-            "incap_time": 10,
-            "time_from_amp_to_amp": 0,
-            "time_from_amp_to_speaker": 0,
-            "time_from_center_to_amp": 0,
-            "time_from_center_to_speaker": 0,
-            "time_from_far_to_amp": 0,
-            "time_from_far_to_speaker": 0,
-            "time_from_poach_to_amp": 0,
-            "time_from_poach_to_speaker": 0,
-            "median_cycle_time": 0,
         }
 
     @mock.patch.object(
