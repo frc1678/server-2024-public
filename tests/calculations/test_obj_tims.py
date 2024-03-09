@@ -480,6 +480,7 @@ class TestObjTIMCalcs:
             "endgame_total_points": 1,
             "tele_total_points": 5,
             "total_points": 19,
+            "points_per_note": 2.375,
         }
 
     def test_calculate_harmony(self):

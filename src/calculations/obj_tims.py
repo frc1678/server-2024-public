@@ -110,6 +110,7 @@ class ObjTIMCalcs(BaseCalculations):
         # Get each point data point
         for point_datapoint_section, filters in self.schema["point_calculations"].items():
             total_points = 0
+            note_count = 0
             point_aggregates = filters["counts"]
             point_counts = list(point_aggregates.keys())
             # Add up all the counts for each aggregate, multiplys them by their value, then adds them to the final dictionary
@@ -117,10 +118,15 @@ class ObjTIMCalcs(BaseCalculations):
                 count = calculated_tim[point] if point in calculated_tim else 0
                 if isinstance(count, bool):
                     total_points += point_aggregates[point] if count else 0
+                    note_count += 1 if count else 0
                 elif isinstance(count, str):
                     total_points += point_aggregates[point] if count not in ["N", "F"] else 0
+                    note_count += 1 if count != "N" else 0
                 else:
                     total_points += count * point_aggregates[point]
+                    note_count += count
+            if point_datapoint_section == "points_per_note":
+                total_points = total_points / note_count
             final_points[point_datapoint_section] = total_points
         return final_points
 
