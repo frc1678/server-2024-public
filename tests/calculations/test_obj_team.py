@@ -990,6 +990,49 @@ class TestOBJTeamCalc:
         lfm_tims = [tim for tim in tims if tim["match_number"] > 1]
         assert self.test_calc.calculate_super_counts(tims, lfm_tims) == expected_output
 
+    def test_ss_counts(self):
+        """Tests calculate_ss_counts function from src/calculations.obj_team.py"""
+        tims = [
+            {
+                "match_number": 1,
+                "team_number": "1690",
+                "played_defense": True,
+                "coopertition": True,
+            },
+            {
+                "match_number": 2,
+                "team_number": "1690",
+                "played_defense": True,
+                "coopertition": False,
+            },
+            {
+                "match_number": 3,
+                "team_number": "1690",
+                "played_defense": False,
+                "coopertition": False,
+            },
+            {
+                "match_number": 4,
+                "team_number": "1690",
+                "played_defense": True,
+                "coopertition": False,
+            },
+            {
+                "match_number": 5,
+                "team_number": "1690",
+                "played_defense": True,
+                "coopertition": True,
+            },
+        ]
+        expected_output = {
+            "matches_played_defense": 4,
+            "matches_coopertition": 2,
+            "lfm_matches_played_defense": 3,
+            "lfm_matches_coopertition": 1,
+        }
+        lfm_tims = [tim for tim in tims if tim["match_number"] > 1]
+        assert self.test_calc.calculate_ss_counts(tims, lfm_tims) == expected_output
+
     def test_extrema(self):
         tims = [
             {

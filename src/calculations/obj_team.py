@@ -225,6 +225,23 @@ class OBJTeamCalc(base_calculations.BaseCalculations):
             team_info[calculation] = total
         return team_info
 
+    def calculate_ss_counts(self, tims, lfm_tims):
+        """Calculates counts of datapoints collected by Super Scouts."""
+        team_info = {}
+        for calculation, schema in self.SCHEMA["ss_counts"].items():
+            total = 0
+            tim_field = schema["tim_fields"][0].split(".")[1]
+            if "lfm" in calculation:
+                for tim in lfm_tims:
+                    if tim[tim_field]:
+                        total += 1
+            else:
+                for tim in tims:
+                    if tim[tim_field]:
+                        total += 1
+            team_info[calculation] = total
+        return team_info
+
     def calculate_extrema(
         self,
         tim_action_counts,
