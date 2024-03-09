@@ -386,7 +386,12 @@ class ObjTIMCalcs(BaseCalculations):
             # Add up all the counts for each aggregate, multiplys them by their value, then adds them to the final dictionary
             for point in point_counts:
                 count = calculated_tim[point] if point in calculated_tim else 0
-                total_points += count * point_aggregates[point]
+                if isinstance(count, bool):
+                    total_points += point_aggregates[point] if count else 0
+                elif isinstance(count, str):
+                    total_points += point_aggregates[point] if count not in ["N", "F"] else 0
+                else:
+                    total_points += count * point_aggregates[point]
             final_points[point_datapoint_section] = total_points
         return final_points
 

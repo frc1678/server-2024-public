@@ -526,7 +526,7 @@ class TestObjTIMCalcs:
         point_values = self.test_calculator.calculate_point_values(self.calculated_tim_data)
         assert point_values == {
             "auto_total_points": 14,
-            "endgame_total_points": 0,
+            "endgame_total_points": 1,
             "tele_total_points": 5,
             "total_points": 19,
         }
