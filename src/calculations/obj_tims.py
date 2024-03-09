@@ -167,10 +167,10 @@ class ObjTIMCalcs(BaseCalculations):
         """
         totals = []
         calculated_tim = {}
-        intake_weights = self.schema["calculate_expected_fields"]["intake_weights"]
+        intake_weights = self.schema["intake_weights"]
         for tim in tims:
             cycles = {}
-            for field, value in self.schema["calculate_expected_fields"]["calcs"].items():
+            for field, value in self.schema["calculate_expected_fields"].items():
                 if len(tim["timeline"]) == 0:
                     cycles[field] = 0
                     continue
