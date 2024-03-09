@@ -244,34 +244,147 @@ class TestScoutPrecisionCalc:
     def test_calc_scout_precision(self):
         assert self.test_calc.calc_scout_precision([{"scout_name": "REED WANG"}]) == {}
         test_data = [
-            {"scout_name": "KATHY LI", "sim_precision": 0.5, "match_number": 1},
-            {"scout_name": "KATHY LI", "sim_precision": 0, "match_number": 2},
-            {"scout_name": "KATHY LI", "sim_precision": -1, "match_number": 3},
-            {"scout_name": "KATHY LI", "sim_precision": 0.7243, "match_number": 4},
-            {"scout_name": "KATHY LI", "sim_precision": 5, "match_number": 5},
+            {
+                "scout_name": "KATHY LI",
+                "sim_precision": 0.5,
+                "auto_speaker_precision": 0.5,
+                "auto_amp_precision": 3,
+                "tele_amplified_precision": 2,
+                "tele_speaker_precision": 1,
+                "tele_amp_precision": 1,
+                "match_number": 1,
+            },
+            {
+                "scout_name": "KATHY LI",
+                "sim_precision": 0,
+                "auto_speaker_precision": -1,
+                "auto_amp_precision": 1,
+                "tele_amplified_precision": 2,
+                "tele_speaker_precision": 1,
+                "tele_amp_precision": 1,
+                "match_number": 2,
+            },
+            {
+                "scout_name": "KATHY LI",
+                "sim_precision": -1,
+                "auto_speaker_precision": 0.5,
+                "auto_amp_precision": 0.5,
+                "tele_amplified_precision": 2,
+                "tele_speaker_precision": 1,
+                "tele_amp_precision": 1,
+                "match_number": 3,
+            },
+            {
+                "scout_name": "KATHY LI",
+                "sim_precision": 0.7243,
+                "auto_speaker_precision": 0.5,
+                "auto_amp_precision": 3,
+                "tele_amplified_precision": 2,
+                "tele_speaker_precision": 1,
+                "tele_amp_precision": 1,
+                "match_number": 4,
+            },
+            {
+                "scout_name": "KATHY LI",
+                "sim_precision": 5,
+                "auto_speaker_precision": 0.5,
+                "auto_amp_precision": 3,
+                "tele_amplified_precision": 2,
+                "tele_speaker_precision": 1,
+                "tele_amp_precision": 1,
+                "match_number": 5,
+            },
         ]
         assert self.test_calc.calc_scout_precision(test_data) == {
-            "scout_precision": 1.0448600000000001
+            "auto_speaker_precision": 0.2,
+            "auto_amp_precision": 2.1,
+            "tele_amplified_precision": 2,
+            "scout_precision": 1.0448600000000001,
+            "tele_speaker_precision": 1,
+            "tele_amp_precision": 1,
         }
 
     def test_update_scout_precision_calcs(self):
         with patch(
             "calculations.scout_precision.ScoutPrecisionCalc.calc_scout_precision",
-            return_value={"scout_precision": 0.39},
+            return_value={
+                "scout_precision": 0.39,
+                "auto_speaker_precision": 0.1,
+                "auto_amp_precision": 0.49,
+                "tele_amplified_precision": 2.1,
+                "tele_speaker_precision": 2.9,
+                "tele_amp_precision": 1.5,
+            },
         ):
             assert self.test_calc.update_scout_precision_calcs(["REED WANG"]) == [
-                {"scout_name": "REED WANG", "scout_precision": 0.39}
+                {
+                    "scout_name": "REED WANG",
+                    "scout_precision": 0.39,
+                    "auto_speaker_precision": 0.1,
+                    "auto_amp_precision": 0.49,
+                    "tele_amplified_precision": 2.1,
+                    "tele_speaker_precision": 2.9,
+                    "tele_amp_precision": 1.5,
+                }
             ]
 
     def test_run(self):
 
         expected_scout_precision = [
-            {"scout_name": "ALISON LIN", "scout_precision": 8.222222222222221},
-            {"scout_name": "NATHAN MILLS", "scout_precision": 4.111111111111111},
-            {"scout_name": "KATHY LI", "scout_precision": 3.61111111111111},
-            {"scout_name": "KATE UNGER", "scout_precision": 3.7777777777777777},
-            {"scout_name": "NITHMI JAYASUNDARA", "scout_precision": 7.555555555555555},
-            {"scout_name": "RAY FABIONAR", "scout_precision": 10.555555555555555},
+            {
+                "scout_name": "ALISON LIN",
+                "scout_precision": 8.222222222222221,
+                "auto_speaker_precision": 0.1,
+                "auto_amp_precision": 0.49,
+                "tele_amplified_precision": 2.1,
+                "tele_speaker_precision": 2.9,
+                "tele_amp_precision": 1.5,
+            },
+            {
+                "scout_name": "NATHAN MILLS",
+                "scout_precision": 4.111111111111111,
+                "auto_speaker_precision": 0.1,
+                "auto_amp_precision": 0.49,
+                "tele_amplified_precision": 2.1,
+                "tele_speaker_precision": 2.9,
+                "tele_amp_precision": 1.5,
+            },
+            {
+                "scout_name": "KATHY LI",
+                "scout_precision": 3.61111111111111,
+                "auto_speaker_precision": 0.1,
+                "auto_amp_precision": 0.49,
+                "tele_amplified_precision": 2.1,
+                "tele_speaker_precision": 2.9,
+                "tele_amp_precision": 1.5,
+            },
+            {
+                "scout_name": "KATE UNGER",
+                "scout_precision": 3.7777777777777777,
+                "auto_speaker_precision": 0.1,
+                "auto_amp_precision": 0.49,
+                "tele_amplified_precision": 2.1,
+                "tele_speaker_precision": 2.9,
+                "tele_amp_precision": 1.5,
+            },
+            {
+                "scout_name": "NITHMI JAYASUNDARA",
+                "scout_precision": 7.555555555555555,
+                "auto_speaker_precision": 0.1,
+                "auto_amp_precision": 0.49,
+                "tele_amplified_precision": 2.1,
+                "tele_speaker_precision": 2.9,
+                "tele_amp_precision": 1.5,
+            },
+            {
+                "scout_name": "RAY FABIONAR",
+                "scout_precision": 10.555555555555555,
+                "auto_speaker_precision": 0.1,
+                "auto_amp_precision": 0.49,
+                "tele_amplified_precision": 2.1,
+                "tele_speaker_precision": 2.9,
+                "tele_amp_precision": 1.5,
+            },
         ]
         self.test_server.db.delete_data("unconsolidated_totals")
         self.test_calc.update_timestamp()
