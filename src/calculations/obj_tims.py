@@ -445,7 +445,7 @@ class ObjTIMCalcs(BaseCalculations):
                         ):
                             if (
                                 tim1["stage_level_left"] == tim2["stage_level_left"]
-                                and tim1["stage_level_left"] != "N"
+                                and tim1["stage_level_left"] == "O"
                             ):
                                 harmonized_teams.append(
                                     {
@@ -461,7 +461,7 @@ class ObjTIMCalcs(BaseCalculations):
                                 )
                             elif (
                                 tim1["stage_level_right"] == tim2["stage_level_right"]
-                                and tim1["stage_level_right"] != "N"
+                                and tim1["stage_level_right"] == "O"
                             ):
                                 harmonized_teams.append(
                                     {
@@ -477,7 +477,7 @@ class ObjTIMCalcs(BaseCalculations):
                                 )
                             elif (
                                 tim1["stage_level_center"] == tim2["stage_level_center"]
-                                and tim1["stage_level_center"] != "N"
+                                and tim1["stage_level_center"] == "O"
                             ):
                                 harmonized_teams.append(
                                     {
@@ -491,7 +491,7 @@ class ObjTIMCalcs(BaseCalculations):
                                         "match_number": tim2["match_number"],
                                     }
                                 )
-            return harmonized_teams
+        return harmonized_teams
 
     def calculate_tim(self, unconsolidated_tims: List[Dict]) -> dict:
         """Given a list of unconsolidated TIMs, returns a calculated TIM"""
