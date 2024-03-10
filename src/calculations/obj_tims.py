@@ -419,7 +419,7 @@ class ObjTIMCalcs(BaseCalculations):
                     total_points += count * point_aggregates[point]
                     note_count += count
             if point_datapoint_section == "points_per_note":
-                total_points = total_points / note_count
+                total_points = 0 if note_count == 0 else total_points / note_count
             final_points[point_datapoint_section] = total_points
         return final_points
 
