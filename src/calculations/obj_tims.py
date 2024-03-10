@@ -165,9 +165,9 @@ class ObjTIMCalcs(BaseCalculations):
         the number of speaker and amp cycles. Both these calculations weight the different intake to
         score cycles.
         """
+        intake_weights = self.schema["intake_weights"]
         totals = []
         calculated_tim = {}
-        intake_weights = self.schema["intake_weights"]
         for tim in tims:
             cycles = {}
             for field, value in self.schema["calculate_expected_fields"].items():
@@ -194,11 +194,36 @@ class ObjTIMCalcs(BaseCalculations):
                             and tele_actions[count + 2]["action_type"] in score_actions
                         ):
                             # If it is fail, the cycle must already be counted, also prevents crashing if it is the first action
-                            if tele_actions[count]["action_type"] != "fail" and count > 0:
+                            if (
+                                tele_actions[count]["action_type"] not in ["fail", "end_incap_time"]
+                                and count > 0
+                            ):
                                 # Add intake weight type in schema
                                 num_cycles += intake_weights[tele_actions[count]["action_type"]][
                                     "normal"
                                 ]
+                        # Add special case for incap b/c someone can intake, go incap, then score
+                        elif tele_actions[count + 1]["action_type"] == "start_incap":
+                            if len(tele_actions) - count > 3:
+                                if tele_actions[count + 3]["action_type"] in score_actions or (
+                                    tele_actions[count + 3]["action_type"] == "fail"
+                                    and tele_actions[count + 4]["action_type"] in score_actions
+                                ):
+                                    num_cycles += intake_weights[
+                                        tele_actions[count]["action_type"]
+                                    ]["normal"]
+                            elif len(tele_actions) - count == 3:
+                                if tele_actions[count + 3]["action_type"] in score_actions:
+                                    num_cycles += intake_weights[
+                                        tele_actions[count]["action_type"]
+                                    ]["normal"]
+                                elif (
+                                    tele_actions[count + 3]["action_type"] in ["ferry, drop"]
+                                    and value["include_ferry_and_drop"]
+                                ):
+                                    num_cycles += intake_weights[
+                                        tele_actions[count]["action_type"]
+                                    ]["ferry_drop"]
                         # Special scenario if they ferry or drop, it is a lower percentage of the cycle (only for expected cycle too)
                         # Uses the include_ferry_and_drop field to determine whether or not to do this
                         elif (
@@ -223,7 +248,6 @@ class ObjTIMCalcs(BaseCalculations):
                 elif value["calc"] == "num":
                     cycles[field] = num_cycles
             totals.append(cycles)
-
         # Consolidate the values from each tim to produce one number
         for key in list(totals[0].keys()):
             unconsolidated_values = []

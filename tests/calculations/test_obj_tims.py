@@ -488,18 +488,21 @@ class TestObjTIMCalcs:
         )
 
     def test_calculate_expected_fields(self):
+        expected_results = {
+            "expected_cycle_time": 24.04,
+            "expected_speaker_cycle_time": 49.62,
+            "expected_amp_cycle_time": 36.87,
+            "expected_cycles": 5.49,
+            "expected_speaker_cycles": 2.66,
+            "expected_amp_cycles": 3.58,
+            "expected_notes": 4.16,
+            "expected_speaker_notes": 1.58,
+            "expected_amp_notes": 2.58,
+        }
         # Fails must be calculated first in order for the calculation to work
         after_fails = self.test_calculator.score_fail_type(self.unconsolidated_tims)
         result = self.test_calculator.calculate_expected_fields(after_fails)
-        assert result["expected_cycle_time"] == 24.04
-        assert result["expected_speaker_cycle_time"] == 49.62
-        assert result["expected_amp_cycle_time"] == 36.87
-        assert result["expected_cycles"] == 5.49
-        assert result["expected_speaker_cycles"] == 2.66
-        assert result["expected_amp_cycles"] == 3.58
-        assert result["expected_notes"] == 4.16
-        assert result["expected_speaker_notes"] == 1.58
-        assert result["expected_amp_notes"] == 2.58
+        assert result == expected_results
 
     def test_score_fail_type(self):
         score_fails = self.test_calculator.score_fail_type(self.unconsolidated_tims)
