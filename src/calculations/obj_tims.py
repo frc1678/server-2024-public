@@ -194,10 +194,7 @@ class ObjTIMCalcs(BaseCalculations):
                             and tele_actions[count + 2]["action_type"] in score_actions
                         ):
                             # If it is fail, the cycle must already be counted, also prevents crashing if it is the first action
-                            if (
-                                tele_actions[count]["action_type"] not in ["fail", "end_incap_time"]
-                                and count > 0
-                            ):
+                            if tele_actions[count]["action_type"] in list(intake_weights.keys()):
                                 # Add intake weight type in schema
                                 num_cycles += intake_weights[tele_actions[count]["action_type"]][
                                     "normal"
@@ -230,9 +227,10 @@ class ObjTIMCalcs(BaseCalculations):
                             tele_actions[count + 1]["action_type"] in ["ferry", "drop"]
                             and value["include_ferry_and_drop"]
                         ):
-                            num_cycles += intake_weights[tele_actions[count]["action_type"]][
-                                "ferry_drop"
-                            ]
+                            if tele_actions[count]["action_type"] in list(intake_weights.keys()):
+                                num_cycles += intake_weights[tele_actions[count]["action_type"]][
+                                    "ferry_drop"
+                                ]
                         # If a robot has a piece out of a auto and scores it check to see if we should include it, if so add 1
                         # to_teleop is the first timeline field, so check when count == 1
                         if (
