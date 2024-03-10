@@ -366,6 +366,7 @@ class TestDecompressor:
             "has_vision_assisted_shot": True,
             "has_hp_indicator": False,
             "can_climb": True,
+            "weight": 1,
         }
         expected_obj_pit = {
             "team_number": "3448",
@@ -374,6 +375,7 @@ class TestDecompressor:
             "has_vision_assisted_shot": True,
             "has_hp_indicator": False,
             "can_climb": True,
+            "weight": 1,
         }
         citrus_seal = {
             "team_number": "3448",
@@ -382,6 +384,7 @@ class TestDecompressor:
             "has_vision_assisted_shot": True,
             "has_hp_indicator": False,
             "can_climb": False,
+            "weight": 1,
         }
         new_expected_obj_pit = {
             "team_number": "3448",
@@ -390,6 +393,7 @@ class TestDecompressor:
             "has_vision_assisted_shot": True,
             "has_hp_indicator": False,
             "can_climb": True,
+            "weight": 1,
         }
         raw2_obj_pit = {
             "team_number": "1678",
@@ -398,6 +402,7 @@ class TestDecompressor:
             "has_vision_assisted_shot": True,
             "has_hp_indicator": False,
             "can_climb": True,
+            "weight": 1,
         }
         expected2_obj_pit = {
             "team_number": "1678",
@@ -406,6 +411,7 @@ class TestDecompressor:
             "has_vision_assisted_shot": True,
             "has_hp_indicator": False,
             "can_climb": True,
+            "weight": 1,
         }
         citrus2_seal = {
             "team_number": "1678",
@@ -414,6 +420,7 @@ class TestDecompressor:
             "has_vision_assisted_shot": True,
             "has_hp_indicator": False,
             "can_climb": False,
+            "weight": 1,
         }
         new2_expected_obj_pit = {
             "team_number": "1678",
@@ -422,6 +429,7 @@ class TestDecompressor:
             "has_vision_assisted_shot": True,
             "has_hp_indicator": False,
             "can_climb": False,
+            "weight": 1,
         }
 
         assert (
