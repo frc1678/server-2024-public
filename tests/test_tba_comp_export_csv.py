@@ -160,6 +160,7 @@ def mock_tba_request(api_url):
                     "red": {"score": 998, "team_keys": ["frc254", "frc452", "frc245"]},
                 },
                 "key": "2023cadaf1m1",
+                "event_key": "2023cada",
             }
         ]
     if api_url == "event/2023cada/awards":
@@ -176,6 +177,8 @@ def mock_tba_request(api_url):
                 "year": 2023,
             }
         ]
+    if api_url == "events/2024/simple":
+        return [{"key": "2023cada", "end_date": "2023-01-01"}]
     return None
 
 
@@ -312,6 +315,7 @@ def test_pull_comp_data():
                 "alliances.red.score": 998,
                 "alliances.red.team_keys": ["frc254", "frc452", "frc245"],
                 "key": "2023cadaf1m1",
+                "event_key": "2023cada",
             }
         ],
         "awards": [
@@ -350,10 +354,25 @@ def test_export_csv():
     expected_csv += "\nDISTRICT POINTS (POINTS)\n,alliance_points,award_points,elim_points,qual_points,total\nfrc1678,16,5,30,21,72"
     expected_csv += '\nDISTRICT POINTS (TIEBREAKERS)\n,highest_qual_scores,qual_wins\nfrc1678,"[159, 149, 145]",0'
     expected_csv += "\nTEAMS\nteam_number,key\n1678,frc1678\n254,frc254"
-    expected_csv += "\nMATCHES\nkey,actual_time,alliances.blue.score,alliances.blue.team_keys,alliances.red.score,alliances.red.team_keys\n2023cadaf1m1,10,999,\"['frc1678', 'frc8761', 'frc1687']\",998,\"['frc254', 'frc452', 'frc245']\""
+    expected_csv += "\nMATCHES\nkey,actual_time,event_key,alliances.blue.score,alliances.blue.team_keys,alliances.red.score,alliances.red.team_keys\n2023cadaf1m1,10,2023cada,999,\"['frc1678', 'frc8761', 'frc1687']\",998,\"['frc254', 'frc452', 'frc245']\""
     expected_csv += "\nAWARDS\nname,award_type,event_key,recipient_list,year\nRegional Winners,1,2023cada,\"['frc254', 'frc1678', 'frc3189']\",2023\n"
     with Patcher() as patcher:
         tba_comp_export_csv.export_csv("2023cada", "tba_data_2023cada.csv")
         with open("tba_data_2023cada.csv", "r") as test_output:
+            assert test_output.read() == expected_csv
+    tba_communicator.tba_request = real_tba_request
+
+
+def test_export_all_comps():
+    real_tba_request = tba_communicator.tba_request
+    tba_communicator.tba_request = MagicMock(side_effect=mock_tba_request)
+    expected_csv = ""
+    expected_csv += "ALL 2024 MATCH DATA\nkey,event_key,actual_time,alliances.blue.score,alliances.blue.team_keys,alliances.red.score,alliances.red.team_keys\n2023cadaf1m1,2023cada,10,999,\"['frc1678', 'frc8761', 'frc1687']\",998,\"['frc254', 'frc452', 'frc245']\""
+    expected_csv += (
+        "\n2024 TEAM DATA\nteam_key,event_key,ccwms,dprs,oprs\nfrc1678,2023cada,99,99,99\n"
+    )
+    with Patcher() as patcher:
+        tba_comp_export_csv.export_all_comps("tba_data_2024_comps.csv")
+        with open("tba_data_2024_comps.csv", "r") as test_output:
             assert test_output.read() == expected_csv
     tba_communicator.tba_request = real_tba_request
