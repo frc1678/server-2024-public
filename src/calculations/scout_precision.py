@@ -50,6 +50,14 @@ class ScoutPrecisionCalc(BaseCalculations):
                 calculations[calculation] = abs(self.avg(all_sim_errors))
         return calculations
 
+    def calc_ranks(self, scouts):
+        """Ranks a scout based on their overall precision."""
+        for rank, schema in self.overall_schema["ranks"].items():
+            scouts = sorted(scouts, key=lambda s: s[schema["requires"].split(".")[1]])
+            for i in range(len(scouts)):
+                scouts[i][rank] = i + 1
+        return scouts
+
     def update_scout_precision_calcs(self, scouts):
         """Creates overall precision updates."""
         updates = []
@@ -60,6 +68,7 @@ class ScoutPrecisionCalc(BaseCalculations):
             if (scout_precision := self.calc_scout_precision(scout_sims)) != {}:
                 update.update(scout_precision)
             updates.append(update)
+        updates = self.calc_ranks(updates)
         return updates
 
     def run(self):

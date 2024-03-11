@@ -304,6 +304,49 @@ class TestScoutPrecisionCalc:
             "tele_amp_precision": 1,
         }
 
+    def test_calc_ranks(self):
+        test_data = [
+            {
+                "scout_name": "REED WANG",
+                "scout_precision": 0.39,
+            },
+            {
+                "scout_name": "KATHY LI",
+                "scout_precision": 3.61111111111111,
+            },
+            {
+                "scout_name": "NATHAN MILLS",
+                "scout_precision": 4.111111111111111,
+            },
+            {
+                "scout_name": "ALISON LIN",
+                "scout_precision": 8.222222222222221,
+            },
+        ]
+        expected_output = [
+            {
+                "scout_name": "REED WANG",
+                "scout_precision": 0.39,
+                "scout_precision_rank": 1,
+            },
+            {
+                "scout_name": "KATHY LI",
+                "scout_precision": 3.61111111111111,
+                "scout_precision_rank": 2,
+            },
+            {
+                "scout_name": "NATHAN MILLS",
+                "scout_precision": 4.111111111111111,
+                "scout_precision_rank": 3,
+            },
+            {
+                "scout_name": "ALISON LIN",
+                "scout_precision": 8.222222222222221,
+                "scout_precision_rank": 4,
+            },
+        ]
+        assert self.test_calc.calc_ranks(test_data) == expected_output
+
     def test_update_scout_precision_calcs(self):
         with patch(
             "calculations.scout_precision.ScoutPrecisionCalc.calc_scout_precision",
@@ -320,6 +363,7 @@ class TestScoutPrecisionCalc:
                 {
                     "scout_name": "REED WANG",
                     "scout_precision": 0.39,
+                    "scout_precision_rank": 1,
                     "auto_speaker_precision": 0.1,
                     "auto_amp_precision": 0.49,
                     "tele_amplified_precision": 2.1,
@@ -330,7 +374,7 @@ class TestScoutPrecisionCalc:
 
     def test_run(self):
 
-        expected_scout_precision = [
+        scout_precision_data = [
             {
                 "scout_name": "ALISON LIN",
                 "scout_precision": 8.222222222222221,
@@ -386,15 +430,82 @@ class TestScoutPrecisionCalc:
                 "tele_amp_precision": 1.5,
             },
         ]
+
+        expected_scout_precision = [
+            {
+                "scout_name": "ALISON LIN",
+                "scout_precision": 8.222222222222221,
+                "scout_precision_rank": 5,
+                "auto_speaker_precision": 0.1,
+                "auto_amp_precision": 0.49,
+                "tele_amplified_precision": 2.1,
+                "tele_speaker_precision": 2.9,
+                "tele_amp_precision": 1.5,
+            },
+            {
+                "scout_name": "NATHAN MILLS",
+                "scout_precision": 4.111111111111111,
+                "scout_precision_rank": 3,
+                "auto_speaker_precision": 0.1,
+                "auto_amp_precision": 0.49,
+                "tele_amplified_precision": 2.1,
+                "tele_speaker_precision": 2.9,
+                "tele_amp_precision": 1.5,
+            },
+            {
+                "scout_name": "KATHY LI",
+                "scout_precision": 3.61111111111111,
+                "scout_precision_rank": 1,
+                "auto_speaker_precision": 0.1,
+                "auto_amp_precision": 0.49,
+                "tele_amplified_precision": 2.1,
+                "tele_speaker_precision": 2.9,
+                "tele_amp_precision": 1.5,
+            },
+            {
+                "scout_name": "KATE UNGER",
+                "scout_precision": 3.7777777777777777,
+                "scout_precision_rank": 2,
+                "auto_speaker_precision": 0.1,
+                "auto_amp_precision": 0.49,
+                "tele_amplified_precision": 2.1,
+                "tele_speaker_precision": 2.9,
+                "tele_amp_precision": 1.5,
+            },
+            {
+                "scout_name": "NITHMI JAYASUNDARA",
+                "scout_precision": 7.555555555555555,
+                "scout_precision_rank": 4,
+                "auto_speaker_precision": 0.1,
+                "auto_amp_precision": 0.49,
+                "tele_amplified_precision": 2.1,
+                "tele_speaker_precision": 2.9,
+                "tele_amp_precision": 1.5,
+            },
+            {
+                "scout_name": "RAY FABIONAR",
+                "scout_precision": 10.555555555555555,
+                "scout_precision_rank": 6,
+                "auto_speaker_precision": 0.1,
+                "auto_amp_precision": 0.49,
+                "tele_amplified_precision": 2.1,
+                "tele_speaker_precision": 2.9,
+                "tele_amp_precision": 1.5,
+            },
+        ]
         self.test_server.db.delete_data("unconsolidated_totals")
         self.test_calc.update_timestamp()
         self.test_server.db.insert_documents("unconsolidated_totals", self.scout_tim_test_data)
         with patch(
-            "data_transfer.tba_communicator.tba_request",
-            return_value=self.tba_test_data,
+            "calculations.scout_precision.ScoutPrecisionCalc.calc_scout_precision",
+            side_effect=scout_precision_data,
         ):
-            self.test_calc.run()
-        scout_precision_result = self.test_server.db.find("sim_precision")
+            with patch(
+                "data_transfer.tba_communicator.tba_request",
+                return_value=self.tba_test_data,
+            ):
+                self.test_calc.run()
+        scout_precision_result = self.test_server.db.find("scout_precision")
         for document in scout_precision_result:
             document.pop("_id")
             assert document in expected_scout_precision
