@@ -421,7 +421,7 @@ class OBJTeamCalc(base_calculations.BaseCalculations):
                 )
             )
             team_data.update(
-                self.calculate_special_counts(obj_tims, obj_lfm_tims, subj_tims, subj_lfm_tims)
+                self.calculate_special_counts(obj_tims, subj_tims, obj_lfm_tims, subj_lfm_tims)
             )
             team_data.update(self.calculate_modes(tim_action_categories, lfm_tim_action_categories))
             team_data.update(self.calculate_medians(tim_action_sum, lfm_tim_action_sum))
