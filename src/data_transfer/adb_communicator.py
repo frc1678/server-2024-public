@@ -151,7 +151,8 @@ def pull_device_data():
     for device in devices:
         if device[:2] == "R8":
             ss_devices.append(device)
-            devices.remove(device)
+    for device in ss_devices:
+        devices.remove(device)
     data = {"qr": [], "raw_obj_pit": []}
     if ss_devices == [] and devices == []:
         return data
@@ -206,29 +207,40 @@ def pull_device_data():
                                     file_contents = json.load(f)
                                 data["raw_obj_pit"].append(file_contents)
                             break
+
+    # Valid Profiles (To be edited for every comp with the profile names by the Scouting Dev)
+    valid_profiles = ["Aunish", "Mehul"]
+
     # Pulls data from Stand Strategist (ss)
     # Iterates through the 'data' folder
     # Iterates through the devices
     for device in ss_device_file_paths:
         profiles_directory = os.path.join(device_file_path, device)
         profiles = os.listdir(profiles_directory)
-
         for profile in profiles:
+            # Make sure not to include any old data from other profiles
+            if profile not in valid_profiles:
+                continue
             # Update TIM Data for Stand Strategist
             with open(os.path.join(profiles_directory, profile, "tim_data.json")) as f:
                 tim_data = json.load(f)
                 for match, value in tim_data.items():
                     for team_number, document in value.items():
                         document = decompressor.Decompressor.decompress_ss_tim(document)
-                        db.update_document(
-                            "ss_tim",
-                            document,
-                            {
-                                "team_number": team_number,
-                                "match_number": match,
-                                "username": profile,
-                            },
-                        )
+
+                        # Add username manually to not break Grosbeak (TODO: Get rid of this field)
+                        document["username"] = "+".join([user for user in valid_profiles])
+
+                        # Only update if document isn't an empty dict
+                        if document:
+                            db.update_document(
+                                "ss_tim",
+                                document,
+                                {
+                                    "team_number": team_number,
+                                    "match_number": match,
+                                },
+                            )
             # Update Team Data for Stand Strategist
             with open(os.path.join(profiles_directory, profile, "team_data.json")) as f:
                 team_data = json.load(f)
@@ -239,11 +251,30 @@ def pull_device_data():
                     # calculate datapoints that are averages
                     for point, value in schema["averages"].items():
                         tim_field = value["tim_fields"][0].split(".")[1]
-                        tim_totals = [tim[tim_field] for tim in ss_tims]
-                        document[point] = sum(tim_totals) / len(tim_totals)
+                        req_field = value["tim_fields"][0].split(".")[1]
+                        tim_totals = [tim[tim_field] for tim in ss_tims if tim.get(req_field)]
+                        document[point] = (
+                            sum(tim_totals) / len(tim_totals) if len(tim_totals) > 0 else 0
+                        )
                     db.update_document(
-                        "ss_team", document, {"team_number": team_number, "username": profile}
+                        "unconsolidated_ss_team",
+                        document,
+                        {"team_number": team_number, "username": profile},
                     )
+            # Consolidate Team Data from both strategists
+            current_teams = set(
+                document["team_number"] for document in db.find("unconsolidated_ss_team")
+            )
+            for team in current_teams:
+                document = decompressor.Decompressor.consolidate_ss_team(team)
+                # Add username manually to not break Grosbeak (TODO: Get rid of this field)
+                document["username"] = "+".join([user for user in valid_profiles])
+
+                # Special calc needed for pickability (TODO: Update the pickability calculation to include formulas)
+                # This calc is avg_defense_rating_squared
+                document["avg_defense_rating_squared"] = document["avg_defense_rating"] ** 2
+
+                db.update_document("ss_team", document, {"team_number": team})
 
         log.info(f"{len(team_data)} items uploaded to ss_team")
         log.info(f"{len(tim_data)} items uploaded to ss_tim")

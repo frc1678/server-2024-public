@@ -410,16 +410,48 @@ class Decompressor(base_calculations.BaseCalculations):
 
     @staticmethod
     def decompress_ss_tim(data):
+        # If data is an empty dict, return it since the TIM was not scouted
+        if not data:
+            return data
         schema = utils.read_schema("schema/calc_ss_tim.yml")
         for point, val in schema["schema"].items():
             if point not in list(data.keys()):
                 if val["type"] == "bool":
                     data[point] = False
                 else:
-                    data[point] = -1 if val["type"] == "int" else ""
+                    data[point] = 0 if val["type"] == "int" else ""
             elif point == "broken_mechanism":
                 data[point] = True if data[point] != "" else False
         return data
+
+    @staticmethod
+    def consolidate_ss_team(team_number):
+        schema = utils.read_schema("schema/calc_ss_team.yml")
+        db = database.Database()
+        documents = db.find("unconsolidated_ss_team", {"team_number": team_number})
+        if len(documents) == 1:
+            return documents[0]
+        else:
+            final = {}
+            for field, val in schema["schema"].items():
+                if val["type"] == "bool":
+                    if documents[0][field] or documents[1][field]:
+                        # Default to True for booleans (if we ever get a different default value we will make schema changes)
+                        final[field] = True
+                    else:
+                        final[field] = False
+                elif val["type"] == "str":
+                    final[field] = ""
+                    if documents[0][field] != "" and documents[1][field] != "":
+                        final[field] = f"{documents[0][field]} + {documents[1][field]}"
+                    elif documents[0] != "":
+                        final[field] = documents[0][field]
+                    elif documents[1] != "":
+                        final[field] = documents[1][field]
+            # Averages will be the same for both (since they both pull from ss_tim)
+            for point in schema["averages"].keys():
+                final[point] = documents[0][point]
+            return final
 
     def run(self):
         # Get calc start time
