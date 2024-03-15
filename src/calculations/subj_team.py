@@ -166,7 +166,12 @@ class SubjTeamCalcs(base_calculations.BaseCalculations):
             )
             for team, driver_ability in normalized_abilities.items():
                 calculations[team] = calculations.get(team, {})
-                calculations[team][calc_name] = driver_ability
+                if calc_name == "defensive_driver_ability":
+                    calculations[team][calc_name] = driver_ability + 2
+                elif calc_name == "proxy_driver_ability":
+                    calculations[team][calc_name] = (driver_ability + 3) ** 2
+                else:
+                    calculations[team][calc_name] = driver_ability
         return calculations
 
     def run(self):
