@@ -210,19 +210,14 @@ class SimPrecisionCalc(BaseCalculations):
         # run server before TBA updates, the line above (that pulls TBA data) will crash
         # server. Hence, the code below checks if TBA has updated. If not, it waits for a
         # few minutes and continues running.
-        latest_match = max([s["match_number"] for s in unconsolidated_sims])
+        latest_match = max([s["match_number"] for s in unconsolidated_sims] + [0])
         latest_tba_match = max(
-            [t["match_number"] for t in tba_match_data if t["score_breakdown"] is not None]
+            [t["match_number"] for t in tba_match_data if t["score_breakdown"] is not None] + [0]
         )
         if latest_match > latest_tba_match:
             log.warning(f"NO TBA MATCH DATA FOR MATCH f{latest_match}, waiting for 2min")
             time.sleep(120)
-            cont = input("2 minutes have passed. Keep waiting? (y/N): ")
-            if cont.lower() == "y":
-                wait = int(input("How many minutes do you want to wait? (1 - 10): "))
-                if not 1 <= wait <= 10:
-                    wait = 5
-                time.sleep(wait * 60)
+            cont = input("2 minutes have passed. Press enter to continue. ")
             log.info("Continuing server loop")
             tba_match_data: List[dict] = tba_communicator.tba_request(
                 f"event/{utils.TBA_EVENT_KEY}/matches"

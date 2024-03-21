@@ -159,7 +159,7 @@ class PredictedAimCalc(BaseCalculations):
 
         # Dynamic predicted score
         N = sum([team["avg_expected_cycles"] for team in alliance_data])
-        T = 115 / N
+        T = 115 / N if N != 0 else 150
         predicted_scores["predicted_score_dynamic"] = 5 * N - (4 * N) / (T + 5)
 
         # Regression predictions
@@ -511,7 +511,7 @@ class PredictedAimCalc(BaseCalculations):
 
         return filtered_aims_list
 
-    def calc_win_chance(self, obj_team, team_list):
+    def calc_win_chance(self, obj_team, team_list, match_number):
         """Calculates predicted win probabilities for a RED alliance
 
         obj_teams: list of all existing obj_team dicts
@@ -560,7 +560,7 @@ class PredictedAimCalc(BaseCalculations):
             prob_red_wins = round(1 - Norm(dist["mean"], dist["var"] ** 0.5).cdf(0), 3)
         else:
             log.critical(
-                f"predicted_aim: alliance {team_list['R']} and {team_list['B']} have an invalid score variance of {dist['var']}"
+                f"predicted_aim: alliances {team_list['R']} and {team_list['B']} have an invalid score variance of {dist['var']}, cannot calculate win chances for match {match_number}"
             )
             return 1 if dist["mean"] > 0 else 0
 
@@ -681,6 +681,7 @@ class PredictedAimCalc(BaseCalculations):
                             aim["alliance_color"]: aim["team_list"],
                             other_aim["alliance_color"]: other_aim["team_list"],
                         },
+                        aim["match_number"],
                     )
                     other_update["win_chance"] = 1 - update["win_chance"]
                 else:
@@ -690,6 +691,7 @@ class PredictedAimCalc(BaseCalculations):
                             other_aim["alliance_color"]: other_aim["team_list"],
                             aim["alliance_color"]: aim["team_list"],
                         },
+                        other_aim["match_number"],
                     )
                     update["win_chance"] = 1 - other_update["win_chance"]
 

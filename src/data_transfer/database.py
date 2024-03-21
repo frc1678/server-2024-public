@@ -186,7 +186,7 @@ class Database:
         if collection in VALID_COLLECTIONS:
             return self.db[collection].bulk_write(actions)
         else:
-            log.info(f'database.py: Invalid collection name: "{collection}"')
+            log.warning(f'database.py: Invalid collection name: "{collection}"')
 
 
 def mongo_convert(sch):
