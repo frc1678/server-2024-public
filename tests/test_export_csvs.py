@@ -468,6 +468,75 @@ TEST_TBA_TEAM = [
     {"team_number": "0", "team_name": "linux lovers", "foul_cc": 2.4052, "mobility_successes": 1},
 ]
 
+TEST_SS_TIM = [
+    {
+        "team_number": "78",
+        "match_number": 1,
+        "username": "123",
+        "played_defense": True,
+        "coopertition": False,
+        "defense_rating": 2,
+        "notes": "bad",
+        "broken_mechanism": True,
+    },
+    {
+        "team_number": "2",
+        "match_number": 2,
+        "username": "456",
+        "played_defense": True,
+        "coopertition": True,
+        "defense_rating": 2,
+        "notes": "good",
+        "broken_mechanism": False,
+    },
+    {
+        "team_number": "0",
+        "match_number": 2,
+        "username": "789",
+        "played_defense": False,
+        "coopertition": False,
+        "defense_rating": 2,
+        "notes": "medium",
+        "broken_mechanism": False,
+    },
+]
+
+TEST_SS_TEAM = [
+    {
+        "team_number": "78",
+        "username": 123,
+        "auto_strategies": "nothing",
+        "strengths": "nothing",
+        "weaknesses": "everything",
+        "can_go_under_stage": True,
+        "can_intake_ground": False,
+        "shoot_specific_area_only": "speaker",
+        "avg_defense_rating": 3,
+    },
+    {
+        "team_number": "2",
+        "username": 456,
+        "auto_strategies": "score in amp",
+        "strengths": "trap",
+        "weaknesses": "slow",
+        "can_go_under_stage": True,
+        "can_intake_ground": True,
+        "shoot_specific_area_only": "all",
+        "avg_defense_rating": 5,
+    },
+    {
+        "team_number": "0",
+        "username": 789,
+        "auto_strategies": "ferry notes",
+        "strengths": "fast",
+        "weaknesses": "bad at shooting",
+        "can_go_under_stage": False,
+        "can_intake_ground": True,
+        "shoot_specific_area_only": "amp",
+        "avg_defense_rating": 4,
+    },
+]
+
 TEST_RAW_OBJ_PIT = [
     {
         "team_number": "254",
@@ -662,6 +731,7 @@ class TestExportTIM:
             self.test_server = Server()
         self.test_server.db.insert_documents("obj_tim", TEST_TIM_DATA)
         self.test_server.db.insert_documents("tba_tim", TEST_TBA_TIM)
+        self.test_server.db.insert_documents("ss_tim", TEST_SS_TIM)
         self.export_tim = export_csvs.ExportTIM()
 
     def test_build_data(self):
@@ -679,10 +749,36 @@ class TestExportTIM:
                     "auto_cube_high",
                     "auto_cube_low",
                     "auto_cube_mid",
+                    "broken_mechanism",
                     "confidence_rating",
+                    "coopertition",
+                    "defense_rating",
                     "mobility",
+                    "notes",
+                    "played_defense",
+                    "username",
                 ],
                 {
+                    ("0", 2): {
+                        "broken_mechanism": False,
+                        "coopertition": False,
+                        "defense_rating": 2,
+                        "match_number": 2,
+                        "notes": "medium",
+                        "played_defense": False,
+                        "team_number": "0",
+                        "username": "789",
+                    },
+                    ("2", 2): {
+                        "broken_mechanism": False,
+                        "coopertition": True,
+                        "defense_rating": 2,
+                        "match_number": 2,
+                        "notes": "good",
+                        "played_defense": True,
+                        "team_number": "2",
+                        "username": "456",
+                    },
                     ("2", 3): {
                         "confidence_rating": 1,
                         "team_number": "2",
@@ -711,6 +807,7 @@ class TestExportTeam:
         self.test_server.db.insert_documents("subj_team", TEST_SUBJ_TEAM)
         self.test_server.db.insert_documents("tba_team", TEST_TBA_TEAM)
         self.test_server.db.insert_documents("pickability", TEST_PICKABILITY)
+        self.test_server.db.insert_documents("pickability", TEST_SS_TEAM)
         self.export_team = export_csvs.ExportTeam()
 
     def test_build_data(self):
@@ -723,6 +820,10 @@ class TestExportTeam:
                 "auto_avg_cone_mid",
                 "auto_avg_cone_total",
                 "auto_pieces_start_position",
+                "auto_strategies",
+                "avg_defense_rating",
+                "can_go_under_stage",
+                "can_intake_ground",
                 "defensive_second_pickability",
                 "driver_ability",
                 "driver_field_awareness",
@@ -738,9 +839,13 @@ class TestExportTeam:
                 "mobility_successes",
                 "offensive_second_pickability",
                 "overall_second_pickability",
+                "shoot_specific_area_only",
+                "strengths",
                 "team_name",
                 "unadjusted_field_awareness",
                 "unadjusted_quickness",
+                "username",
+                "weaknesses",
                 "weight",
                 "width",
             ],
@@ -761,9 +866,17 @@ class TestExportTeam:
                     "unadjusted_field_awareness": 6.8875,
                     "unadjusted_quickness": 5.1464,
                     "auto_pieces_start_position": [0, 0, 1, 2],
+                    "auto_strategies": "ferry notes",
+                    "avg_defense_rating": 4,
+                    "can_go_under_stage": False,
+                    "can_intake_ground": True,
                     "team_name": "linux lovers",
                     "foul_cc": 2.4052,
                     "mobility_successes": 1,
+                    "shoot_specific_area_only": "amp",
+                    "strengths": "fast",
+                    "username": 789,
+                    "weaknesses": "bad at shooting",
                 },
                 "1": {
                     "team_number": "1",
@@ -802,6 +915,14 @@ class TestExportTeam:
                     "team_name": "fab nerds",
                     "foul_cc": 3.4462,
                     "mobility_successes": 8,
+                    "auto_strategies": "score in amp",
+                    "avg_defense_rating": 5,
+                    "can_go_under_stage": True,
+                    "can_intake_ground": True,
+                    "shoot_specific_area_only": "all",
+                    "strengths": "trap",
+                    "username": 456,
+                    "weaknesses": "slow",
                 },
             },
         )

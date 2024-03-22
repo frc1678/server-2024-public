@@ -200,7 +200,7 @@ class ExportTBA(BaseExport):
 
 
 class ExportTIM(BaseExport):
-    db_data_paths = ["obj_tim", "tba_tim"]
+    db_data_paths = ["obj_tim", "tba_tim", "ss_tim"]
 
     def __init__(self, export_cloud=False):
         """Build the TIM data from the database and format it as a directory
@@ -265,13 +265,7 @@ class ExportTIM(BaseExport):
 
 
 class ExportTeam(BaseExport):
-    db_data_paths = [
-        "raw_obj_pit",
-        "obj_team",
-        "subj_team",
-        "tba_team",
-        "pickability",
-    ]
+    db_data_paths = ["raw_obj_pit", "obj_team", "subj_team", "tba_team", "pickability", "ss_team"]
 
     def __init__(self, export_cloud=False):
         """Get the team data, format it and write it as a csv
