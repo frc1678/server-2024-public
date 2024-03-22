@@ -226,19 +226,21 @@ class OBJTeamCalc(base_calculations.BaseCalculations):
         return team_info
 
     def calculate_ss_counts(self, tims, lfm_tims):
-        """Calculates counts of datapoints collected by Super Scouts."""
+        """Calculates counts of datapoints collected by Stand Strategists."""
         team_info = {}
         for calculation, schema in self.SCHEMA["ss_counts"].items():
             total = 0
             tim_field = schema["tim_fields"][0].split(".")[1]
             if "lfm" in calculation:
                 for tim in lfm_tims:
-                    if tim[tim_field]:
-                        total += 1
+                    if tim_field in tim.keys():
+                        if tim[tim_field] == True:
+                            total += 1
             else:
                 for tim in tims:
-                    if tim[tim_field]:
-                        total += 1
+                    if tim_field in tim.keys():
+                        if tim[tim_field] == True:
+                            total += 1
             team_info[calculation] = total
         return team_info
 
@@ -397,9 +399,11 @@ class OBJTeamCalc(base_calculations.BaseCalculations):
             # Load team data from database
             obj_tims = self.server.db.find("obj_tim", {"team_number": team})
             subj_tims = self.server.db.find("subj_tim", {"team_number": team})
+            ss_tims = self.server.db.find("ss_tim", {"team_number": team})
             # Last 4 tims to calculate last 4 matches
             obj_lfm_tims = sorted(obj_tims, key=lambda tim: tim["match_number"])[-4:]
             subj_lfm_tims = sorted(subj_tims, key=lambda tim: tim["match_number"])[-4:]
+            ss_lfm_tims = sorted(ss_tims, key=lambda tim: tim["match_number"])[-4:]
             tim_action_counts = self.get_action_counts(obj_tims)
             lfm_tim_action_counts = self.get_action_counts(obj_lfm_tims)
             tim_action_categories = self.get_action_categories(obj_tims)
@@ -411,6 +415,7 @@ class OBJTeamCalc(base_calculations.BaseCalculations):
             team_data["team_number"] = team
             team_data.update(self.calculate_counts(obj_tims, obj_lfm_tims))
             team_data.update(self.calculate_super_counts(subj_tims, subj_lfm_tims))
+            team_data.update(self.calculate_ss_counts(ss_tims, ss_lfm_tims))
             team_data.update(
                 self.calculate_standard_deviations(tim_action_counts, lfm_tim_action_counts)
             )

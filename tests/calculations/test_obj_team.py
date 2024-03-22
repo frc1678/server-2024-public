@@ -1023,6 +1023,7 @@ class TestOBJTeamCalc:
                 "played_defense": True,
                 "coopertition": True,
             },
+            {"match_number": 5, "team_number": "5419"},
         ]
         expected_output = {
             "matches_played_defense": 4,
