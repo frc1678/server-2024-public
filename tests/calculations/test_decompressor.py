@@ -190,7 +190,7 @@ class TestDecompressor:
                 "parked": False,
                 "has_preload": True,
                 "trap": "F",
-            }
+            },
         ]
         # Expected decompressed subjective qr
         # Only 2 teams should be returned, 254 should be cut due to an invalid quickness score
@@ -198,30 +198,28 @@ class TestDecompressor:
             {
                 "schema_version": decompressor.Decompressor.SCHEMA["schema_file"]["version"],
                 "match_number": 34,
-                "timestamp": 1230,
                 "match_collection_version_number": "v1.3",
                 "scout_name": "Name",
                 "alliance_color_is_red": True,
                 "team_number": "1678",
                 "quickness_score": 1,
                 "field_awareness_score": 2,
-                "was_tippy": True,
                 "climb_after": True,
-                "did_ferry": True,
+                "time_left_to_climb": 13,
+                "timestamp": 1230,
             },
             {
                 "schema_version": decompressor.Decompressor.SCHEMA["schema_file"]["version"],
                 "match_number": 34,
-                "timestamp": 1230,
                 "match_collection_version_number": "v1.3",
                 "scout_name": "Name",
                 "alliance_color_is_red": True,
                 "team_number": "1323",
                 "quickness_score": 3,
                 "field_awareness_score": 1,
-                "was_tippy": True,
-                "climb_after": False,
-                "did_ferry": True,
+                "climb_after": True,
+                "time_left_to_climb": 13,
+                "timestamp": 1230,
             },
         ]
         # Test objective qr decompression
@@ -232,7 +230,7 @@ class TestDecompressor:
         )
         # Test subjective qr decompression
         assert expected_subjective == self.test_decompressor.decompress_single_qr(
-            f"A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B34$C1230$Dv1.3$EName$FTRUE%A1678$B1$C2$DTRUE$ETRUE$FTRUE#A254$B4$C1$DFALSE$EFALSE$FTRUE#A1323$B3$C1$DTRUE$EFALSE$FTRUE",
+            f"A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B34$C1230$Dv1.3$EName$FTRUE%A1678$B1$C2$D13$ETRUE#A254$B4$C1$D13$EFALSE#A1323$B3$C1$D13$ETRUE",
             decompressor.QRType.SUBJECTIVE,
             {},
         )
@@ -306,9 +304,8 @@ class TestDecompressor:
                     "team_number": "1678",
                     "quickness_score": 1,
                     "field_awareness_score": 2,
-                    "was_tippy": True,
                     "climb_after": False,
-                    "did_ferry": False,
+                    "time_left_to_climb": 13,
                     "ulid": "01GWSXSNSF93BQZ2GRG0C4E7AC",
                 },
                 {
@@ -321,9 +318,8 @@ class TestDecompressor:
                     "team_number": "254",
                     "quickness_score": 2,
                     "field_awareness_score": 1,
-                    "was_tippy": False,
                     "climb_after": True,
-                    "did_ferry": False,
+                    "time_left_to_climb": 13,
                     "ulid": "01GWSXSNSF93BQZ2GRG0C4E7AC",
                 },
                 {
@@ -336,9 +332,8 @@ class TestDecompressor:
                     "team_number": "1323",
                     "quickness_score": 3,
                     "field_awareness_score": 1,
-                    "was_tippy": True,
                     "climb_after": False,
-                    "did_ferry": False,
+                    "time_left_to_climb": 13,
                     "ulid": "01GWSXSNSF93BQZ2GRG0C4E7AC",
                 },
             ],
@@ -351,7 +346,7 @@ class TestDecompressor:
                     "override": {},
                 },
                 {
-                    "data": f"*A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B34$C1230$Dv1.3$EName$FTRUE%A1678$B1$C2$DTRUE$EFALSE$FFALSE#A254$B2$C1$DFALSE$ETRUE$FFALSE#A1323$B3$C1$DTRUE$EFALSE$FFALSE",
+                    "data": f"*A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B34$C1230$Dv1.3$EName$FTRUE%A1678$B1$C2$D13$EFALSE#A254$B2$C1$D13$ETRUE#A1323$B3$C1$D13$EFALSE",
                     "ulid": "01GWSXSNSF93BQZ2GRG0C4E7AC",
                     "override": {},
                 },
@@ -478,6 +473,7 @@ class TestDecompressor:
             "auto_strategies": "",
             "can_go_under_stage": False,
             "can_intake_ground": True,
+            "notes": "",
             "shoot_specific_area_only": "subwoofer",
             "strengths": "",
             "weaknesses": "",
@@ -486,6 +482,7 @@ class TestDecompressor:
             "auto_strategies": "goes to center first",
             "can_go_under_stage": True,
             "can_intake_ground": False,
+            "notes": "",
             "shoot_specific_area_only": "",
             "strengths": "",
             "weaknesses": "",
@@ -494,6 +491,7 @@ class TestDecompressor:
             "auto_strategies": "",
             "can_go_under_stage": True,
             "can_intake_ground": False,
+            "notes": "",
             "shoot_specific_area_only": "",
             "strengths": "very fast",
             "weaknesses": "tippy",
@@ -502,6 +500,7 @@ class TestDecompressor:
             "auto_strategies": "",
             "can_go_under_stage": True,
             "can_intake_ground": False,
+            "notes": "",
             "shoot_specific_area_only": "",
             "strengths": "fast cycles",
             "weaknesses": "",
@@ -526,14 +525,14 @@ class TestDecompressor:
         excepted_output_1 = {
             "broken_mechanism": False,
             "coopertition": True,
-            "defense_rating": -1,
+            "defense_rating": 0,
             "notes": "",
             "played_defense": True,
         }
         excepted_output_2 = {
             "broken_mechanism": True,
             "coopertition": True,
-            "defense_rating": -1,
+            "defense_rating": 0,
             "notes": "",
             "played_defense": False,
         }
@@ -548,14 +547,14 @@ class TestDecompressor:
         excepted_output_4 = {
             "broken_mechanism": False,
             "coopertition": True,
-            "defense_rating": -1,
+            "defense_rating": 0,
             "notes": "can shoot from anywhere",
             "played_defense": False,
         }
         excepted_output_5 = {
             "broken_mechanism": True,
             "coopertition": False,
-            "defense_rating": -1,
+            "defense_rating": 0,
             "notes": "",
             "played_defense": True,
         }
@@ -576,7 +575,7 @@ class TestDecompressor:
         excepted_output_8 = {
             "broken_mechanism": False,
             "coopertition": False,
-            "defense_rating": -1,
+            "defense_rating": 0,
             "notes": "can shoot from anywhere",
             "played_defense": False,
         }
