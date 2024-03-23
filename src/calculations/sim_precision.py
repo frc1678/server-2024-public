@@ -123,20 +123,8 @@ class SimPrecisionCalc(BaseCalculations):
         alliance_color = ["blue", "red"][int(alliance_color_is_red)]
 
         for match in tba_match_data:
-            if match["match_number"] == match_number:
-                if match["score_breakdown"]:
-                    tba_match_data = match["score_breakdown"][alliance_color]
-                else:
-                    log.warning(
-                        f"No TBA score_breakdown for match {match['match_number']}, waiting 4min"
-                    )
-                    time.sleep(120)
-                    cont = input("2 minutes have passed. Do you want to continue the loop? (y/N): ")
-                    if cont.lower() != "y":
-                        time.sleep(120)
-                        log.info("Waiting for 2 more minutes")
-                    tba_match_data = match["score_breakdown"][alliance_color]
-
+            if match["match_number"] == match_number and match["comp_level"] == "qm":
+                tba_match_data = match["score_breakdown"][alliance_color]
         total = 0
         for datapoint in tba_points:
             total += tba_match_data[datapoint]
@@ -212,20 +200,18 @@ class SimPrecisionCalc(BaseCalculations):
         # few minutes and continues running.
         latest_match = max([s["match_number"] for s in unconsolidated_sims] + [0])
         latest_tba_match = max(
-            [t["match_number"] for t in tba_match_data if t["score_breakdown"] is not None] + [0]
+            [
+                t["match_number"]
+                for t in tba_match_data
+                if t["score_breakdown"] is not None and t["comp_level"] == "qm"
+            ]
+            + [0]
         )
-        if latest_match > latest_tba_match:
-            log.warning(f"NO TBA MATCH DATA FOR MATCH f{latest_match}, waiting for 2min")
-            time.sleep(120)
-            cont = input("2 minutes have passed. Press enter to continue. ")
-            log.info("Continuing server loop")
-            tba_match_data: List[dict] = tba_communicator.tba_request(
-                f"event/{utils.TBA_EVENT_KEY}/matches"
-            )
-
         updates = []
         for sim in unconsolidated_sims:
             sim_data = self.server.db.find("unconsolidated_totals", sim)[0]
+            if sim_data["match_number"] > latest_tba_match:
+                continue
             update = {
                 "scout_name": sim_data["scout_name"],
                 "match_number": sim_data["match_number"],
