@@ -217,6 +217,8 @@ def pull_device_data():
     for device in ss_device_file_paths:
         profiles_directory = os.path.join(device_file_path, device)
         profiles = os.listdir(profiles_directory)
+        num_team_docs = 0
+        num_tim_docs = 0
         for profile in profiles:
             # Make sure not to include any old data from other profiles
             if profile not in valid_profiles:
@@ -224,6 +226,7 @@ def pull_device_data():
             # Update TIM Data for Stand Strategist
             with open(os.path.join(profiles_directory, profile, "tim_data.json")) as f:
                 tim_data = json.load(f)
+                num_tim_docs += len(tim_data)
                 for match, value in tim_data.items():
                     for team_number, document in value.items():
                         document = decompressor.Decompressor.decompress_ss_tim(document)
@@ -244,6 +247,7 @@ def pull_device_data():
             # Update Team Data for Stand Strategist
             with open(os.path.join(profiles_directory, profile, "team_data.json")) as f:
                 team_data = json.load(f)
+                num_team_docs += len(team_data)
                 for team_number, document in team_data.items():
                     ss_tims = db.find("ss_tim", {"team_number": team_number})
                     document = decompressor.Decompressor.decompress_ss_team(document)
@@ -275,9 +279,8 @@ def pull_device_data():
                 document["avg_defense_rating_squared"] = document["avg_defense_rating"] ** 2
 
                 db.update_document("ss_team", document, {"team_number": team})
-
-        log.info(f"{len(team_data)} items uploaded to ss_team")
-        log.info(f"{len(tim_data)} items uploaded to ss_tim")
+        log.info(f"{num_team_docs} items uploaded to ss_team")
+        log.info(f"{num_tim_docs} items uploaded to ss_tim")
 
     if not devices:
         return

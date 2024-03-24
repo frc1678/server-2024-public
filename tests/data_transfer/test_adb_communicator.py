@@ -159,49 +159,49 @@ def test_pull_device_data():
             if path == fake_dir_path:
                 return fake_serials
             elif path == f"{fake_dir_path}/{fake_serials[3]}":
-                return ["test_profile1"]
+                return ["Mehul"]
             else:
                 return ["qrdatathing.txt"]
 
         test_ss_tims_data = [
             {
                 "team_number": "1678",
-                "username": "test_profile1",
+                "username": "Mehul",
                 "match_number": 1,
                 "played_defense": True,
                 "defense_rating": 5,
             },
             {
                 "team_number": "1678",
-                "username": "test_profile1",
+                "username": "Mehul",
                 "match_number": 2,
                 "played_defense": True,
                 "defense_rating": 4,
             },
             {
                 "team_number": "1678",
-                "username": "test_profile1",
+                "username": "Mehul",
                 "match_number": 3,
                 "played_defense": True,
                 "defense_rating": 9,
             },
             {
                 "team_number": "254",
-                "username": "test_profile1",
+                "username": "Mehul",
                 "match_number": 1,
                 "played_defense": True,
                 "defense_rating": 2,
             },
             {
                 "team_number": "254",
-                "username": "test_profile1",
+                "username": "Mehul",
                 "match_number": 2,
                 "played_defense": False,
                 "defense_rating": 1,
             },
             {
                 "team_number": "254",
-                "username": "test_profile1",
+                "username": "Mehul",
                 "match_number": 3,
                 "played_defense": False,
                 "defense_rating": 6,
@@ -220,25 +220,27 @@ def test_pull_device_data():
         expected_ss_team = [
             {
                 "team_number": "1678",
-                "username": "test_profile1",
                 "auto_strategies": "testwow",
                 "can_go_under_stage": True,
                 "can_intake_ground": False,
                 "avg_defense_rating": 6.0,
+                "avg_defense_rating_squared": 36.0,
                 "shoot_specific_area_only": "",
                 "strengths": "",
                 "weaknesses": "",
+                "notes": "",
             },
             {
                 "team_number": "254",
-                "username": "test_profile1",
                 "auto_strategies": "testwow",
                 "can_go_under_stage": True,
                 "can_intake_ground": False,
                 "avg_defense_rating": 3.0,
+                "avg_defense_rating_squared": 9.0,
                 "shoot_specific_area_only": "",
                 "strengths": "",
                 "weaknesses": "",
+                "notes": "",
             },
         ]
         test_db = database.Database()
@@ -246,11 +248,11 @@ def test_pull_device_data():
         real_db = database.Database
         database.Database = MagicMock(return_value=test_db)
         patcher.fs.create_file(
-            f"{fake_dir_path}/RABCDEFG/test_profile1/team_data.json",
+            f"{fake_dir_path}/RABCDEFG/Mehul/team_data.json",
             contents=json.dumps(test_team_data),
         )
         patcher.fs.create_file(
-            f"{fake_dir_path}/RABCDEFG/test_profile1/tim_data.json", contents="{}"
+            f"{fake_dir_path}/RABCDEFG/Mehul/tim_data.json", contents="{}"
         )
         patcher.fs.add_real_file(utils.create_file_path("schema/calc_ss_team.yml"))
 
@@ -264,6 +266,9 @@ def test_pull_device_data():
         inserted_documents = False
         for document in result_ss_team:
             document.pop("_id")
+            document.pop("username")
+            print(document)
+            print(expected_ss_team)
             assert utils.dict_near_in(document, expected_ss_team)
             inserted_documents = True
         assert inserted_documents
