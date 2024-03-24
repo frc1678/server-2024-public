@@ -231,11 +231,12 @@ def pull_device_data():
                     for team_number, document in value.items():
                         document = decompressor.Decompressor.decompress_ss_tim(document)
 
-                        # Add username manually to not break Grosbeak (TODO: Get rid of this field)
-                        document["username"] = "+".join([user for user in valid_profiles])
-
                         # Only update if document isn't an empty dict
                         if document:
+
+                            # Add username manually to not break Grosbeak
+                            document["username"] = profile
+
                             db.update_document(
                                 "ss_tim",
                                 document,
