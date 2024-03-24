@@ -151,21 +151,27 @@ class TestSubjTeamCalcs:
         expected_robonauts = {
             "team_number": "118",
             "driver_field_awareness": 0.9259,
-            "driver_quickness": 0.55555,
+            "driver_quickness": 0.5556,
             "driver_ability": -1.3439,
+            "defensive_driver_ability": 0.6335,
+            "proxy_driver_ability": 2.6682,
         }
         assert dict_near(expected_robonauts, robonauts, 0.01)
         expected_citrus = {
             "team_number": "1678",
-            "driver_field_awareness": 1.296,
-            "driver_quickness": 0.666667,
-            "driver_ability": 1.053327,
+            "driver_field_awareness": 1.2963,
+            "driver_quickness": 0.6667,
+            "driver_ability": 1.0533,
+            "defensive_driver_ability": 2.3679,
+            "proxy_driver_ability": 11.3428,
         }
         assert dict_near(expected_citrus, citrus, 0.01)
         expected_chezy = {
             "team_number": "254",
-            "driver_field_awareness": 1.481,
-            "driver_quickness": 0.555555,
-            "driver_ability": 0.29057,
+            "driver_field_awareness": 1.4815,
+            "driver_quickness": 0.5556,
+            "driver_ability": 0.2906,
+            "defensive_driver_ability": 2.9986,
+            "proxy_driver_ability": 15.9889,
         }
         assert dict_near(expected_chezy, chezy, 0.01)
