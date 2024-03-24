@@ -177,6 +177,7 @@ class TestDecompressor:
                 "match_collection_version_number": "v1.3",
                 "scout_name": "Name",
                 "alliance_color_is_red": False,
+                "has_preload": True,
                 "team_number": "1678",
                 "scout_id": 14,
                 "start_position": "3",
@@ -188,8 +189,6 @@ class TestDecompressor:
                 "stage_level_right": "N",
                 "stage_level_center": "N",
                 "parked": False,
-                "has_preload": True,
-                "trap": "F",
             },
         ]
         # Expected decompressed subjective qr
@@ -224,7 +223,7 @@ class TestDecompressor:
         ]
         # Test objective qr decompression
         assert expected_objective == self.test_decompressor.decompress_single_qr(
-            f"A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B34$C1230$Dv1.3$EName$FFALSE%Z1678$Y14$X3$W060AA061AB$VTRUE$UO$TN$SN$RFALSE$QF",
+            f"A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B34$C1230$Dv1.3$EName$FFALSE%Z1678$Y14$X3$W060AA061AB$VTRUE$UO$TN$SN$RFALSE",
             decompressor.QRType.OBJECTIVE,
             {},
         )
@@ -289,7 +288,6 @@ class TestDecompressor:
                     "stage_level_center": "N",
                     "has_preload": False,
                     "parked": False,
-                    "trap": "F",
                     "ulid": "01GWSXQYKYQQ963QMT77A3NPBZ",
                 }
             ],
@@ -341,7 +339,7 @@ class TestDecompressor:
         assert expected_output == self.test_decompressor.decompress_qrs(
             [
                 {
-                    "data": f"+A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B34$C1230$Dv1.3$EName$FTRUE%Z1678$Y14$X4$W060AC061AD$VFALSE$UN$TO$SN$RFALSE$QF",
+                    "data": f"+A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B34$C1230$Dv1.3$EName$FTRUE%Z1678$Y14$X4$W060AC061AD$VFALSE$UN$TO$SN$RFALSE",
                     "ulid": "01GWSXQYKYQQ963QMT77A3NPBZ",
                     "override": {},
                 },
@@ -614,7 +612,6 @@ class TestDecompressor:
             "stage_level_center": "N",
             "parked": False,
             "has_preload": True,
-            "trap": "F",
             "ulid": "01GWSYJHR5EC6PAKCS79YZAF3Z",
         }
         expected_sbj = [
@@ -669,14 +666,14 @@ class TestDecompressor:
             "raw_qr",
             [
                 {
-                    "data": f"+A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B51$C9321$Dv1.3$EXvfaPcSrgJw25VKrcsphdbyEVjmHrH1V$FFALSE%Z3603$Y13$X2$W000AA001AB005AU006AB007AC008AD$VTRUE$UO$TN$SN$RFALSE$QF",
+                    "data": f"+A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B51$C9321$Dv1.3$EXvfaPcSrgJw25VKrcsphdbyEVjmHrH1V$FFALSE%Z3603$Y13$X2$W000AA001AB005AU006AB007AC008AD$VTRUE$UO$TN$SN$RFALSE",
                     "blocklisted": False,
                     "override": {"start_position": "1", "doesnt_exist": 5},
                     "ulid": "01GWSYJHR5EC6PAKCS79YZAF3Z",
                     "readable_time": "2023-03-30 19:05:38.821000+00:00",
                 },
                 {
-                    "data": f"+A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B51$C9321$Dv1.3$EXvfaPcSrgJw25VKrcsphdbyEVjmHrH1V$FFALSE%Z3603$Y13$X2$W000AA001AB002AC005AO006AB007AD008AE$VTRUE$UN$TO$SN$RFALSE$QF",
+                    "data": f"+A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B51$C9321$Dv1.3$EXvfaPcSrgJw25VKrcsphdbyEVjmHrH1V$FFALSE%Z3603$Y13$X2$W000AA001AB002AC005AO006AB007AD008AE$VTRUE$UN$TO$SN$RFALSE",
                     "blocklisted": True,
                     "override": {"start_position": "1", "doesnt_exist": 5},
                     "ulid": "01GWSYKDZDM45M1K4ZBHN6G97H",
