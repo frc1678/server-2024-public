@@ -253,16 +253,235 @@ class TestSimPrecisionCalc:
 
     def test_calc_sim_precision(self):
         self.test_server.db.insert_documents("unconsolidated_totals", self.scout_tim_test_data)
-        with patch(
-            "calculations.sim_precision.SimPrecisionCalc.get_aim_scout_avg_errors",
-            return_value={},
-        ):
-            assert (
-                self.test_calc.calc_sim_precision(self.scout_tim_test_data[1], self.tba_test_data)
-                == {}
-            )
+        # with patch(
+        #     "calculations.sim_precision.SimPrecisionCalc.get_aim_scout_avg_errors",
+        #     return_value={},
+        # ):
+        #     assert (
+        #         self.test_calc.calc_sim_precision(self.scout_tim_test_data[1], {}, {}, {})
+        #         == {}
+        #     )
+        test_aim_errors = {
+            1: {
+                "sim_precision": {
+                    True: {
+                        "KATE UNGER": 26.5,
+                        "NITHMI JAYASUNDARA": 26.5,
+                        "RAY FABIONAR": 26.5,
+                        "ALISON LIN": 14.0,
+                        "NATHAN MILLS": 39.0,
+                        "KATHY LI": 26.5,
+                    },
+                    False: {},
+                },
+                "auto_speaker_precision": {
+                    True: {
+                        "KATE UNGER": 5.0,
+                        "NITHMI JAYASUNDARA": 5.0,
+                        "RAY FABIONAR": 5.0,
+                        "ALISON LIN": 0.0,
+                        "NATHAN MILLS": 10.0,
+                        "KATHY LI": 5.0,
+                    },
+                    False: {},
+                },
+                "auto_amp_precision": {
+                    True: {
+                        "KATE UNGER": 12.0,
+                        "NITHMI JAYASUNDARA": 12.0,
+                        "RAY FABIONAR": 12.0,
+                        "ALISON LIN": 12.0,
+                        "NATHAN MILLS": 12.0,
+                        "KATHY LI": 12.0,
+                    },
+                    False: {},
+                },
+                "tele_amplified_precision": {
+                    True: {
+                        "KATE UNGER": 7.5,
+                        "NITHMI JAYASUNDARA": 7.5,
+                        "RAY FABIONAR": 7.5,
+                        "ALISON LIN": 0.0,
+                        "NATHAN MILLS": 15.0,
+                        "KATHY LI": 7.5,
+                    },
+                    False: {},
+                },
+                "tele_speaker_precision": {
+                    True: {
+                        "KATE UNGER": 0.0,
+                        "NITHMI JAYASUNDARA": 0.0,
+                        "RAY FABIONAR": 0.0,
+                        "ALISON LIN": 0.0,
+                        "NATHAN MILLS": 0.0,
+                        "KATHY LI": 0.0,
+                    },
+                    False: {},
+                },
+                "tele_amp_precision": {
+                    True: {
+                        "KATE UNGER": 2.0,
+                        "NITHMI JAYASUNDARA": 2.0,
+                        "RAY FABIONAR": 2.0,
+                        "ALISON LIN": 2.0,
+                        "NATHAN MILLS": 2.0,
+                        "KATHY LI": 2.0,
+                    },
+                    False: {},
+                },
+            },
+            2: {
+                "sim_precision": {
+                    True: {},
+                    False: {"KATE UNGER": -49.0, "NATHAN MILLS": -49.0, "KATHY LI": -49.0},
+                },
+                "auto_speaker_precision": {
+                    True: {},
+                    False: {"KATE UNGER": -20.0, "NATHAN MILLS": -20.0, "KATHY LI": -20.0},
+                },
+                "auto_amp_precision": {
+                    True: {},
+                    False: {"KATE UNGER": -4.0, "NATHAN MILLS": -4.0, "KATHY LI": -4.0},
+                },
+                "tele_amplified_precision": {
+                    True: {},
+                    False: {"KATE UNGER": -15.0, "NATHAN MILLS": -15.0, "KATHY LI": -15.0},
+                },
+                "tele_speaker_precision": {
+                    True: {},
+                    False: {"KATE UNGER": -6.0, "NATHAN MILLS": -6.0, "KATHY LI": -6.0},
+                },
+                "tele_amp_precision": {
+                    True: {},
+                    False: {"KATE UNGER": -4.0, "NATHAN MILLS": -4.0, "KATHY LI": -4.0},
+                },
+            },
+        }
+        test_tba_aim_scores = {
+            1: {
+                "sim_precision": {True: 87, False: 53},
+                "auto_speaker_precision": {True: 10, False: 25},
+                "auto_amp_precision": {True: 24, False: 4},
+                "tele_amplified_precision": {True: 40, False: 15},
+                "tele_speaker_precision": {True: 6, False: 2},
+                "tele_amp_precision": {True: 7, False: 7},
+            },
+            2: {
+                "sim_precision": {True: 96, False: 44},
+                "auto_speaker_precision": {True: 45, False: 20},
+                "auto_amp_precision": {True: 4, False: 0},
+                "tele_amplified_precision": {True: 35, False: 20},
+                "tele_speaker_precision": {True: 6, False: 2},
+                "tele_amp_precision": {True: 6, False: 2},
+            },
+        }
+        test_aim_reported_scores = {
+            1: {
+                "sim_precision": {
+                    True: {
+                        "4414": {"KATHY LI": 19},
+                        "1678": {"ALISON LIN": 31, "NATHAN MILLS": 6},
+                        "589": {"KATE UNGER": 23, "NITHMI JAYASUNDARA": 23, "RAY FABIONAR": 23},
+                    },
+                    False: {},
+                },
+                "auto_speaker_precision": {
+                    True: {
+                        "4414": {"KATHY LI": 0},
+                        "1678": {"ALISON LIN": 10, "NATHAN MILLS": 0},
+                        "589": {"KATE UNGER": 0, "NITHMI JAYASUNDARA": 0, "RAY FABIONAR": 0},
+                    },
+                    False: {},
+                },
+                "auto_amp_precision": {
+                    True: {
+                        "4414": {"KATHY LI": 4},
+                        "1678": {"ALISON LIN": 4, "NATHAN MILLS": 4},
+                        "589": {"KATE UNGER": 4, "NITHMI JAYASUNDARA": 4, "RAY FABIONAR": 4},
+                    },
+                    False: {},
+                },
+                "tele_amplified_precision": {
+                    True: {
+                        "4414": {"KATHY LI": 10},
+                        "1678": {"ALISON LIN": 15, "NATHAN MILLS": 0},
+                        "589": {"KATE UNGER": 15, "NITHMI JAYASUNDARA": 15, "RAY FABIONAR": 15},
+                    },
+                    False: {},
+                },
+                "tele_speaker_precision": {
+                    True: {
+                        "4414": {"KATHY LI": 2},
+                        "1678": {"ALISON LIN": 2, "NATHAN MILLS": 2},
+                        "589": {"KATE UNGER": 2, "NITHMI JAYASUNDARA": 2, "RAY FABIONAR": 2},
+                    },
+                    False: {},
+                },
+                "tele_amp_precision": {
+                    True: {
+                        "4414": {"KATHY LI": 3},
+                        "1678": {"ALISON LIN": 0, "NATHAN MILLS": 0},
+                        "589": {"KATE UNGER": 2, "NITHMI JAYASUNDARA": 2, "RAY FABIONAR": 2},
+                    },
+                    False: {},
+                },
+            },
+            2: {
+                "sim_precision": {
+                    True: {},
+                    False: {
+                        "4414": {"KATHY LI": 34},
+                        "1678": {"NATHAN MILLS": 25},
+                        "589": {"KATE UNGER": 34},
+                    },
+                },
+                "auto_speaker_precision": {
+                    True: {},
+                    False: {
+                        "4414": {"KATHY LI": 15},
+                        "1678": {"NATHAN MILLS": 10},
+                        "589": {"KATE UNGER": 15},
+                    },
+                },
+                "auto_amp_precision": {
+                    True: {},
+                    False: {
+                        "4414": {"KATHY LI": 0},
+                        "1678": {"NATHAN MILLS": 4},
+                        "589": {"KATE UNGER": 0},
+                    },
+                },
+                "tele_amplified_precision": {
+                    True: {},
+                    False: {
+                        "4414": {"KATHY LI": 15},
+                        "1678": {"NATHAN MILLS": 5},
+                        "589": {"KATE UNGER": 15},
+                    },
+                },
+                "tele_speaker_precision": {
+                    True: {},
+                    False: {
+                        "4414": {"KATHY LI": 2},
+                        "1678": {"NATHAN MILLS": 4},
+                        "589": {"KATE UNGER": 2},
+                    },
+                },
+                "tele_amp_precision": {
+                    True: {},
+                    False: {
+                        "4414": {"KATHY LI": 2},
+                        "1678": {"NATHAN MILLS": 2},
+                        "589": {"KATE UNGER": 2},
+                    },
+                },
+            },
+        }
         sim_precision_result = self.test_calc.calc_sim_precision(
-            self.scout_tim_test_data[3], self.tba_test_data
+            self.scout_tim_test_data[3],
+            test_aim_errors,
+            test_aim_reported_scores,
+            test_tba_aim_scores,
         )
 
         fields_to_keep = {"sim_precision"}

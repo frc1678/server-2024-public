@@ -129,48 +129,45 @@ class SimPrecisionCalc(BaseCalculations):
         for datapoint in tba_points:
             total += tba_match_data[datapoint]
 
-        # total = 0
-        # count = 0
-        # scores = ["autoSpeakerNoteCount", "autoAmpNoteCount", "teleopSpeakerNoteAmplifiedCount", "teleopSpeakerNoteCount", "teleopAmpNoteCount"]
-        # for datapoint in required.values():
-        #     total += datapoint * tba_match_data[scores[count]]
-        #     count += 1
         return total
 
-    def calc_sim_precision(self, sim, tba_match_data: List[dict]):
+    def calc_sim_precision(self, sim, aim_match_errors, aim_match_reported_values, tba_aim_scores):
         """Calculates the average difference between errors where the scout was part of the combination, and errors where the scout wasn't.
         sim is a scout-in-match document."""
         calculations = {}
         for calculation, schema in self.sim_schema["calculations"].items():
             required = schema["requires"]
-            tba_points = schema["tba_datapoints"]
-
-            tba_aim_score = self.get_tba_value(
-                tba_match_data, tba_points, sim["match_number"], sim["alliance_color_is_red"]
-            )
 
             # Value reported for datapoint by a specific scout for a robot in a match
             scout_reported_value = self.get_scout_tim_score(
                 sim["scout_name"], sim["match_number"], required
             )
-            # Get the average errors of all scouts in a match
-            aim_scouts_reported_values = self.get_aim_scout_scores(
-                sim["match_number"], sim["alliance_color_is_red"], required
-            )
-            aim_scout_errors = self.get_aim_scout_avg_errors(
-                aim_scouts_reported_values,
-                tba_aim_score,
-                sim["match_number"],
-                sim["alliance_color_is_red"],
-            )
+
+            # Use match number, calculation type, and alliance color to query for the necessary data
+            tba_aim_score = tba_aim_scores[sim["match_number"]][calculation][
+                sim["alliance_color_is_red"]
+            ]
+            aim_scout_errors = aim_match_errors[sim["match_number"]][calculation][
+                sim["alliance_color_is_red"]
+            ]
+            aim_scouts_reported_values = aim_match_reported_values[sim["match_number"]][
+                calculation
+            ][sim["alliance_color_is_red"]]
+
             if aim_scout_errors == {}:
                 return {}
 
-            # Remove the team scouted by the scout, only consider alliance partners
-            aim_scouts_reported_values.pop(sim["team_number"])
-
-            ally1_scouts = list(aim_scouts_reported_values.values())[0]
-            ally2_scouts = list(aim_scouts_reported_values.values())[1]
+            # Find alliance partners
+            count = 0
+            for team, aim_data in aim_scouts_reported_values.items():
+                # Excludes the scout's own team
+                if team == sim["team_number"]:
+                    continue
+                if count == 0:
+                    ally1_scouts = aim_data
+                    count += 1
+                else:
+                    ally2_scouts = aim_data
 
             # Calculate the sim precision using the avg errors of the scout vs the avg error of each scout
             sim_errors = []
@@ -208,6 +205,69 @@ class SimPrecisionCalc(BaseCalculations):
             + [0]
         )
         updates = []
+        # Create dicts for shared data between scouts
+        tba_aim_scores = {}
+        aim_match_errors = {}
+        aim_match_reported_values = {}
+        # Iterate up to either the latest tba match or match where we have data (To avoid crashing)
+        for match_number in range(1, min(latest_match, latest_tba_match) + 1):
+            # Create match_number keys
+            tba_aim_scores[match_number] = {}
+            aim_match_errors[match_number] = {}
+            aim_match_reported_values[match_number] = {}
+            # Calculate data for each calculation
+            for calculation, schema in self.sim_schema["calculations"].items():
+                required = schema["requires"]
+                tba_points = schema["tba_datapoints"]
+
+                # Get the scores from TBA
+                red_tba_aim_score = self.get_tba_value(
+                    tba_match_data, tba_points, match_number, True
+                )
+
+                blue_tba_aim_score = self.get_tba_value(
+                    tba_match_data, tba_points, match_number, False
+                )
+
+                # Get the scores of all scouts in a match
+                red_aim_scouts_reported_values = self.get_aim_scout_scores(
+                    match_number, True, required
+                )
+
+                blue_aim_scouts_reported_values = self.get_aim_scout_scores(
+                    match_number, False, required
+                )
+
+                # Get the average errors of all scouts in a match
+                red_aim_scout_errors = self.get_aim_scout_avg_errors(
+                    red_aim_scouts_reported_values,
+                    red_tba_aim_score,
+                    match_number,
+                    True,
+                )
+
+                blue_aim_scout_errors = self.get_aim_scout_avg_errors(
+                    blue_aim_scouts_reported_values,
+                    blue_tba_aim_score,
+                    match_number,
+                    False,
+                )
+
+                # Update to their respective dictionaries
+                # True is for red alliance and False is for blue alliance
+                tba_aim_scores[match_number][calculation] = {
+                    True: red_tba_aim_score,
+                    False: blue_tba_aim_score,
+                }
+                aim_match_errors[match_number][calculation] = {
+                    True: red_aim_scout_errors,
+                    False: blue_aim_scout_errors,
+                }
+                aim_match_reported_values[match_number][calculation] = {
+                    True: red_aim_scouts_reported_values,
+                    False: blue_aim_scouts_reported_values,
+                }
+
         for sim in unconsolidated_sims:
             sim_data = self.server.db.find("unconsolidated_totals", sim)[0]
             if sim_data["match_number"] > latest_tba_match:
@@ -228,7 +288,11 @@ class SimPrecisionCalc(BaseCalculations):
                     break
             else:
                 continue
-            if (sim_precision := self.calc_sim_precision(sim_data, tba_match_data)) != {}:
+            if (
+                sim_precision := self.calc_sim_precision(
+                    sim_data, aim_match_errors, aim_match_reported_values, tba_aim_scores
+                )
+            ) != {}:
                 update.update(sim_precision)
             updates.append(update)
         return updates
