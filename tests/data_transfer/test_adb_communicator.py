@@ -251,9 +251,7 @@ def test_pull_device_data():
             f"{fake_dir_path}/RABCDEFG/Mehul/team_data.json",
             contents=json.dumps(test_team_data),
         )
-        patcher.fs.create_file(
-            f"{fake_dir_path}/RABCDEFG/Mehul/tim_data.json", contents="{}"
-        )
+        patcher.fs.create_file(f"{fake_dir_path}/RABCDEFG/Mehul/tim_data.json", contents="{}")
         patcher.fs.add_real_file(utils.create_file_path("schema/calc_ss_team.yml"))
 
         with patch(
@@ -267,8 +265,6 @@ def test_pull_device_data():
         for document in result_ss_team:
             document.pop("_id")
             document.pop("username")
-            print(document)
-            print(expected_ss_team)
             assert utils.dict_near_in(document, expected_ss_team)
             inserted_documents = True
         assert inserted_documents
