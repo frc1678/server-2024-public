@@ -442,7 +442,9 @@ class Decompressor(base_calculations.BaseCalculations):
                         final[field] = False
                 elif val["type"] == "str":
                     final[field] = ""
-                    if documents[0][field] != "" and documents[1][field] != "":
+                    if documents[0][field] == documents[1][field]:
+                        final[field] = f"{documents[0][field]}"
+                    elif documents[0][field] != "" and documents[1][field] != "":
                         final[field] = f"{documents[0][field]} + {documents[1][field]}"
                     elif documents[0] != "":
                         final[field] = documents[0][field]
