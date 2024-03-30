@@ -421,6 +421,10 @@ class PredictedAimCalc(BaseCalculations):
             "has_actual_data": False,
         }
         match_number = aim["match_number"]
+        if self.server.db.find("obj_tim", {"match_number": match_number}) != []:
+            actual_match_dict["has_actual_data"] = True
+        else:
+            actual_match_dict["has_actual_data"] = False
 
         for match in tba_match_data:
             # Checks the value of winning_alliance to determine if the match has data.
@@ -457,7 +461,6 @@ class PredictedAimCalc(BaseCalculations):
                     "coopertitionBonusAchieved"
                 ]
                 # Sets actual_match_data to true once the actual data has been pulled
-                actual_match_dict["has_actual_data"] = True
                 break
 
         return actual_match_dict
