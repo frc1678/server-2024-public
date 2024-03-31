@@ -484,6 +484,11 @@ class ObjTIMCalcs(BaseCalculations):
         calculated_tim.update(self.calculate_expected_fields(unconsolidated_tims))
         calculated_tim.update(self.consolidate_categorical_actions(unconsolidated_tims))
         calculated_tim.update(self.calculate_aggregates(calculated_tim))
+        calculated_tim["climbed"] = "O" in [
+            calculated_tim["stage_level_left"],
+            calculated_tim["stage_level_center"],
+            calculated_tim["stage_level_right"],
+        ]
         calculated_tim.update(self.calculate_point_values(calculated_tim))
         # Use any of the unconsolidated TIMs to get the team and match number,
         # since that should be the same for each unconsolidated TIM
@@ -492,11 +497,6 @@ class ObjTIMCalcs(BaseCalculations):
         calculated_tim["alliance_color_is_red"] = unconsolidated_tims[0]["alliance_color_is_red"]
         # confidence_rating is the number of scouts that scouted one robot
         calculated_tim["confidence_ranking"] = len(unconsolidated_tims)
-        calculated_tim["climbed"] = "O" in [
-            calculated_tim["stage_level_left"],
-            calculated_tim["stage_level_center"],
-            calculated_tim["stage_level_right"],
-        ]
         return calculated_tim
 
     def update_calcs(self, tims: List[Dict[str, Union[str, int]]]) -> List[dict]:
