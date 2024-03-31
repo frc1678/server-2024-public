@@ -122,13 +122,55 @@ class ObjTIMCalcs(BaseCalculations):
         min_time is the minimum number of seconds between the two types of actions that we want to count
         """
         # Separate calculation for scoring cycle times
-        if start_action == "score" or "intake" in start_action:
+        if start_action == "score":
             scoring_actions = self.filter_timeline_actions(tim, action_type=start_action)
             cycle_times = []
 
             # Calculates time difference between every pair of scoring actions
             for i in range(1, len(scoring_actions)):
                 cycle_times.append(scoring_actions[i - 1]["time"] - scoring_actions[i]["time"])
+
+            # Calculate median cycle time (if cycle times is not an empty list)
+            if cycle_times:
+                median_cycle_time = statistics.median(cycle_times)
+            else:
+                median_cycle_time = 0
+
+            # Cycle time has to be an integer
+            return round(median_cycle_time)
+
+        # Intake related cycle times
+        elif "intake" in start_action:
+            start_end_pairs = []
+            cycle_times = []
+
+            # Creates pairs of [<start action>, <end action>]
+            for action in tim["timeline"]:
+                # Adds each start action to a new pair
+                if action["action_type"] == start_action:
+                    start_end_pairs.append([action])
+                # If there is an incomplete pair, adds the end action
+                elif (
+                    len(start_end_pairs) >= 1
+                    and action["action_type"] in end_action
+                    and len(start_end_pairs[-1]) == 1
+                ):
+                    start_end_pairs[-1].append(action)
+                # If something happens inbetween the start action and the end action, removes the incomplete pair
+                elif (
+                    len(start_end_pairs) >= 1
+                    and action["action_type"] not in ["start_incap_time", "end_incap_time", "fail"]
+                    and len(start_end_pairs[-1]) == 1
+                ):
+                    start_end_pairs.pop(-1)
+
+            # Finds time between each pair of start action + end action
+            for pair in start_end_pairs:
+                start = pair[0]
+                end = pair[1]
+                time_difference = start["time"] - end["time"]
+                if time_difference >= min_time:
+                    cycle_times.append(time_difference)
 
             # Calculate median cycle time (if cycle times is not an empty list)
             if cycle_times:
