@@ -806,6 +806,7 @@ class TestOBJTeamCalc:
                 "incap_time": 0,
                 "parked": False,
                 "harmonized": False,
+                "scored_preload": True,
             },
             {
                 "start_position": "2",
@@ -817,6 +818,7 @@ class TestOBJTeamCalc:
                 "match_number": 2,
                 "parked": True,
                 "harmonized": False,
+                "scored_preload": True,
             },
             {
                 "start_position": "2",
@@ -828,6 +830,7 @@ class TestOBJTeamCalc:
                 "incap_time": 1,
                 "parked": False,
                 "harmonized": False,
+                "scored_preload": False,
             },
             {
                 "start_position": "0",
@@ -839,6 +842,7 @@ class TestOBJTeamCalc:
                 "incap_time": 0,
                 "parked": True,
                 "harmonized": False,
+                "scored_preload": False,
             },
             {
                 "start_position": "2",
@@ -850,6 +854,7 @@ class TestOBJTeamCalc:
                 "incap_time": 0,
                 "parked": False,
                 "harmonized": False,
+                "scored_preload": True,
             },
         ]
         lfm_tims = [tim for tim in tims if tim["match_number"] > 1]
@@ -904,6 +909,8 @@ class TestOBJTeamCalc:
             "lfm_matches_incap": 1,
             "matches_harmonized": 0,
             "lfm_matches_harmonized": 0,
+            "preload_successes": 3,
+            "lfm_preload_successes": 2,
         }
         assert self.test_calc.calculate_counts(tims, lfm_tims) == expected_output
 
@@ -1723,6 +1730,10 @@ class TestOBJTeamCalc:
             "lfm_stage_successes_right": 0,
             "lfm_matches_climb_after": 2,
             "lfm_climb_after_successes": 1,
+            "preloaded_starts": 10,
+            "preload_successes": 7,
+            "lfm_preloaded_starts": 4,
+            "lfm_preload_successes": 3,
         }
         assert self.test_calc.calculate_success_rates(team_data) == {
             "auto_amp_percent_success": 0.75,
@@ -1752,6 +1763,8 @@ class TestOBJTeamCalc:
             "trap_percent_success": 0,
             "parked_percent": 0.4,
             "total_speaker_percent_success": 0.7272727272727273,
+            "auto_preload_percent_success": 0.7,
+            "lfm_auto_preload_percent_success": 0.75,
         }
 
     def test_calculate_sums(self):

@@ -515,6 +515,15 @@ class ObjTIMCalcs(BaseCalculations):
                                 )
         return harmonized_teams
 
+    def calculate_scored_preload(self, unconsolidated_tims: List[Dict]):
+        """Given a list of unconsolidated TIMS, returns whether or not the team scored their preload"""
+        unconsolidated_preloads = []
+        for tim in unconsolidated_tims:
+            unconsolidated_preloads.append(
+                tim["has_preload"] and tim["timeline"][0]["action_type"][:5] == "score"
+            )
+        return self.consolidate_bools(unconsolidated_preloads)
+
     def calculate_tim(self, unconsolidated_tims: List[Dict]) -> dict:
         """Given a list of unconsolidated TIMs, returns a calculated TIM"""
         if len(unconsolidated_tims) == 0:
@@ -539,6 +548,7 @@ class ObjTIMCalcs(BaseCalculations):
         calculated_tim["alliance_color_is_red"] = unconsolidated_tims[0]["alliance_color_is_red"]
         # confidence_rating is the number of scouts that scouted one robot
         calculated_tim["confidence_ranking"] = len(unconsolidated_tims)
+        calculated_tim["scored_preload"] = self.calculate_scored_preload(unconsolidated_tims)
         return calculated_tim
 
     def update_calcs(self, tims: List[Dict[str, Union[str, int]]]) -> List[dict]:
