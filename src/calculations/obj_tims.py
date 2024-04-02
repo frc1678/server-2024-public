@@ -324,6 +324,11 @@ class ObjTIMCalcs(BaseCalculations):
                         unconsolidated_tims[num_1]["timeline"][num + 1][
                             "action_type"
                         ] = "score_fail_amplify"
+                    if (
+                        unconsolidated_tims[num_1]["timeline"][num + 1]["action_type"]
+                        == "score_trap"
+                    ):
+                        unconsolidated_tims[num_1]["timeline"][num + 1]["action_type"] = "fail_trap"
         return unconsolidated_tims
 
     def calculate_tim_counts(self, unconsolidated_tims: List[Dict]) -> dict:
