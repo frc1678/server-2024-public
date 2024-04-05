@@ -135,7 +135,7 @@ class PredictedAimCalc(BaseCalculations):
 
         predicted_scores = {
             "dynamic": 0,
-            "reg": self.calc_weighted_score(predicted_values, "stage"),
+            "reg": self.calc_weighted_score(predicted_values, "endgame"),
         }
 
         ## Scuffed formula to predict endgame score ##
@@ -449,12 +449,12 @@ class PredictedAimCalc(BaseCalculations):
                 actual_match_dict["won_match"] = match["winning_alliance"] == alliance_color
                 # Actual values to compare predictions
                 actual_match_dict["actual_score_auto"] = actual_aim[alliance_color]["autoPoints"]
-                actual_match_dict["actual_score_stage"] = actual_aim[alliance_color][
+                actual_match_dict["actual_score_endgame"] = actual_aim[alliance_color][
                     "endGameTotalStagePoints"
                 ]
                 actual_match_dict["actual_score_tele"] = (
                     actual_aim[alliance_color]["teleopPoints"]
-                    - actual_match_dict["actual_score_stage"]
+                    - actual_match_dict["actual_score_endgame"]
                 )
                 actual_match_dict["actual_foul_points"] = actual_aim[alliance_color]["foulPoints"]
                 actual_match_dict["cooperated"] = actual_aim[alliance_color][
@@ -552,45 +552,6 @@ class PredictedAimCalc(BaseCalculations):
 
         # Return win chance
         return prob_red_wins
-
-    def update_score_weights(self, pred_aim: pd.DataFrame = None):
-        """NOTE: THIS FUNCTION IS A WORK IN PROGRESS.
-        Calculates gamepiece weights by running regressions on past data.
-
-        `predicted_aim`: optional. A pandas DataFrame of predicted_aim data containing all values
-                        in the `predicted_values` dataclass and actual scores for auto, tele, and stage.
-        """
-        # Get score action variables
-        weights_schema = self.schema["--score_weights"]
-        auto_vars = weights_schema["auto"]
-        tele_vars = weights_schema["tele"]
-        stage_vars = weights_schema["stage"]
-        score_weights = pd.Series(
-            {var: 0 for var in auto_vars + tele_vars + stage_vars}, dtype=np.float64
-        )
-
-        # Get data (in the future, we may implement a TBA data puller here)
-        if pred_aim is None:
-            pred_aim = pd.DataFrame(self.server.db.find("predicted_aim"))
-
-        # Auto
-        auto_model = sm.OLS(pred_aim["actual_score_auto"], pred_aim[auto_vars]).fit()
-        for var in auto_model.params.index:
-            score_weights[var] = auto_model.params[var]
-
-        # Tele
-        tele_model = sm.OLS(pred_aim["actual_score_tele"], pred_aim[tele_vars]).fit()
-        for var in tele_model.params.index:
-            score_weights[var] = tele_model.params[var]
-
-        # Stage
-        stage_model = sm.OLS(pred_aim["actual_score_stage"], pred_aim[stage_vars]).fit()
-        for var in stage_model.params.index:
-            score_weights[var] = stage_model.params[var]
-
-        # Update weights to JSON file and return
-        score_weights.to_json("data/score_weights.json")
-        return score_weights
 
     def get_score_weights(self) -> dict:
         """Gets score weights from the `data/score_weights.json` file.

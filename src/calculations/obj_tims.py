@@ -238,9 +238,22 @@ class ObjTIMCalcs(BaseCalculations):
                             # If it is fail, the cycle must already be counted, also prevents crashing if it is the first action
                             if tele_actions[count]["action_type"] in list(intake_weights.keys()):
                                 # Add intake weight type in schema
-                                num_cycles += intake_weights[tele_actions[count]["action_type"]][
-                                    "normal"
-                                ]
+                                # HOTFIX: AMP SCORES ARE 1.5x THE CYCLE
+                                # TODO: IMPLEMENT THIS BETTER (NO HARD CODING)
+                                if (
+                                    tele_actions[count + 1]["action_type"] == "score_amp"
+                                    or tele_actions[count + 2]["action_type"] == "score_amp"
+                                ):
+                                    num_cycles += (
+                                        1.5
+                                        * intake_weights[tele_actions[count]["action_type"]][
+                                            "normal"
+                                        ]
+                                    )
+                                else:
+                                    num_cycles += intake_weights[
+                                        tele_actions[count]["action_type"]
+                                    ]["normal"]
                         # Add special case for incap b/c someone can intake, go incap, then score
                         elif tele_actions[count + 1]["action_type"] == "start_incap":
                             if len(tele_actions) - count > 3:
@@ -248,14 +261,37 @@ class ObjTIMCalcs(BaseCalculations):
                                     tele_actions[count + 3]["action_type"] == "fail"
                                     and tele_actions[count + 4]["action_type"] in score_actions
                                 ):
-                                    num_cycles += intake_weights[
-                                        tele_actions[count]["action_type"]
-                                    ]["normal"]
+                                    # HOTFIX: AMP SCORES ARE 1.5x THE CYCLE
+                                    # TODO: IMPLEMENT THIS BETTER (NO HARD CODING)
+                                    if (
+                                        tele_actions[count + 3]["action_type"] == "score_amp"
+                                        or tele_actions[count + 4]["action_type"] == "score_amp"
+                                    ):
+                                        num_cycles += (
+                                            1.5
+                                            * intake_weights[tele_actions[count]["action_type"]][
+                                                "normal"
+                                            ]
+                                        )
+                                    else:
+                                        num_cycles += intake_weights[
+                                            tele_actions[count]["action_type"]
+                                        ]["normal"]
                             elif len(tele_actions) - count == 3:
                                 if tele_actions[count + 3]["action_type"] in score_actions:
-                                    num_cycles += intake_weights[
-                                        tele_actions[count]["action_type"]
-                                    ]["normal"]
+                                    # HOTFIX: AMP SCORES ARE 1.5x THE CYCLE
+                                    # TODO: IMPLEMENT THIS BETTER (NO HARD CODING)
+                                    if tele_actions[count + 3]["action_type"] == "score_amp":
+                                        num_cycles += (
+                                            1.5
+                                            * intake_weights[tele_actions[count]["action_type"]][
+                                                "normal"
+                                            ]
+                                        )
+                                    else:
+                                        num_cycles += intake_weights[
+                                            tele_actions[count]["action_type"]
+                                        ]["normal"]
                                 elif (
                                     tele_actions[count + 3]["action_type"] in ["ferry, drop"]
                                     and value["include_ferry_and_drop"]

@@ -2,6 +2,7 @@ from calculations import predicted_aim
 from unittest.mock import patch
 import server
 import pytest
+import pandas as pd
 
 
 class TestPredictedAimCalc:
@@ -104,7 +105,7 @@ class TestPredictedAimCalc:
                 "won_match": True,
                 "has_actual_data": True,
                 "actual_score_auto": 12,
-                "actual_score_stage": 10,
+                "actual_score_endgame": 10,
                 "actual_score_tele": 244,
                 "actual_foul_points": 2,
                 "cooperated": True,
@@ -140,7 +141,7 @@ class TestPredictedAimCalc:
                 "won_match": False,
                 "has_actual_data": True,
                 "actual_score_auto": 12,
-                "actual_score_stage": 10,
+                "actual_score_endgame": 10,
                 "actual_score_tele": 244,
                 "actual_foul_points": 2,
                 "cooperated": True,
@@ -340,7 +341,7 @@ class TestPredictedAimCalc:
                 "actual_rp2": 1.0,
                 "actual_score": 320,
                 "actual_score_auto": 12,
-                "actual_score_stage": 10,
+                "actual_score_endgame": 10,
                 "actual_score_tele": 244,
                 "cooperated": True,
                 "has_actual_data": True,
@@ -376,7 +377,7 @@ class TestPredictedAimCalc:
                 "actual_rp2": 1.0,
                 "actual_score": 278,
                 "actual_score_auto": 12,
-                "actual_score_stage": 10,
+                "actual_score_endgame": 10,
                 "actual_score_tele": 244,
                 "cooperated": True,
                 "has_actual_data": True,
@@ -851,7 +852,7 @@ class TestPredictedAimCalc:
             "won_match": True,
             "has_actual_data": True,
             "actual_score_auto": 12,
-            "actual_score_stage": 10,
+            "actual_score_endgame": 10,
             "actual_score_tele": 244,
             "actual_foul_points": 2,
             "cooperated": True,
@@ -871,7 +872,7 @@ class TestPredictedAimCalc:
             "won_match": False,
             "has_actual_data": True,
             "actual_score_auto": 12,
-            "actual_score_stage": 10,
+            "actual_score_endgame": 10,
             "actual_score_tele": 244,
             "actual_foul_points": 2,
             "cooperated": True,
@@ -918,6 +919,20 @@ class TestPredictedAimCalc:
         with patch(
             "data_transfer.tba_communicator.tba_request",
             return_value=self.tba_match_data,
+        ), patch(
+            "pandas.read_json",
+            return_value=pd.Series(
+                {
+                    "_auto_speaker": 3.7213241926,
+                    "_auto_amp": 5.1888753305,
+                    "_num_leave": 4.0001515585,
+                    "_tele_speaker_all": 2.1704582261,
+                    "_tele_amp": 2.3898885952,
+                    "_num_onstage": 2.0722202755,
+                    "_num_trap": 5.2162367448,
+                    "_num_park": 0.504405658,
+                }
+            ),
         ):
             assert self.test_calc.update_predicted_aim(self.aims_list) == self.expected_updates
 
@@ -927,6 +942,20 @@ class TestPredictedAimCalc:
         with patch(
             "calculations.predicted_aim.PredictedAimCalc.get_playoffs_alliances",
             return_value=self.expected_playoffs_alliances,
+        ), patch(
+            "pandas.read_json",
+            return_value=pd.Series(
+                {
+                    "_auto_speaker": 3.7213241926,
+                    "_auto_amp": 5.1888753305,
+                    "_num_leave": 4.0001515585,
+                    "_tele_speaker_all": 2.1704582261,
+                    "_tele_amp": 2.3898885952,
+                    "_num_onstage": 2.0722202755,
+                    "_num_trap": 5.2162367448,
+                    "_num_park": 0.504405658,
+                }
+            ),
         ):
             assert self.test_calc.update_playoffs_alliances() == self.expected_playoffs_updates
 
@@ -958,6 +987,20 @@ class TestPredictedAimCalc:
         ), patch(
             "data_transfer.tba_communicator.tba_request",
             side_effect=[self.tba_match_data, self.tba_playoffs_data],
+        ), patch(
+            "pandas.read_json",
+            return_value=pd.Series(
+                {
+                    "_auto_speaker": 3.7213241926,
+                    "_auto_amp": 5.1888753305,
+                    "_num_leave": 4.0001515585,
+                    "_tele_speaker_all": 2.1704582261,
+                    "_tele_amp": 2.3898885952,
+                    "_num_onstage": 2.0722202755,
+                    "_num_trap": 5.2162367448,
+                    "_num_park": 0.504405658,
+                }
+            ),
         ):
             self.test_calc.run()
 
