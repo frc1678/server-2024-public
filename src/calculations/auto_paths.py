@@ -36,17 +36,14 @@ class AutoPathCalc(BaseCalculations):
         # Find all current auto paths with this team number and start position
         current_documents: List[dict] = self.server.db.find(
             "auto_paths",
-            {"team_number": pim["team_number"], "start_position": pim["start_position"]},
+            {"team_number": pim["team_number"]},
         )
         # Add the current calculated_tims into current documents (because these tims aren't in server yet)
         current_documents.extend(
             [
                 calculated_path
                 for calculated_path in calculated_paths
-                if (
-                    calculated_path["team_number"] == pim["team_number"]
-                    and calculated_path["start_position"] == pim["start_position"]
-                )
+                if (calculated_path["team_number"] == pim["team_number"])
             ]
         )
 
@@ -199,7 +196,6 @@ class AutoPathCalc(BaseCalculations):
                     update,
                     {
                         "team_number": update["team_number"],
-                        "start_position": update["start_position"],
                         "path_number": update["path_number"],
                     },
                 )
