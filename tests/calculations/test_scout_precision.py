@@ -322,6 +322,9 @@ class TestScoutPrecisionCalc:
                 "scout_name": "ALISON LIN",
                 "scout_precision": 8.222222222222221,
             },
+            {
+                "scout_name": "CYRUS BROWN",
+            },
         ]
         expected_output = [
             {
@@ -343,6 +346,11 @@ class TestScoutPrecisionCalc:
                 "scout_name": "ALISON LIN",
                 "scout_precision": 8.222222222222221,
                 "scout_precision_rank": 4,
+            },
+            {
+                "scout_name": "CYRUS BROWN",
+                "scout_precision": None,
+                "scout_precision_rank": 5,
             },
         ]
         assert self.test_calc.calc_ranks(test_data) == expected_output

@@ -53,7 +53,24 @@ class ScoutPrecisionCalc(BaseCalculations):
     def calc_ranks(self, scouts):
         """Ranks a scout based on their overall precision."""
         for rank, schema in self.overall_schema["ranks"].items():
-            scouts = sorted(scouts, key=lambda s: s[schema["requires"].split(".")[1]])
+            for scout in scouts:
+
+                # If there is no scout precision, set it to None
+                if schema["requires"].split(".")[1] not in scout.keys():
+                    scout[schema["requires"].split(".")[1]] = None
+
+            # This is a bit complex, but works as follows. It constructs a tuple for every scout in the list, where the first value
+            # is whether the scout precision is None, and the second is the value itself. Tuples are sorted item by item, so those
+            # with False as the first value (if its not None) will come before those where it is true (if it is None), because False < True
+            scouts = sorted(
+                scouts,
+                key=lambda s: (
+                    s[schema["requires"].split(".")[1]] is None,
+                    s[schema["requires"].split(".")[1]],
+                ),
+            )
+
+            # Go through the list and assign the ranks accordingly
             for i in range(len(scouts)):
                 scouts[i][rank] = i + 1
         return scouts
