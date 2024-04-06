@@ -191,10 +191,7 @@ class SimPrecisionCalc(BaseCalculations):
             f"event/{utils.TBA_EVENT_KEY}/matches"
         )
         # When we're running server at competition, we have to wait until TBA updates
-        # match data, which usually takes ~4 minutes after the match is finished. If we
-        # run server before TBA updates, the line above (that pulls TBA data) will crash
-        # server. Hence, the code below checks if TBA has updated. If not, it waits for a
-        # few minutes and continues running.
+        # match data, so we get the latest TBA match and our latest match
         latest_match = max([s["match_number"] for s in unconsolidated_sims] + [0])
         latest_tba_match = max(
             [

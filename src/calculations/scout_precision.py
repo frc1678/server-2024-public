@@ -54,7 +54,6 @@ class ScoutPrecisionCalc(BaseCalculations):
         """Ranks a scout based on their overall precision."""
         for rank, schema in self.overall_schema["ranks"].items():
             for scout in scouts:
-
                 # If there is no scout precision, set it to None
                 if schema["requires"].split(".")[1] not in scout.keys():
                     scout[schema["requires"].split(".")[1]] = None
@@ -73,6 +72,12 @@ class ScoutPrecisionCalc(BaseCalculations):
             # Go through the list and assign the ranks accordingly
             for i in range(len(scouts)):
                 scouts[i][rank] = i + 1
+
+            # Delete scout_precision if it is None (So it doesn't break validation)
+            for scout in scouts:
+                if scout[schema["requires"].split(".")[1]] == None:
+                    del scout[schema["requires"].split(".")[1]]
+
         return scouts
 
     def update_scout_precision_calcs(self, scouts):
