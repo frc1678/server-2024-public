@@ -419,7 +419,7 @@ class Decompressor(base_calculations.BaseCalculations):
                 if val["type"] == "bool":
                     data[point] = False
                 else:
-                    data[point] = 0 if val["type"] == "int" else ""
+                    data[point] = -1 if val["type"] == "int" else ""
             elif point == "broken_mechanism":
                 data[point] = True if data[point] != "" else False
         return data

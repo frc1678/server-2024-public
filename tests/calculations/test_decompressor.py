@@ -33,16 +33,18 @@ class TestDecompressor:
             "auto_intake_center_3": "AJ",
             "auto_intake_center_4": "AK",
             "auto_intake_center_5": "AL",
-            "intake_amp": "AM",
-            "intake_poach": "AN",
-            "intake_center": "AO",
-            "intake_far": "AP",
-            "score_amplify": "AQ",
-            "drop": "AR",
-            "ferry": "AS",
-            "fail": "AT",
-            "to_teleop": "AU",
-            "to_endgame": "AV",
+            "auto_intake_other": "AM",
+            "intake_amp": "AN",
+            "intake_poach": "AO",
+            "intake_center": "AP",
+            "intake_far": "AQ",
+            "score_amplify": "AR",
+            "drop": "AS",
+            "ferry": "AT",
+            "fail": "AU",
+            "to_teleop": "AV",
+            "to_endgame": "AW",
+            "score_trap": "AX",
         }
         # Test a few values for each type to make sure they make sense
         assert 5 == self.test_decompressor.convert_data_type("5", "int")
@@ -162,7 +164,7 @@ class TestDecompressor:
             {"time": 59, "action_type": "score_speaker", "in_teleop": False},
             {"time": 60, "action_type": "to_teleop", "in_teleop": True},
             {"time": 61, "action_type": "score_amp", "in_teleop": True},
-        ] == self.test_decompressor.decompress_timeline("059AA060AU061AB")
+        ] == self.test_decompressor.decompress_timeline("059AA060AV061AB")
         # Should return empty list if passed an empty string
         assert [] == self.test_decompressor.decompress_timeline("")
 
@@ -355,72 +357,60 @@ class TestDecompressor:
         raw_obj_pit = {
             "team_number": "3448",
             "drivetrain": 3,
-            "has_auto_vision": True,
-            "has_vision_assisted_shot": True,
-            "has_hp_indicator": False,
             "can_climb": True,
             "weight": 1,
         }
         expected_obj_pit = {
             "team_number": "3448",
-            "has_auto_vision": True,
             "drivetrain": "swerve",
-            "has_vision_assisted_shot": True,
-            "has_hp_indicator": False,
+            "has_amp_mech": None,
+            "has_speaker_mech": None,
+            "has_trap_mech": None,
             "can_climb": True,
             "weight": 1,
         }
         citrus_seal = {
             "team_number": "3448",
             "drivetrain": 3,
-            "has_auto_vision": False,
-            "has_vision_assisted_shot": True,
-            "has_hp_indicator": False,
             "can_climb": False,
             "weight": 1,
         }
         new_expected_obj_pit = {
             "team_number": "3448",
             "drivetrain": "swerve",
-            "has_auto_vision": True,
-            "has_vision_assisted_shot": True,
-            "has_hp_indicator": False,
+            "has_amp_mech": None,
+            "has_speaker_mech": None,
+            "has_trap_mech": None,
             "can_climb": True,
             "weight": 1,
         }
         raw2_obj_pit = {
             "team_number": "1678",
             "drivetrain": 3,
-            "has_auto_vision": False,
-            "has_vision_assisted_shot": True,
-            "has_hp_indicator": False,
             "can_climb": True,
             "weight": 1,
         }
         expected2_obj_pit = {
             "team_number": "1678",
             "drivetrain": "swerve",
-            "has_auto_vision": True,
-            "has_vision_assisted_shot": True,
-            "has_hp_indicator": False,
+            "has_amp_mech": None,
+            "has_speaker_mech": None,
+            "has_trap_mech": None,
             "can_climb": True,
             "weight": 1,
         }
         citrus2_seal = {
             "team_number": "1678",
             "drivetrain": 3,
-            "has_auto_vision": True,
-            "has_vision_assisted_shot": True,
-            "has_hp_indicator": False,
             "can_climb": False,
             "weight": 1,
         }
         new2_expected_obj_pit = {
             "team_number": "1678",
             "drivetrain": "swerve",
-            "has_auto_vision": True,
-            "has_vision_assisted_shot": True,
-            "has_hp_indicator": False,
+            "has_amp_mech": None,
+            "has_speaker_mech": None,
+            "has_trap_mech": None,
             "can_climb": False,
             "weight": 1,
         }
@@ -523,14 +513,14 @@ class TestDecompressor:
         excepted_output_1 = {
             "broken_mechanism": False,
             "coopertition": True,
-            "defense_rating": 0,
+            "defense_rating": -1,
             "notes": "",
             "played_defense": True,
         }
         excepted_output_2 = {
             "broken_mechanism": True,
             "coopertition": True,
-            "defense_rating": 0,
+            "defense_rating": -1,
             "notes": "",
             "played_defense": False,
         }
@@ -545,14 +535,14 @@ class TestDecompressor:
         excepted_output_4 = {
             "broken_mechanism": False,
             "coopertition": True,
-            "defense_rating": 0,
+            "defense_rating": -1,
             "notes": "can shoot from anywhere",
             "played_defense": False,
         }
         excepted_output_5 = {
             "broken_mechanism": True,
             "coopertition": False,
-            "defense_rating": 0,
+            "defense_rating": -1,
             "notes": "",
             "played_defense": True,
         }
@@ -573,7 +563,7 @@ class TestDecompressor:
         excepted_output_8 = {
             "broken_mechanism": False,
             "coopertition": False,
-            "defense_rating": 0,
+            "defense_rating": -1,
             "notes": "can shoot from anywhere",
             "played_defense": False,
         }
@@ -666,7 +656,7 @@ class TestDecompressor:
             "raw_qr",
             [
                 {
-                    "data": f"+A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B51$C9321$Dv1.3$EXvfaPcSrgJw25VKrcsphdbyEVjmHrH1V$FFALSE%Z3603$Y13$X2$W000AA001AB005AU006AB007AC008AD$VTRUE$UO$TN$SN$RFALSE",
+                    "data": f"+A{decompressor.Decompressor.SCHEMA['schema_file']['version']}$B51$C9321$Dv1.3$EXvfaPcSrgJw25VKrcsphdbyEVjmHrH1V$FFALSE%Z3603$Y13$X2$W000AA001AB005AV006AB007AC008AD$VTRUE$UO$TN$SN$RFALSE",
                     "blocklisted": False,
                     "override": {"start_position": "1", "doesnt_exist": 5},
                     "ulid": "01GWSYJHR5EC6PAKCS79YZAF3Z",
