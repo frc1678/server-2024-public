@@ -61,6 +61,28 @@ def build_teams(comp_key):
     return column_headers, data_by_team
 
 
+def build_team_matches(comp_key):
+    # teams = [team["team"] for team in sb.sb_get_team_events(event=comp_key)
+    # get the teams for the event
+    team_data = sb.sb_get_team_matches(event=comp_key)
+    data_by_team: Dict[str, Dict[str, any]] = {}
+    column_headers: List[str] = []
+    for team in team_data:
+        # Get team number
+        team_num = str(team["team"])
+        if not data_by_team.get(team_num):
+            # Make team number a key
+            data_by_team[team_num] = {}
+        for key, value in team.items():
+            if key not in column_headers:
+                # Add key as a column header
+                column_headers.append(key)
+            data_by_team[team_num][key] = value
+    # Sort column_headers by team number first
+    column_headers = BaseExport.order_headers(column_headers, ["team_name", "team"])
+    return column_headers, data_by_team
+
+
 def build_all_events():
     events = []
     # There's a limit on how many years get_events can return
@@ -141,12 +163,18 @@ def build_specfic_year(year: int):
     )
 
 
-def write_data(directory_path: str, comp_key=None, type="both", specific_year=None):
+def write_data(
+    directory_path: str, comp_key=None, type="both", specific_year=None, per_match=False
+):
     # Specify team, match, or both
     # Both will be a really ugly csv
+    build_team_matches(comp_key)
     if specific_year is not None:
         column_headers, built_data = build_specfic_year(int(specific_year))
         type = "full_year"
+    elif per_match:
+        column_headers, built_data = build_team_matches(comp_key)
+        type = "per_match"
     elif type.lower() == "both":
         column_headers, built_data = build_matches(comp_key)
         team_headers, team_data = build_teams(comp_key)
@@ -174,7 +202,6 @@ def write_data(directory_path: str, comp_key=None, type="both", specific_year=No
                     csv_writer.writerow(entry)
         else:
             for single_data in built_data.values():
-                print(single_data)
                 csv_writer.writerow(single_data)
 
 
@@ -200,6 +227,9 @@ def parser():
         default=None,
         action="store",
     )
+    parse.add_argument(
+        "--per_match", help="Gets per match team data", default=None, action="store_true"
+    )
     return parse.parse_args()
 
 
@@ -218,10 +248,12 @@ if __name__ == "__main__":
         specific_year = args.year
 
     # find the type:
-    if args.type is None and args.year is None:
+    if args.type is None and args.year is None and args.per_match is None:
         team_or_match = input("What type of csv? team/match/both: ")
     else:
         team_or_match = args.type
 
+    # finds the per match
+    per_match = args.per_match
     # Currently, csv shows up in server but the file path can be changed
-    write_data("data/exports", key, team_or_match, specific_year)
+    write_data("data/exports", key, team_or_match, specific_year, per_match)
