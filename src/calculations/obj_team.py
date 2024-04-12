@@ -158,6 +158,20 @@ class OBJTeamCalc(base_calculations.BaseCalculations):
             team_info[calculation] = tims_that_meet_filter
         return team_info
 
+    def calculate_multi_counts(self, tims: List[Dict], lfm_tims: List[Dict]):
+        """Calculates counts of datapoints that can occur more than once in a match, such as trap_successes"""
+        team_info = {}
+        for calculation, schema in self.SCHEMA["multi_counts"].items():
+            tim_fields = [tim_field.split(".")[1] for tim_field in schema["tim_fields"]]
+            team_info[calculation] = sum(
+                [
+                    tim[tim_field]
+                    for tim_field in tim_fields
+                    for tim in (lfm_tims if "lfm" in calculation else tims)
+                ]
+            )
+        return team_info
+
     def calculate_special_counts(self, obj_tims, subj_tims, lfm_obj_tims, lfm_subj_tims):
         """Calculates counts of datapoints collected by Objective and Subjective Scouts."""
         team_info = {}
@@ -414,6 +428,7 @@ class OBJTeamCalc(base_calculations.BaseCalculations):
             team_data = self.calculate_averages(tim_action_counts, lfm_tim_action_counts)
             team_data["team_number"] = team
             team_data.update(self.calculate_counts(obj_tims, obj_lfm_tims))
+            team_data.update(self.calculate_multi_counts(obj_tims, obj_lfm_tims))
             team_data.update(self.calculate_super_counts(subj_tims, subj_lfm_tims))
             team_data.update(self.calculate_ss_counts(ss_tims, ss_lfm_tims))
             team_data.update(

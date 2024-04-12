@@ -914,6 +914,26 @@ class TestOBJTeamCalc:
         }
         assert self.test_calc.calculate_counts(tims, lfm_tims) == expected_output
 
+    def test_multi_counts(self):
+        """Tests calculate_multi_counts from src/calculations/obj_team.py"""
+        obj_tims = [
+            {"match_number": 1, "team_number": 1678, "trap": 69, "failed_trap": 42},
+            {"match_number": 2, "team_number": 1678, "trap": 42, "failed_trap": 69},
+            {"match_number": 3, "team_number": 1678, "trap": 69, "failed_trap": 42},
+            {"match_number": 4, "team_number": 1678, "trap": 42, "failed_trap": 69},
+            {"match_number": 5, "team_number": 1678, "trap": 69, "failed_trap": 42},
+            {"match_number": 6, "team_number": 1678, "trap": 42, "failed_trap": 69},
+        ]
+        result = self.test_calc.calculate_multi_counts(obj_tims, obj_tims[2:])
+        assert result == {
+            "trap_successes": 333,
+            "trap_fails": 333,
+            "trap_attempts": 666,
+            "lfm_trap_successes": 222,
+            "lfm_trap_fails": 222,
+            "lfm_trap_attempts": 444,
+        }
+
     def test_special_counts(self):
         """Tests calculate_special_counts function from src/calculations.obj_team.py"""
         obj_tims = [
