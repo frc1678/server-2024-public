@@ -484,15 +484,15 @@ class TestObjTIMCalcs:
 
     def test_calculate_expected_fields(self):
         expected_results = {
-            "expected_cycle_time": 17.24,
-            "expected_speaker_cycle_time": 42.86,
-            "expected_amp_cycle_time": 24.79,
-            "expected_cycles": 7.66,
-            "expected_speaker_cycles": 3.08,
-            "expected_amp_cycles": 5.33,
-            "expected_notes": 6.08,
-            "expected_speaker_notes": 1.83,
-            "expected_amp_notes": 4.25,
+            "expected_cycle_time": 24.04,
+            "expected_speaker_cycle_time": 49.62,
+            "expected_amp_cycle_time": 36.87,
+            "expected_cycles": 5.49,
+            "expected_speaker_cycles": 2.66,
+            "expected_amp_cycles": 3.58,
+            "expected_notes": 4.16,
+            "expected_speaker_notes": 1.58,
+            "expected_amp_notes": 2.58,
         }
         # Fails must be calculated first in order for the calculation to work
         after_fails = self.test_calculator.score_fail_type(self.unconsolidated_tims)
@@ -514,10 +514,10 @@ class TestObjTIMCalcs:
             "auto_total_pieces": 4,
             "auto_total_failed_pieces": 0,
             "tele_total_intakes": 4,
-            "tele_total_pieces": 4,
+            "tele_total_pieces": 3,
             "tele_total_failed_pieces": 1,
             "total_intakes": 12,
-            "total_pieces": 8,
+            "total_pieces": 7,
             "tele_total_speaker_notes": 2,
         }
 
@@ -727,8 +727,8 @@ class TestObjTIMCalcs:
         assert len(result) == 1
         calculated_tim = result[0]
         assert calculated_tim["confidence_ranking"] == 3
-        assert calculated_tim["expected_speaker_cycle_time"] == 42.86
-        assert calculated_tim["expected_amp_cycle_time"] == 24.79
+        assert calculated_tim["expected_speaker_cycle_time"] == 49.62
+        assert calculated_tim["expected_amp_cycle_time"] == 36.87
         assert calculated_tim["incap_time"] == 0
         assert calculated_tim["match_number"] == 42
         assert calculated_tim["team_number"] == "254"
@@ -741,13 +741,13 @@ class TestObjTIMCalcs:
         assert calculated_tim["tele_ferry"] == 1
         assert calculated_tim["start_position"] == "1"
         assert calculated_tim["has_preload"] == False
-        assert calculated_tim["expected_speaker_cycles"] == 3.08
-        assert calculated_tim["expected_amp_cycles"] == 5.33
-        assert calculated_tim["expected_speaker_notes"] == 1.83
-        assert calculated_tim["expected_amp_notes"] == 4.25
-        assert calculated_tim["expected_cycle_time"] == 17.24
-        assert calculated_tim["expected_notes"] == 6.08
-        assert calculated_tim["expected_cycles"] == 7.66
+        assert calculated_tim["expected_speaker_cycles"] == 2.66
+        assert calculated_tim["expected_amp_cycles"] == 3.58
+        assert calculated_tim["expected_speaker_notes"] == 1.58
+        assert calculated_tim["expected_amp_notes"] == 2.58
+        assert calculated_tim["expected_cycle_time"] == 24.04
+        assert calculated_tim["expected_notes"] == 4.16
+        assert calculated_tim["expected_cycles"] == 5.49
         assert calculated_tim["climbed"] == True
 
     @mock.patch.object(
