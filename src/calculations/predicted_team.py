@@ -66,13 +66,13 @@ class PredictedTeamCalc(BaseCalculations):
                     rps = aims_in_match[aim]["predicted_rp1"] + aims_in_match[aim]["predicted_rp2"]
                     # (aim + 1) % 2 alternates between 0 and 1 to represent opposing alliance
                     if (
-                        aims_in_match[aim]["predicted_score_constant"]
-                        > aims_in_match[(aim + 1) % 2]["predicted_score_constant"]
+                        aims_in_match[aim]["predicted_score_reg"]
+                        > aims_in_match[(aim + 1) % 2]["predicted_score_reg"]
                     ):
                         rps += 2
                     elif (
-                        aims_in_match[aim]["predicted_score_constant"]
-                        == aims_in_match[(aim + 1) % 2]["predicted_score_constant"]
+                        aims_in_match[aim]["predicted_score_reg"]
+                        == aims_in_match[(aim + 1) % 2]["predicted_score_reg"]
                     ):
                         rps += 1
                     else:

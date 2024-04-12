@@ -63,10 +63,8 @@ class BaseCalculations:
             # If the doc was updated, need to manually find the document
             elif entry["op"] == "u":
                 document_id = entry["o2"]["_id"]
-                if (
-                    query := self.server.db.find(entry["ns"].split(".")[-1], {"_id": document_id})
-                    and "team_number" in query[0].keys()
-                ):
+                query = self.server.db.find(entry["ns"].split(".")[-1], {"_id": document_id})
+                if query and "team_number" in query[0].keys():
                     teams.add(query[0]["team_number"])
         return list(teams)
 
