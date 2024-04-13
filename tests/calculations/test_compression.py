@@ -10,7 +10,7 @@ def test_compress_timeline():
     ]
     assert compression.compress_timeline(timeline_data) == "001AC000AD"
     timeline_data[1]["action_type"] = "intake_amp"
-    assert compression.compress_timeline(timeline_data) == "001AC000AM"
+    assert compression.compress_timeline(timeline_data) == "001AC000AN"
 
 
 def test_compress_section_generic_data():
