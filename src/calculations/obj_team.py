@@ -89,13 +89,18 @@ class OBJTeamCalc(base_calculations.BaseCalculations):
             # calculate avgs
             team_cycles = team_data[schema["team_cycles"]]
             team_info[calculation] = (
-                135
-                - team_data[
-                    "lfm_avg_time_left_to_climb"
-                    if "lfm" in calculation
-                    else "avg_time_left_to_climb"
-                ]
-            ) / team_cycles
+                0
+                if team_cycles == 0
+                else (
+                    135
+                    - team_data[
+                        "lfm_avg_time_left_to_climb"
+                        if "lfm" in calculation
+                        else "avg_time_left_to_climb"
+                    ]
+                )
+                / team_cycles
+            )
         return team_info
 
     def calculate_standard_deviations(self, tim_action_counts, lfm_tim_action_counts):
@@ -444,11 +449,11 @@ class OBJTeamCalc(base_calculations.BaseCalculations):
             team_data = self.calculate_averages(tim_action_counts, lfm_tim_action_counts)
             team_data["team_number"] = team
             team_data["avg_time_left_to_climb"] = sum(
-                tim["time_left_to_climb"] for tim in subj_tims
-            ) / len(tim["time_left_to_climb"] for tim in subj_tims)
+                [tim["time_left_to_climb"] for tim in subj_tims]
+            ) / len([tim["time_left_to_climb"] for tim in subj_tims])
             team_data["lfm_avg_time_left_to_climb"] = sum(
-                tim["time_left_to_climb"] for tim in subj_lfm_tims
-            ) / len(tim["time_left_to_climb"] for tim in subj_lfm_tims)
+                [tim["time_left_to_climb"] for tim in subj_lfm_tims]
+            ) / len([tim["time_left_to_climb"] for tim in subj_lfm_tims])
             team_data.update(self.calculate_avg_expected_cycle_times(team_data))
             team_data.update(self.calculate_counts(obj_tims, obj_lfm_tims))
             team_data.update(self.calculate_multi_counts(obj_tims, obj_lfm_tims))
