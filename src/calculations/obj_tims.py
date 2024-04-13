@@ -365,6 +365,17 @@ class ObjTIMCalcs(BaseCalculations):
                         == "score_trap"
                     ):
                         unconsolidated_tims[num_1]["timeline"][num + 1]["action_type"] = "fail_trap"
+                    if unconsolidated_tims[num_1]["timeline"][num + 1]["action_type"] == "ferry":
+                        unconsolidated_tims[num_1]["timeline"][num + 1][
+                            "action_type"
+                        ] = "fail_ferry"
+                    if (
+                        unconsolidated_tims[num_1]["timeline"][num + 1]["action_type"]
+                        == "ferry_shoot"
+                    ):
+                        unconsolidated_tims[num_1]["timeline"][num + 1][
+                            "action_type"
+                        ] = "fail_ferry_shoot"
         return unconsolidated_tims
 
     def calculate_tim_counts(self, unconsolidated_tims: List[Dict]) -> dict:
