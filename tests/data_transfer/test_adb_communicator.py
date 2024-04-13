@@ -1,6 +1,5 @@
 import pytest
 import unittest
-import unittest
 from unittest.mock import *
 from calculations import decompressor
 import os
@@ -189,7 +188,7 @@ def test_pull_device_data():
                 "team_number": "254",
                 "username": "Mehul",
                 "match_number": 1,
-                "played_defense": True,
+                "played_defense": False,
                 "defense_rating": -1,
             },
             {
@@ -203,7 +202,7 @@ def test_pull_device_data():
                 "team_number": "254",
                 "username": "Mehul",
                 "match_number": 3,
-                "played_defense": False,
+                "played_defense": True,
                 "defense_rating": 6,
             },
         ]
@@ -235,8 +234,8 @@ def test_pull_device_data():
                 "auto_strategies": "testwow",
                 "can_go_under_stage": True,
                 "can_intake_ground": False,
-                "avg_defense_rating": 2.0,
-                "avg_defense_rating_squared": 4.0,
+                "avg_defense_rating": 6.0,
+                "avg_defense_rating_squared": 36.0,
                 "shoot_specific_area_only": "",
                 "strengths": "",
                 "weaknesses": "",
@@ -265,8 +264,10 @@ def test_pull_device_data():
         for document in result_ss_team:
             document.pop("_id")
             document.pop("username")
-            assert utils.dict_near_in(document, expected_ss_team)
             inserted_documents = True
+        test_case = unittest.TestCase()
+        # assertCountEqual is used instead of just assert because the items in `result_ss_team` will have a random order
+        test_case.assertCountEqual(result_ss_team, expected_ss_team)
         assert inserted_documents
     database.Database = real_db
     adb_communicator.pull_device_files = real_pull_device_files
