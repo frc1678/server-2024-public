@@ -413,6 +413,27 @@ class TestOBJTeamCalc:
             self.test_calc.calculate_averages(action_counts, lfm_action_counts) == expected_output
         )
 
+    def test_calculate_avg_expected_cycle_times(self):
+        team_data = {
+            "avg_expected_cycles": 2,
+            "avg_expected_speaker_cycles": 2,
+            "avg_expected_amp_cycles": 2,
+            "lfm_avg_expected_cycles": 2,
+            "lfm_avg_expected_speaker_cycles": 2,
+            "lfm_avg_expected_amp_cycles": 2,
+            "avg_time_left_to_climb": 133,
+            "lfm_avg_time_left_to_climb": 134,
+        }
+        expected_output = {
+            "avg_expected_cycle_time": 1,
+            "avg_expected_speaker_cycle_time": 1,
+            "avg_expected_amp_cycle_time": 1,
+            "lfm_avg_expected_cycle_time": 0.5,
+            "lfm_avg_expected_speaker_cycle_time": 0.5,
+            "lfm_avg_expected_amp_cycle_time": 0.5,
+        }
+        assert self.test_calc.calculate_avg_expected_cycle_times(team_data) == expected_output
+
     def test_standard_deviations(self):
         """Tests calculate_standard_deviations function from src/calculations/obj_team.py"""
         tims = [
