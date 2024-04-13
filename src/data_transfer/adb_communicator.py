@@ -256,8 +256,15 @@ def pull_device_data():
                     # calculate datapoints that are averages
                     for point, value in schema["averages"].items():
                         tim_field = value["tim_fields"][0].split(".")[1]
-                        req_field = value["tim_fields"][0].split(".")[1]
-                        tim_totals = [tim[tim_field] for tim in ss_tims if tim.get(req_field)]
+                        req_field = value["required"][0].split(".")[1]
+                        for tim in ss_tims:
+                            if tim[tim_field] == -1 and tim[req_field]:
+                                tim[tim_field] = 0
+                        tim_totals = [
+                            tim[tim_field]
+                            for tim in ss_tims
+                            if tim.get(tim_field) and tim.get(req_field) and tim[req_field]
+                        ]
                         document[point] = (
                             sum(tim_totals) / len(tim_totals) if len(tim_totals) > 0 else 0
                         )
