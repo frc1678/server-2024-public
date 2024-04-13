@@ -446,14 +446,20 @@ class OBJTeamCalc(base_calculations.BaseCalculations):
             tim_action_sum = self.get_action_sum(obj_tims)
             lfm_tim_action_sum = self.get_action_sum(obj_lfm_tims)
 
+            time_left_to_climbs = [tim["time_left_to_climb"] for tim in subj_tims]
+            lfm_time_left_to_climbs = [tim["time_left_to_climb"] for tim in subj_lfm_tims]
+            team_data["avg_time_left_to_climb"] = sum(time_left_to_climbs) / len(
+                time_left_to_climbs
+            )
+            team_data["lfm_avg_time_left_to_climb"] = sum(lfm_time_left_to_climbs) / len(
+                lfm_time_left_to_climbs
+            )
+            team_data["sd_time_left_to_climb"] = statistics.pstdev(time_left_to_climbs)
+            team_data["lfm_sd_time_left_to_climb"] = statistics.pstdev(lfm_time_left_to_climbs)
+            team_data["max_time_left_to_climb"] = max(time_left_to_climbs)
+            team_data["lfm_max_time_left_to_climb"] = max(lfm_time_left_to_climbs)
             team_data = self.calculate_averages(tim_action_counts, lfm_tim_action_counts)
             team_data["team_number"] = team
-            team_data["avg_time_left_to_climb"] = sum(
-                [tim["time_left_to_climb"] for tim in subj_tims]
-            ) / len([tim["time_left_to_climb"] for tim in subj_tims])
-            team_data["lfm_avg_time_left_to_climb"] = sum(
-                [tim["time_left_to_climb"] for tim in subj_lfm_tims]
-            ) / len([tim["time_left_to_climb"] for tim in subj_lfm_tims])
             team_data.update(self.calculate_avg_expected_cycle_times(team_data))
             team_data.update(self.calculate_counts(obj_tims, obj_lfm_tims))
             team_data.update(self.calculate_multi_counts(obj_tims, obj_lfm_tims))
