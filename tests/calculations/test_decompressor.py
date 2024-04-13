@@ -501,25 +501,23 @@ class TestDecompressor:
 
     def test_decompress_ss_tim(self):
         # Creates 8 instances and checks them with their expected outputs.
-        input_1 = {"coopertition": True, "played_defense": True}
-        input_2 = {"coopertition": True, "broken_mechanism": "shooter broke"}
-        input_3 = {"coopertition": True, "played_defense": True, "defense_rating": 2}
-        input_4 = {"notes": "can shoot from anywhere", "coopertition": True}
+        input_1 = {"played_defense": True}
+        input_2 = {"broken_mechanism": "shooter broke"}
+        input_3 = {"played_defense": True, "defense_rating": 2}
+        input_4 = {"notes": "can shoot from anywhere"}
         input_5 = {"played_defense": True, "broken_mechanism": "shooter broke"}
         input_6 = {"defense_rating": 3, "broken_mechanism": "shooter broke", "played_defense": True}
-        input_7 = {"coopertition": True, "defense_rating": 2}
+        input_7 = {"defense_rating": 2}
         input_8 = {"notes": "can shoot from anywhere"}
 
         excepted_output_1 = {
             "broken_mechanism": False,
-            "coopertition": True,
             "defense_rating": -1,
             "notes": "",
             "played_defense": True,
         }
         excepted_output_2 = {
             "broken_mechanism": True,
-            "coopertition": True,
             "defense_rating": -1,
             "notes": "",
             "played_defense": False,
@@ -527,42 +525,36 @@ class TestDecompressor:
 
         excepted_output_3 = {
             "broken_mechanism": False,
-            "coopertition": True,
             "defense_rating": 2,
             "notes": "",
             "played_defense": True,
         }
         excepted_output_4 = {
             "broken_mechanism": False,
-            "coopertition": True,
             "defense_rating": -1,
             "notes": "can shoot from anywhere",
             "played_defense": False,
         }
         excepted_output_5 = {
             "broken_mechanism": True,
-            "coopertition": False,
             "defense_rating": -1,
             "notes": "",
             "played_defense": True,
         }
         excepted_output_6 = {
             "broken_mechanism": True,
-            "coopertition": False,
             "defense_rating": 3,
             "notes": "",
             "played_defense": True,
         }
         excepted_output_7 = {
             "broken_mechanism": False,
-            "coopertition": True,
             "defense_rating": 2,
             "notes": "",
             "played_defense": False,
         }
         excepted_output_8 = {
             "broken_mechanism": False,
-            "coopertition": False,
             "defense_rating": -1,
             "notes": "can shoot from anywhere",
             "played_defense": False,
