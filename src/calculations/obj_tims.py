@@ -293,21 +293,21 @@ class ObjTIMCalcs(BaseCalculations):
                                             tele_actions[count]["action_type"]
                                         ]["normal"]
                                 elif (
-                                    tele_actions[count + 3]["action_type"] in ["ferry, drop"]
-                                    and value["include_ferry_and_drop"]
+                                    tele_actions[count + 3]["action_type"] in ["ferry_shoot"]
+                                    and value["include_ferry"]
                                 ):
                                     num_cycles += intake_weights[
                                         tele_actions[count]["action_type"]
-                                    ]["ferry_drop"]
-                        # Special scenario if they ferry or drop, it is a lower percentage of the cycle (only for expected cycle too)
-                        # Uses the include_ferry_and_drop field to determine whether or not to do this
+                                    ]["ferry"]
+                        # Special scenario if they ferry, it is a lower percentage of the cycle (only for expected cycle too)
+                        # Uses the include_ferry field to determine whether or not to do this
                         elif (
-                            tele_actions[count + 1]["action_type"] in ["ferry", "drop"]
-                            and value["include_ferry_and_drop"]
+                            tele_actions[count + 1]["action_type"] in ["ferry_shoot"]
+                            and value["include_ferry"]
                         ):
                             if tele_actions[count]["action_type"] in list(intake_weights.keys()):
                                 num_cycles += intake_weights[tele_actions[count]["action_type"]][
-                                    "ferry_drop"
+                                    "ferry"
                                 ]
                         # If a robot has a piece out of a auto and scores it check to see if we should include it, if so add 1
                         # to_teleop is the first timeline field, so check when count == 1
