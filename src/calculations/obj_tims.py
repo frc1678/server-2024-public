@@ -491,6 +491,22 @@ class ObjTIMCalcs(BaseCalculations):
                 final_aggregates[aggregate] = total_count
         return final_aggregates
 
+    def calculate_pre_consolidation_aggregates(self, unconsolidated_tims: List[Dict]):
+        """Given a list of unconsolidated tims, return unconsolidated aggregates"""
+        final_aggregates = {}
+
+        # initilize the list
+        for aggregate, filters in self.schema["pre_consolidated_aggregates"].items():
+            totals = []
+            aggregate_counts = filters["counts"]
+            # Add up all the counts for each aggregate and add them to the totals dictionary
+            for tim in unconsolidated_tims:
+                for count in aggregate_counts:
+                    totals.append(tim[count] if count in tim else 0)
+            # Consolidate numbers from all 3 scouts
+            final_aggregates[aggregate] = self.consolidate_nums(totals)
+        return final_aggregates
+
     def calculate_point_values(self, calculated_tim: List[Dict]):
         """Given a list of consolidated tims by calculate_tim_counts, return consolidated point values"""
         final_points = {}
@@ -576,13 +592,14 @@ class ObjTIMCalcs(BaseCalculations):
             )
         return self.consolidate_bools(unconsolidated_preloads)
 
-    def calculate_tim(self, unconsolidated_tims: List[Dict]) -> dict:
+    def calculate_tim(self, unconsolidated_tims: List[Dict], unconsolidated_totals) -> dict:
         """Given a list of unconsolidated TIMs, returns a calculated TIM"""
         if len(unconsolidated_tims) == 0:
             log.warning("calculate_tim: zero TIMs given")
             return {}
         calculated_tim = {}
         calculated_tim.update(self.calculate_tim_counts(unconsolidated_tims))
+        calculated_tim.update(self.calculate_pre_consolidation_aggregates(unconsolidated_totals))
         calculated_tim.update(self.calculate_tim_times(unconsolidated_tims))
         calculated_tim.update(self.calculate_expected_fields(unconsolidated_tims))
         calculated_tim.update(self.consolidate_categorical_actions(unconsolidated_tims))
@@ -601,6 +618,7 @@ class ObjTIMCalcs(BaseCalculations):
         # confidence_rating is the number of scouts that scouted one robot
         calculated_tim["confidence_ranking"] = len(unconsolidated_tims)
         calculated_tim["scored_preload"] = self.calculate_scored_preload(unconsolidated_tims)
+
         return calculated_tim
 
     def update_calcs(self, tims: List[Dict[str, Union[str, int]]]) -> List[dict]:
@@ -609,7 +627,8 @@ class ObjTIMCalcs(BaseCalculations):
         calculated_tims = []
         for tim in tims:
             unconsolidated_obj_tims = self.server.db.find("unconsolidated_obj_tim", tim)
-            calculated_tim = self.calculate_tim(unconsolidated_obj_tims)
+            unconsolidated_totals = self.server.db.find("unconsolidated_totals", tim)
+            calculated_tim = self.calculate_tim(unconsolidated_obj_tims, unconsolidated_totals)
             calculated_tims.append(calculated_tim)
         harmonized_teams = self.calculate_harmony(calculated_tims)
         for tim in calculated_tims:
