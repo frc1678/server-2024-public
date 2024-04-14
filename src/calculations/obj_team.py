@@ -82,27 +82,6 @@ class OBJTeamCalc(base_calculations.BaseCalculations):
             team_info[calculation] = average
         return team_info
 
-    def calculate_avg_expected_cycle_times(self, team_data):
-        """Calculates avg_expected_cycle_time, avg_expected_speaker_cycles, etc."""
-        team_info = {}
-        for calculation, schema in self.SCHEMA["average_expected_cycle_times"].items():
-            # calculate avgs
-            team_cycles = team_data[schema["team_cycles"]]
-            team_info[calculation] = (
-                0
-                if team_cycles == 0
-                else (
-                    135
-                    - team_data[
-                        "lfm_avg_time_left_to_climb"
-                        if "lfm" in calculation
-                        else "avg_time_left_to_climb"
-                    ]
-                )
-                / team_cycles
-            )
-        return team_info
-
     def calculate_standard_deviations(self, tim_action_counts, lfm_tim_action_counts):
         """Creates a dictionary of calculated standard deviations, called team_info,
         where the keys are the names of the calculation, and the values are the results
@@ -473,7 +452,6 @@ class OBJTeamCalc(base_calculations.BaseCalculations):
 
             team_data.update(self.calculate_averages(tim_action_counts, lfm_tim_action_counts))
             team_data["team_number"] = team
-            team_data.update(self.calculate_avg_expected_cycle_times(team_data))
             team_data.update(self.calculate_counts(obj_tims, obj_lfm_tims))
             team_data.update(self.calculate_multi_counts(obj_tims, obj_lfm_tims))
             team_data.update(self.calculate_super_counts(subj_tims, subj_lfm_tims))

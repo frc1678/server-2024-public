@@ -202,7 +202,7 @@ class ObjTIMCalcs(BaseCalculations):
                     total_time += start["time"] - end["time"]
             return total_time
 
-    def calculate_expected_fields(self, tims):
+    def calculate_expected_fields(self, tims, current_tim):
         """Currently calculates the expected speaker and amp cycle times as well as
         the number of speaker and amp cycles. Both these calculations weight the different intake to
         score cycles.
@@ -221,7 +221,8 @@ class ObjTIMCalcs(BaseCalculations):
                 start_time = self.filter_timeline_actions(tim, action_type="to_teleop")[0]["time"]
                 end_time = self.filter_timeline_actions(tim, action_type="to_endgame")[-1]["time"]
                 # Make total time equal to amount of time passed between teleop and endgame
-                total_time = start_time - end_time
+                # current_tim has the consolidated incap_time, we subtract incap_time from total_time to exclude its effect
+                total_time = start_time - end_time - current_tim["incap_time"]
                 # Tele actions are all the actions that occured in the time between the start time and end time
                 tele_actions = self.filter_timeline_actions(tim, **{"time": [end_time, start_time]})
                 num_cycles = 0
@@ -601,7 +602,7 @@ class ObjTIMCalcs(BaseCalculations):
         calculated_tim.update(self.calculate_tim_counts(unconsolidated_tims))
         calculated_tim.update(self.calculate_pre_consolidation_aggregates(unconsolidated_totals))
         calculated_tim.update(self.calculate_tim_times(unconsolidated_tims))
-        calculated_tim.update(self.calculate_expected_fields(unconsolidated_tims))
+        calculated_tim.update(self.calculate_expected_fields(unconsolidated_tims, calculated_tim))
         calculated_tim.update(self.consolidate_categorical_actions(unconsolidated_tims))
         calculated_tim.update(self.calculate_aggregates(calculated_tim))
         calculated_tim["climbed"] = "O" in [
