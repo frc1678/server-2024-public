@@ -20,6 +20,7 @@ log.addHandler(server_log)
 
 class PredictedAimCalc(BaseCalculations):
     SCHEMA = utils.read_schema("schema/calc_predicted_aim_schema.yml")
+    REGRESSIONS_SCHEMA = utils.read_schema("schema/calc_predicted_weights_schema.yml")
 
     def __init__(self, server):
         "Sets up the `PredictedAimCalc` class."
@@ -54,9 +55,14 @@ class PredictedAimCalc(BaseCalculations):
             elif _how == "diff":
                 value = data[_from[0]] - data[_from[1]]
             elif _how == "rate":
-                value = data[_from[0]] / data[_from[1]]
+                if type(_from[1]) != int and type(_from[1]) != float:
+                    value = data[_from[0]] / data[_from[1]]
+                else:
+                    value = data[_from[0]] / _from[1]
             elif _how == "bool":
                 value = _values[int(data[_from])]
+            elif _how == "threshold":
+                value = int(sum([data[var] for var in _from[:-1]]) >= _from[-1])
         except Exception as e:
             log.critical(f"ERROR WHEN PARSING VARIABLE {_from}: {e}. Cannot calculate data.")
             return 0
@@ -122,17 +128,17 @@ class PredictedAimCalc(BaseCalculations):
             # TODO: this is super scuffed, we need predicted scores for red and blue
             #       to calculate win chance but they aren't added to the match expected values,
             #       so we have to calculate them here. We NEED a fix for this, but I don't have time now since champs is next week.
-            match_expected_values["predicted_score_red"] = self.predict_value(
+            match_expected_values["_predicted_score_red"] = self.predict_value(
                 match_expected_values,
                 "score",
-                self.SCHEMA["--regressions"]["score"]["model_type"],
+                self.REGRESSIONS_SCHEMA["--regressions"]["score"]["model_type"],
                 alliance_color="R",
                 level="quals",
             )
-            match_expected_values["predicted_score_blue"] = self.predict_value(
+            match_expected_values["_predicted_score_blue"] = self.predict_value(
                 match_expected_values,
                 "score",
-                self.SCHEMA["--regressions"]["score"]["model_type"],
+                self.REGRESSIONS_SCHEMA["--regressions"]["score"]["model_type"],
                 alliance_color="B",
                 level="quals",
             )
@@ -363,7 +369,7 @@ class PredictedAimCalc(BaseCalculations):
         """
         alliance_color = "red" if alliance_color == "R" else "blue"
         # Get variables and weights
-        weighted_vars = self.SCHEMA["--regressions"][prediction]["indep"]
+        weighted_vars = self.REGRESSIONS_SCHEMA["--regressions"][prediction]["indep"]
         weights = self.get_predicted_weights()[prediction]
 
         if level == "quals":
@@ -372,11 +378,10 @@ class PredictedAimCalc(BaseCalculations):
                 return sum(
                     [
                         match_expected_values[f"{var}_{alliance_color}"] * weights[var]
-                        if var != "const" and not self.SCHEMA["--expected_values"][var]["is_joined"]
+                        if not self.SCHEMA["--expected_values"][var]["is_joined"]
                         else match_expected_values[var] * weights[var]
                         for var in weighted_vars
                     ]
-                    + [weights["const"]]
                 )
             elif model_type == "logistic":
                 return 1 / (
@@ -385,12 +390,10 @@ class PredictedAimCalc(BaseCalculations):
                         -sum(
                             [
                                 match_expected_values[f"{var}_{alliance_color}"] * weights[var]
-                                if var != "const"
-                                and not self.SCHEMA["--expected_values"][var]["is_joined"]
+                                if not self.SCHEMA["--expected_values"][var]["is_joined"]
                                 else match_expected_values[var] * weights[var]
                                 for var in weighted_vars
                             ]
-                            + [weights["const"]]
                         )
                     )
                 )
@@ -399,11 +402,10 @@ class PredictedAimCalc(BaseCalculations):
                 return sum(
                     [
                         match_expected_values[var] * weights[var]
-                        if var != "const" and not self.SCHEMA["--expected_values"][var]["is_joined"]
+                        if not self.SCHEMA["--expected_values"][var]["is_joined"]
                         else match_expected_values[var] * weights[var]
                         for var in weighted_vars
                     ]
-                    + [weights["const"]]
                 )
             elif model_type == "logistic":
                 return 1 / (
@@ -412,12 +414,10 @@ class PredictedAimCalc(BaseCalculations):
                         -sum(
                             [
                                 match_expected_values[var] * weights[var]
-                                if var != "const"
-                                and not self.SCHEMA["--expected_values"][var]["is_joined"]
+                                if not self.SCHEMA["--expected_values"][var]["is_joined"]
                                 else match_expected_values[var] * weights[var]
                                 for var in weighted_vars
                             ]
-                            + [weights["const"]]
                         )
                     )
                 )
@@ -474,12 +474,14 @@ class PredictedAimCalc(BaseCalculations):
                 # Add expected values to update
                 for action, value in match_expected_values.items():
                     if action.split("_")[-1] == "red":
-                        update[action] = value
+                        update["_".join(action.split("_")[:-1])] = value
+                    elif action.split("_")[-1] == "blue":
+                        other_update["_".join(action.split("_")[:-1])] = value
                     else:
-                        other_update[action] = value
+                        update[action] = other_update[action] = value
 
                 # Calculate predictions
-                for prediction, info in self.SCHEMA["--regressions"].items():
+                for prediction, info in self.REGRESSIONS_SCHEMA["--regressions"].items():
                     update[f"predicted_{prediction}"] = self.predict_value(
                         match_expected_values, prediction, info["model_type"], aim["alliance_color"]
                     )
@@ -540,7 +542,7 @@ class PredictedAimCalc(BaseCalculations):
                 update[action] = value
 
             # Calculate predictions
-            for prediction, info in self.SCHEMA["--regressions"].items():
+            for prediction, info in self.REGRESSIONS_SCHEMA["--regressions"].items():
                 if not info["is_joined"]:
                     update[f"predicted_{prediction}"] = self.predict_value(
                         match_expected_values, prediction, info["model_type"], level="elims"
