@@ -340,43 +340,14 @@ class ObjTIMCalcs(BaseCalculations):
             # Collects the data for score_fails for amp, and speaker.
             for num, action_dict in enumerate(timeline):
                 if action_dict["action_type"] == "fail":
-                    if (
-                        unconsolidated_tims[num_1]["timeline"][num + 1]["action_type"]
-                        == "score_speaker"
-                    ):
-                        unconsolidated_tims[num_1]["timeline"][num + 1][
-                            "action_type"
-                        ] = "score_fail_speaker"
-                    if (
-                        unconsolidated_tims[num_1]["timeline"][num + 1]["action_type"]
-                        == "score_amp"
-                    ):
-                        unconsolidated_tims[num_1]["timeline"][num + 1][
-                            "action_type"
-                        ] = "score_fail_amp"
-                    if (
-                        unconsolidated_tims[num_1]["timeline"][num + 1]["action_type"]
-                        == "score_amplify"
-                    ):
-                        unconsolidated_tims[num_1]["timeline"][num + 1][
-                            "action_type"
-                        ] = "score_fail_amplify"
-                    if (
-                        unconsolidated_tims[num_1]["timeline"][num + 1]["action_type"]
-                        == "score_trap"
-                    ):
-                        unconsolidated_tims[num_1]["timeline"][num + 1]["action_type"] = "fail_trap"
-                    if unconsolidated_tims[num_1]["timeline"][num + 1]["action_type"] == "ferry":
-                        unconsolidated_tims[num_1]["timeline"][num + 1][
-                            "action_type"
-                        ] = "fail_ferry"
-                    if (
-                        unconsolidated_tims[num_1]["timeline"][num + 1]["action_type"]
-                        == "ferry_shoot"
-                    ):
-                        unconsolidated_tims[num_1]["timeline"][num + 1][
-                            "action_type"
-                        ] = "fail_ferry_shoot"
+                    for score_type, new_value in self.schema["fail_actions"].items():
+                        if (
+                            unconsolidated_tims[num_1]["timeline"][num + 1]["action_type"]
+                            == score_type
+                        ):
+                            unconsolidated_tims[num_1]["timeline"][num + 1][
+                                "action_type"
+                            ] = new_value["name"]
         return unconsolidated_tims
 
     def calculate_tim_counts(self, unconsolidated_tims: List[Dict]) -> dict:
