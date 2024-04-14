@@ -473,8 +473,10 @@ class ObjTIMCalcs(BaseCalculations):
             aggregate_counts = filters["counts"]
             # Add up all the counts for each aggregate and add them to the totals dictionary
             for tim in unconsolidated_tims:
+                scout_totals = 0
                 for count in aggregate_counts:
-                    totals.append(tim[count] if count in tim else 0)
+                    scout_totals += tim[count] if count in tim else 0
+                totals.append(scout_totals)
             # Consolidate numbers from all 3 scouts
             final_aggregates[aggregate] = self.consolidate_nums(totals)
         return final_aggregates
