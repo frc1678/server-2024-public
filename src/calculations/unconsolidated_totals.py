@@ -88,6 +88,22 @@ class UnconsolidatedTotals(BaseCalculations):
                         if calculation == count:
                             total_count += new_count
                     tim_totals[aggregate] = total_count
+            # New section for obj_tim, unconsolidated_totals needs to iterate through these datapoints as well
+            for aggregate, filters in self.schema["pre_consolidated_aggregates"].items():
+                total_count = 0
+                aggregate_counts = filters["counts"]
+                for calculation, filters in self.schema["timeline_counts"].items():
+                    filters_ = copy.deepcopy(filters)
+                    expected_type = filters_.pop("type")
+                    new_count = self.count_timeline_actions(tim, **filters_)
+                    if not isinstance(new_count, self.type_check_dict[expected_type]):
+                        raise TypeError(f"Expected {new_count} calculation to be a {expected_type}")
+                    tim_totals[calculation] = new_count
+                    # Calculate unconsolidated aggregates
+                    for count in aggregate_counts:
+                        if calculation == count:
+                            total_count += new_count
+                    tim_totals[aggregate] = total_count
             # Calculate unconsolidated categorical actions
             for category in self.schema["categorical_actions"]:
                 tim_totals[category] = tim[category]
