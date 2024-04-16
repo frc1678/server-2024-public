@@ -13,7 +13,7 @@ def test_predict_alliance():
             "matches_played": 5,
             "auto_avg_speaker": 4.0,
             "auto_avg_amp": 0.5,
-            "tele_avg_speaker": 0.0,
+            "tele_avg_unamplified_speaker": 0.0,
             "tele_avg_amplified": 11.2,
             "tele_avg_amp": 2.0,
             "avg_trap": 1.0,
@@ -27,13 +27,14 @@ def test_predict_alliance():
             "onstage_attempts": 5,
             "stage_percent_success_all": 100,
             "climb_after_percent_success": 0,
+            "avg_expected_notes": 5,
         },
         {
             "team_number": "1533",
             "matches_played": 5,
             "auto_avg_speaker": 2.6,
             "auto_avg_amp": 0.8,
-            "tele_avg_speaker": 0.5,
+            "tele_avg_unamplified_speaker": 0.5,
             "tele_avg_amplified": 8.2,
             "tele_avg_amp": 3.6,
             "avg_trap": 0.2,
@@ -47,13 +48,14 @@ def test_predict_alliance():
             "onstage_attempts": 2,
             "stage_percent_success_all": 20,
             "climb_after_percent_success": 100,
+            "avg_expected_notes": 10,
         },
         {
             "team_number": "7229",
             "matches_played": 5,
             "auto_avg_speaker": 3.4,
             "auto_avg_amp": 1.2,
-            "tele_avg_speaker": 4.4,
+            "tele_avg_unamplified_speaker": 4.4,
             "tele_avg_amplified": 4.4,
             "tele_avg_amp": 3.2,
             "avg_trap": 0.6,
@@ -67,6 +69,7 @@ def test_predict_alliance():
             "onstage_attempts": 4,
             "stage_percent_success_all": 60,
             "climb_after_percent_success": 0,
+            "avg_expected_notes": 3,
         },
     ]
     fake_tba_team_data = [
@@ -84,10 +87,10 @@ def test_predict_alliance():
         },
     ]
     expected_return = {
-        "predicted_score": 113.51599999999999,
-        "predicted_auto_score": 4.8,
-        "predicted_stage_score": 14,
-        "predicted_tele_score": 94.716,
+        "predicted_score": 159.6780487804878,
+        "predicted_auto_score": 55.0,
+        "predicted_stage_score": 21,
+        "predicted_tele_score": 83.6780487804878,
     }
     assert (
         predict_alliance(

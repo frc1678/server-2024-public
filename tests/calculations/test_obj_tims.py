@@ -345,6 +345,182 @@ class TestObjTIMCalcs:
             "parked": False,
         },
     ]
+    unconsolidated_totals = [
+        {
+            "auto_speaker": 2,
+            "auto_amp": 2,
+            "tele_intakes_amp": 1,
+            "tele_intakes_poach": 1,
+            "tele_intakes_center": 1,
+            "tele_intakes_far": 1,
+            "tele_unamplified_speaker": 2,
+            "tele_amplified": 0,
+            "tele_ferry": 0,
+            "tele_failed_amp": 0,
+            "tele_failed_unamplified_speaker": 1,
+            "tele_failed_amplified": 0,
+            "auto_failed_amp": 0,
+            "auto_failed_speaker": 0,
+            "tele_amp": 1,
+            "auto_intake_spike_1": 1,
+            "auto_intake_spike_2": 1,
+            "auto_intake_spike_3": 1,
+            "auto_intake_center_1": 1,
+            "auto_intake_center_2": 1,
+            "auto_intake_center_3": 1,
+            "auto_intake_center_4": 1,
+            "auto_intake_center_5": 1,
+            "tele_drop": 0,
+            "incap_time": 33,
+            "median_cycle_time": -6,
+            "time_from_amp_to_amp": 7,
+            "time_from_amp_to_speaker": 24,
+            "time_from_poach_to_amp": 13,
+            "time_from_poach_to_speaker": 30,
+            "time_from_center_to_amp": 26,
+            "time_from_center_to_speaker": 43,
+            "time_from_far_to_amp": 37,
+            "time_from_far_to_speaker": 39,
+            "stage_level_left": "N",
+            "stage_level_center": "O",
+            "stage_level_right": "N",
+            "start_position": "1",
+            "has_preload": False,
+            "parked": True,
+            "trap": 1,
+            "auto_total_points": 14,
+            "tele_total_points": 5,
+            "endgame_total_points": 0,
+            "total_points": 24,
+            "auto_total_intakes": 8,
+            "auto_total_pieces": 4,
+            "auto_total_failed_pieces": 0,
+            "tele_total_intakes": 4,
+            "tele_total_pieces": 3,
+            "tele_total_failed_pieces": 1,
+            "total_intakes": 12,
+            "total_pieces": 7,
+            "match_number": 42,
+            "team_number": "254",
+            "scout_name": "BOB",
+        },
+        {
+            "auto_speaker": 2,
+            "auto_amp": 2,
+            "tele_intakes_amp": 1,
+            "tele_intakes_poach": 1,
+            "tele_intakes_center": 1,
+            "tele_intakes_far": 1,
+            "tele_unamplified_speaker": 2,
+            "tele_amplified": 0,
+            "tele_ferry": 0,
+            "tele_failed_amp": 0,
+            "tele_failed_unamplified_speaker": 1,
+            "tele_failed_amplified": 0,
+            "auto_failed_amp": 0,
+            "auto_failed_speaker": 0,
+            "tele_amp": 1,
+            "auto_intake_spike_1": 1,
+            "auto_intake_spike_2": 1,
+            "auto_intake_spike_3": 1,
+            "auto_intake_center_1": 1,
+            "auto_intake_center_2": 1,
+            "auto_intake_center_3": 1,
+            "auto_intake_center_4": 1,
+            "auto_intake_center_5": 1,
+            "tele_drop": 0,
+            "incap_time": 33,
+            "median_cycle_time": -6,
+            "time_from_amp_to_amp": 7,
+            "time_from_amp_to_speaker": 24,
+            "time_from_poach_to_amp": 13,
+            "time_from_poach_to_speaker": 30,
+            "time_from_center_to_amp": 26,
+            "time_from_center_to_speaker": 43,
+            "time_from_far_to_amp": 37,
+            "time_from_far_to_speaker": 39,
+            "stage_level_left": "N",
+            "stage_level_center": "O",
+            "stage_level_right": "N",
+            "start_position": "1",
+            "has_preload": False,
+            "parked": True,
+            "trap": 1,
+            "auto_total_points": 14,
+            "tele_total_points": 5,
+            "endgame_total_points": 0,
+            "total_points": 24,
+            "auto_total_intakes": 8,
+            "auto_total_pieces": 4,
+            "auto_total_failed_pieces": 0,
+            "tele_total_intakes": 4,
+            "tele_total_pieces": 3,
+            "tele_total_failed_pieces": 1,
+            "total_intakes": 12,
+            "total_pieces": 7,
+            "match_number": 42,
+            "team_number": "254",
+            "scout_name": "DAVE",
+        },
+        {
+            "auto_speaker": 2,
+            "auto_amp": 2,
+            "tele_intakes_amp": 1,
+            "tele_intakes_poach": 1,
+            "tele_intakes_center": 1,
+            "tele_intakes_far": 1,
+            "tele_unamplified_speaker": 2,
+            "tele_amplified": 0,
+            "tele_ferry": 0,
+            "tele_failed_amp": 0,
+            "tele_failed_unamplified_speaker": 1,
+            "tele_failed_amplified": 0,
+            "auto_failed_amp": 0,
+            "auto_failed_speaker": 0,
+            "tele_amp": 1,
+            "auto_intake_spike_1": 1,
+            "auto_intake_spike_2": 1,
+            "auto_intake_spike_3": 1,
+            "auto_intake_center_1": 1,
+            "auto_intake_center_2": 1,
+            "auto_intake_center_3": 1,
+            "auto_intake_center_4": 1,
+            "auto_intake_center_5": 1,
+            "tele_drop": 0,
+            "incap_time": 33,
+            "median_cycle_time": -6,
+            "time_from_amp_to_amp": 7,
+            "time_from_amp_to_speaker": 24,
+            "time_from_poach_to_amp": 13,
+            "time_from_poach_to_speaker": 30,
+            "time_from_center_to_amp": 26,
+            "time_from_center_to_speaker": 43,
+            "time_from_far_to_amp": 37,
+            "time_from_far_to_speaker": 39,
+            "stage_level_left": "N",
+            "stage_level_center": "O",
+            "stage_level_right": "N",
+            "start_position": "1",
+            "has_preload": False,
+            "parked": True,
+            "trap": 1,
+            "auto_total_points": 14,
+            "tele_total_points": 5,
+            "endgame_total_points": 0,
+            "total_points": 24,
+            "auto_total_intakes": 8,
+            "auto_total_pieces": 4,
+            "auto_total_failed_pieces": 0,
+            "tele_total_intakes": 4,
+            "tele_total_pieces": 3,
+            "tele_total_failed_pieces": 1,
+            "total_intakes": 12,
+            "total_pieces": 7,
+            "match_number": 42,
+            "team_number": "254",
+            "scout_name": "ANDY",
+        },
+    ]
 
     calculated_tim_data = {
         "auto_speaker": 2,
@@ -353,11 +529,11 @@ class TestObjTIMCalcs:
         "tele_intakes_poach": 1,
         "tele_intakes_center": 1,
         "tele_intakes_far": 1,
-        "tele_speaker": 2,
+        "tele_unamplified_speaker": 2,
         "tele_amplified": 0,
         "tele_ferry": 0,
         "tele_failed_amp": 0,
-        "tele_failed_speaker": 1,
+        "tele_failed_unamplified_speaker": 1,
         "tele_failed_amplified": 0,
         "auto_failed_amp": 0,
         "auto_failed_speaker": 0,
@@ -484,19 +660,19 @@ class TestObjTIMCalcs:
 
     def test_calculate_expected_fields(self):
         expected_results = {
-            "expected_cycle_time": 17.24,
-            "expected_speaker_cycle_time": 42.86,
-            "expected_amp_cycle_time": 24.79,
-            "expected_cycles": 7.66,
-            "expected_speaker_cycles": 3.08,
-            "expected_amp_cycles": 5.33,
+            "expected_cycle_time": 19.12,
+            "expected_speaker_cycle_time": 56.65,
+            "expected_amp_cycle_time": 28.85,
+            "expected_cycles": 6.91,
+            "expected_speaker_cycles": 2.33,
+            "expected_amp_cycles": 4.58,
             "expected_notes": 6.08,
             "expected_speaker_notes": 1.83,
             "expected_amp_notes": 4.25,
         }
         # Fails must be calculated first in order for the calculation to work
         after_fails = self.test_calculator.score_fail_type(self.unconsolidated_tims)
-        result = self.test_calculator.calculate_expected_fields(after_fails)
+        result = self.test_calculator.calculate_expected_fields(after_fails, {"incap_time": 0})
         assert result == expected_results
 
     def test_score_fail_type(self):
@@ -514,11 +690,7 @@ class TestObjTIMCalcs:
             "auto_total_pieces": 4,
             "auto_total_failed_pieces": 0,
             "tele_total_intakes": 4,
-            "tele_total_pieces": 2,
-            "tele_total_failed_pieces": 1,
             "total_intakes": 12,
-            "total_pieces": 6,
-            "tele_total_speaker_notes": 0,
         }
 
     def test_calculate_point_values(self):
@@ -526,9 +698,9 @@ class TestObjTIMCalcs:
         assert point_values == {
             "auto_total_points": 14,
             "endgame_total_points": 6,
-            "tele_total_points": 1,
-            "total_points": 15,
-            "points_per_note": 3.3333333333333335,
+            "tele_total_points": 5,
+            "total_points": 19,
+            "points_per_note": 3.0,
         }
 
     def test_calculate_harmony(self):
@@ -541,11 +713,11 @@ class TestObjTIMCalcs:
                 "tele_intakes_poach": 1,
                 "tele_intakes_center": 1,
                 "tele_intakes_far": 1,
-                "tele_speaker": 2,
+                "tele_unamplified_speaker": 2,
                 "tele_amplified": 0,
                 "tele_ferry": 0,
                 "tele_failed_amp": 0,
-                "tele_failed_speaker": 1,
+                "tele_failed_unamplified_speaker": 1,
                 "tele_failed_amplified": 0,
                 "auto_failed_amp": 0,
                 "auto_failed_speaker": 0,
@@ -599,11 +771,11 @@ class TestObjTIMCalcs:
                 "tele_intakes_poach": 1,
                 "tele_intakes_center": 1,
                 "tele_intakes_far": 1,
-                "tele_speaker": 2,
+                "tele_unamplified_speaker": 2,
                 "tele_amplified": 0,
                 "tele_ferry": 0,
                 "tele_failed_amp": 0,
-                "tele_failed_speaker": 1,
+                "tele_failed_unamplified_speaker": 1,
                 "tele_failed_amplified": 0,
                 "auto_failed_amp": 0,
                 "auto_failed_speaker": 0,
@@ -657,11 +829,11 @@ class TestObjTIMCalcs:
                 "tele_intakes_poach": 1,
                 "tele_intakes_center": 1,
                 "tele_intakes_far": 1,
-                "tele_speaker": 2,
+                "tele_unamplified_speaker": 2,
                 "tele_amplified": 0,
                 "tele_ferry": 0,
                 "tele_failed_amp": 0,
-                "tele_failed_speaker": 1,
+                "tele_failed_unamplified_speaker": 1,
                 "tele_failed_amplified": 0,
                 "auto_failed_amp": 0,
                 "auto_failed_speaker": 0,
@@ -721,34 +893,36 @@ class TestObjTIMCalcs:
 
     def test_run_consolidation(self):
         self.test_server.db.insert_documents("unconsolidated_obj_tim", self.unconsolidated_tims)
+        self.test_server.db.delete_data("unconsolidated_totals")
+        self.test_server.db.insert_documents("unconsolidated_totals", self.unconsolidated_totals)
         with patch("data_transfer.tba_communicator.tba_request", return_value=self.tba_test_data):
             self.test_calculator.run()
         result = self.test_server.db.find("obj_tim")
         assert len(result) == 1
         calculated_tim = result[0]
         assert calculated_tim["confidence_ranking"] == 3
-        assert calculated_tim["expected_speaker_cycle_time"] == 42.86
-        assert calculated_tim["expected_amp_cycle_time"] == 24.79
+        assert calculated_tim["expected_speaker_cycle_time"] == 56.65
+        assert calculated_tim["expected_amp_cycle_time"] == 28.85
         assert calculated_tim["incap_time"] == 0
         assert calculated_tim["match_number"] == 42
         assert calculated_tim["team_number"] == "254"
         assert calculated_tim["auto_total_intakes"] == 1
         assert calculated_tim["auto_total_pieces"] == 1
         assert calculated_tim["tele_total_intakes"] == 10
-        assert calculated_tim["tele_total_pieces"] == 7
+        assert calculated_tim["tele_total_pieces"] == 4
         assert calculated_tim["total_intakes"] == 11
         assert calculated_tim["total_pieces"] == 8
         assert calculated_tim["tele_ferry_drive"] == 0
         assert calculated_tim["tele_ferry_shoot"] == 0
         assert calculated_tim["start_position"] == "1"
         assert calculated_tim["has_preload"] == False
-        assert calculated_tim["expected_speaker_cycles"] == 3.08
-        assert calculated_tim["expected_amp_cycles"] == 5.33
+        assert calculated_tim["expected_speaker_cycles"] == 2.33
+        assert calculated_tim["expected_amp_cycles"] == 4.58
         assert calculated_tim["expected_speaker_notes"] == 1.83
         assert calculated_tim["expected_amp_notes"] == 4.25
-        assert calculated_tim["expected_cycle_time"] == 17.24
+        assert calculated_tim["expected_cycle_time"] == 19.12
         assert calculated_tim["expected_notes"] == 6.08
-        assert calculated_tim["expected_cycles"] == 7.66
+        assert calculated_tim["expected_cycles"] == 6.91
         assert calculated_tim["climbed"] == True
 
     @mock.patch.object(

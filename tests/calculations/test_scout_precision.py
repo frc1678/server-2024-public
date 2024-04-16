@@ -250,7 +250,7 @@ class TestScoutPrecisionCalc:
                 "auto_speaker_precision": 0.5,
                 "auto_amp_precision": 3,
                 "tele_amplified_precision": 2,
-                "tele_speaker_precision": 1,
+                "tele_unamplified_speaker_precision": 1,
                 "tele_amp_precision": 1,
                 "match_number": 1,
             },
@@ -260,7 +260,7 @@ class TestScoutPrecisionCalc:
                 "auto_speaker_precision": -1,
                 "auto_amp_precision": 1,
                 "tele_amplified_precision": 2,
-                "tele_speaker_precision": 1,
+                "tele_unamplified_speaker_precision": 1,
                 "tele_amp_precision": 1,
                 "match_number": 2,
             },
@@ -270,7 +270,7 @@ class TestScoutPrecisionCalc:
                 "auto_speaker_precision": 0.5,
                 "auto_amp_precision": 0.5,
                 "tele_amplified_precision": 2,
-                "tele_speaker_precision": 1,
+                "tele_unamplified_speaker_precision": 1,
                 "tele_amp_precision": 1,
                 "match_number": 3,
             },
@@ -280,7 +280,7 @@ class TestScoutPrecisionCalc:
                 "auto_speaker_precision": 0.5,
                 "auto_amp_precision": 3,
                 "tele_amplified_precision": 2,
-                "tele_speaker_precision": 1,
+                "tele_unamplified_speaker_precision": 1,
                 "tele_amp_precision": 1,
                 "match_number": 4,
             },
@@ -290,7 +290,7 @@ class TestScoutPrecisionCalc:
                 "auto_speaker_precision": 0.5,
                 "auto_amp_precision": 3,
                 "tele_amplified_precision": 2,
-                "tele_speaker_precision": 1,
+                "tele_unamplified_speaker_precision": 1,
                 "tele_amp_precision": 1,
                 "match_number": 5,
             },
@@ -300,7 +300,7 @@ class TestScoutPrecisionCalc:
             "auto_amp_precision": 2.1,
             "tele_amplified_precision": 2,
             "scout_precision": 1.0448600000000001,
-            "tele_speaker_precision": 1,
+            "tele_unamplified_speaker_precision": 1,
             "tele_amp_precision": 1,
         }
 
@@ -349,7 +349,6 @@ class TestScoutPrecisionCalc:
             },
             {
                 "scout_name": "CYRUS BROWN",
-                "scout_precision": None,
                 "scout_precision_rank": 5,
             },
         ]
@@ -363,7 +362,7 @@ class TestScoutPrecisionCalc:
                 "auto_speaker_precision": 0.1,
                 "auto_amp_precision": 0.49,
                 "tele_amplified_precision": 2.1,
-                "tele_speaker_precision": 2.9,
+                "tele_unamplified_speaker_precision": 2.9,
                 "tele_amp_precision": 1.5,
             },
         ):
@@ -375,7 +374,7 @@ class TestScoutPrecisionCalc:
                     "auto_speaker_precision": 0.1,
                     "auto_amp_precision": 0.49,
                     "tele_amplified_precision": 2.1,
-                    "tele_speaker_precision": 2.9,
+                    "tele_unamplified_speaker_precision": 2.9,
                     "tele_amp_precision": 1.5,
                 }
             ]
@@ -389,7 +388,7 @@ class TestScoutPrecisionCalc:
                 "auto_speaker_precision": 0.1,
                 "auto_amp_precision": 0.49,
                 "tele_amplified_precision": 2.1,
-                "tele_speaker_precision": 2.9,
+                "tele_unamplified_speaker_precision": 2.9,
                 "tele_amp_precision": 1.5,
             },
             {
@@ -398,7 +397,7 @@ class TestScoutPrecisionCalc:
                 "auto_speaker_precision": 0.1,
                 "auto_amp_precision": 0.49,
                 "tele_amplified_precision": 2.1,
-                "tele_speaker_precision": 2.9,
+                "tele_unamplified_speaker_precision": 2.9,
                 "tele_amp_precision": 1.5,
             },
             {
@@ -407,7 +406,7 @@ class TestScoutPrecisionCalc:
                 "auto_speaker_precision": 0.1,
                 "auto_amp_precision": 0.49,
                 "tele_amplified_precision": 2.1,
-                "tele_speaker_precision": 2.9,
+                "tele_unamplified_speaker_precision": 2.9,
                 "tele_amp_precision": 1.5,
             },
             {
@@ -416,7 +415,7 @@ class TestScoutPrecisionCalc:
                 "auto_speaker_precision": 0.1,
                 "auto_amp_precision": 0.49,
                 "tele_amplified_precision": 2.1,
-                "tele_speaker_precision": 2.9,
+                "tele_unamplified_speaker_precision": 2.9,
                 "tele_amp_precision": 1.5,
             },
             {
@@ -425,7 +424,7 @@ class TestScoutPrecisionCalc:
                 "auto_speaker_precision": 0.1,
                 "auto_amp_precision": 0.49,
                 "tele_amplified_precision": 2.1,
-                "tele_speaker_precision": 2.9,
+                "tele_unamplified_speaker_precision": 2.9,
                 "tele_amp_precision": 1.5,
             },
             {
@@ -434,7 +433,7 @@ class TestScoutPrecisionCalc:
                 "auto_speaker_precision": 0.1,
                 "auto_amp_precision": 0.49,
                 "tele_amplified_precision": 2.1,
-                "tele_speaker_precision": 2.9,
+                "tele_unamplified_speaker_precision": 2.9,
                 "tele_amp_precision": 1.5,
             },
         ]
@@ -447,7 +446,7 @@ class TestScoutPrecisionCalc:
                 "auto_speaker_precision": 0.1,
                 "auto_amp_precision": 0.49,
                 "tele_amplified_precision": 2.1,
-                "tele_speaker_precision": 2.9,
+                "tele_unamplified_speaker_precision": 2.9,
                 "tele_amp_precision": 1.5,
             },
             {
@@ -457,7 +456,7 @@ class TestScoutPrecisionCalc:
                 "auto_speaker_precision": 0.1,
                 "auto_amp_precision": 0.49,
                 "tele_amplified_precision": 2.1,
-                "tele_speaker_precision": 2.9,
+                "tele_unamplified_speaker_precision": 2.9,
                 "tele_amp_precision": 1.5,
             },
             {
@@ -467,7 +466,7 @@ class TestScoutPrecisionCalc:
                 "auto_speaker_precision": 0.1,
                 "auto_amp_precision": 0.49,
                 "tele_amplified_precision": 2.1,
-                "tele_speaker_precision": 2.9,
+                "tele_unamplified_speaker_precision": 2.9,
                 "tele_amp_precision": 1.5,
             },
             {
@@ -477,7 +476,7 @@ class TestScoutPrecisionCalc:
                 "auto_speaker_precision": 0.1,
                 "auto_amp_precision": 0.49,
                 "tele_amplified_precision": 2.1,
-                "tele_speaker_precision": 2.9,
+                "tele_unamplified_speaker_precision": 2.9,
                 "tele_amp_precision": 1.5,
             },
             {
@@ -487,7 +486,7 @@ class TestScoutPrecisionCalc:
                 "auto_speaker_precision": 0.1,
                 "auto_amp_precision": 0.49,
                 "tele_amplified_precision": 2.1,
-                "tele_speaker_precision": 2.9,
+                "tele_unamplified_speaker_precision": 2.9,
                 "tele_amp_precision": 1.5,
             },
             {
@@ -497,7 +496,7 @@ class TestScoutPrecisionCalc:
                 "auto_speaker_precision": 0.1,
                 "auto_amp_precision": 0.49,
                 "tele_amplified_precision": 2.1,
-                "tele_speaker_precision": 2.9,
+                "tele_unamplified_speaker_precision": 2.9,
                 "tele_amp_precision": 1.5,
             },
         ]

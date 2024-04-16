@@ -26,6 +26,9 @@ class TestSimPrecisionCalc:
                         "teleopSpeakerNotePoints": 2,
                         "teleopSpeakerNoteAmplifiedPoints": 15,
                         "teleopAmpNotePoints": 7,
+                        "teleopSpeakerNoteCount": 4,
+                        "teleopSpeakerNoteAmplifiedCount": 0,
+                        "endGameNoteInTrapPoints": 0,
                     },
                     "red": {
                         "foulPoints": 0,
@@ -39,6 +42,9 @@ class TestSimPrecisionCalc:
                         "teleopSpeakerNotePoints": 6,
                         "teleopSpeakerNoteAmplifiedPoints": 40,
                         "teleopAmpNotePoints": 7,
+                        "teleopSpeakerNoteCount": 11,
+                        "teleopSpeakerNoteAmplifiedCount": 0,
+                        "endGameNoteInTrapPoints": 0,
                     },
                 },
             },
@@ -59,6 +65,9 @@ class TestSimPrecisionCalc:
                         "teleopSpeakerNotePoints": 2,
                         "teleopSpeakerNoteAmplifiedPoints": 20,
                         "teleopAmpNotePoints": 2,
+                        "teleopSpeakerNoteCount": 5,
+                        "teleopSpeakerNoteAmplifiedCount": 0,
+                        "endGameNoteInTrapPoints": 0,
                     },
                     "red": {
                         "foulPoints": 0,
@@ -72,6 +81,9 @@ class TestSimPrecisionCalc:
                         "teleopSpeakerNotePoints": 6,
                         "teleopSpeakerNoteAmplifiedPoints": 35,
                         "teleopAmpNotePoints": 6,
+                        "teleopSpeakerNoteCount": 10,
+                        "teleopSpeakerNoteAmplifiedCount": 0,
+                        "endGameNoteInTrapPoints": 0,
                     },
                 },
             },
@@ -91,9 +103,11 @@ class TestSimPrecisionCalc:
                 "alliance_color_is_red": True,
                 "auto_speaker": 2,
                 "auto_amp": 2,
-                "tele_speaker": 1,
+                "tele_unamplified_speaker": 1,
                 "tele_amplified": 3,
                 "tele_amp": 0,
+                "tele_total_speaker_notes": 4,
+                "trap": 0,
             },
             {
                 "scout_name": "NATHAN MILLS",
@@ -102,9 +116,11 @@ class TestSimPrecisionCalc:
                 "alliance_color_is_red": True,
                 "auto_speaker": 0,
                 "auto_amp": 2,
-                "tele_speaker": 1,
+                "tele_unamplified_speaker": 1,
                 "tele_amplified": 0,
                 "tele_amp": 0,
+                "tele_total_speaker_notes": 1,
+                "trap": 0,
             },
             {
                 "scout_name": "KATHY LI",
@@ -113,9 +129,11 @@ class TestSimPrecisionCalc:
                 "alliance_color_is_red": True,
                 "auto_speaker": 0,
                 "auto_amp": 2,
-                "tele_speaker": 1,
+                "tele_unamplified_speaker": 1,
                 "tele_amplified": 2,
                 "tele_amp": 3,
+                "tele_total_speaker_notes": 3,
+                "trap": 0,
             },
             {
                 "scout_name": "KATE UNGER",
@@ -124,9 +142,11 @@ class TestSimPrecisionCalc:
                 "alliance_color_is_red": True,
                 "auto_speaker": 0,
                 "auto_amp": 2,
-                "tele_speaker": 1,
+                "tele_unamplified_speaker": 1,
                 "tele_amplified": 3,
                 "tele_amp": 2,
+                "tele_total_speaker_notes": 4,
+                "trap": 0,
             },
             {
                 "scout_name": "NITHMI JAYASUNDARA",
@@ -135,9 +155,11 @@ class TestSimPrecisionCalc:
                 "alliance_color_is_red": True,
                 "auto_speaker": 0,
                 "auto_amp": 2,
-                "tele_speaker": 1,
+                "tele_unamplified_speaker": 1,
                 "tele_amplified": 3,
                 "tele_amp": 2,
+                "tele_total_speaker_notes": 4,
+                "trap": 0,
             },
             {
                 "scout_name": "RAY FABIONAR",
@@ -146,9 +168,11 @@ class TestSimPrecisionCalc:
                 "alliance_color_is_red": True,
                 "auto_speaker": 0,
                 "auto_amp": 2,
-                "tele_speaker": 1,
+                "tele_unamplified_speaker": 1,
                 "tele_amplified": 3,
                 "tele_amp": 2,
+                "tele_total_speaker_notes": 4,
+                "trap": 0,
             },
             # Match 2
             {
@@ -158,9 +182,11 @@ class TestSimPrecisionCalc:
                 "alliance_color_is_red": False,
                 "auto_speaker": 2,
                 "auto_amp": 2,
-                "tele_speaker": 2,
+                "tele_unamplified_speaker": 2,
                 "tele_amplified": 1,
                 "tele_amp": 2,
+                "tele_total_speaker_notes": 3,
+                "trap": 0,
             },
             {
                 "scout_name": "KATHY LI",
@@ -169,9 +195,11 @@ class TestSimPrecisionCalc:
                 "alliance_color_is_red": False,
                 "auto_speaker": 3,
                 "auto_amp": 0,
-                "tele_speaker": 1,
+                "tele_unamplified_speaker": 1,
                 "tele_amplified": 3,
                 "tele_amp": 2,
+                "tele_total_speaker_notes": 4,
+                "trap": 0,
             },
             {
                 "scout_name": "KATE UNGER",
@@ -180,9 +208,11 @@ class TestSimPrecisionCalc:
                 "alliance_color_is_red": False,
                 "auto_speaker": 3,
                 "auto_amp": 0,
-                "tele_speaker": 1,
+                "tele_unamplified_speaker": 1,
                 "tele_amplified": 3,
                 "tele_amp": 2,
+                "tele_total_speaker_notes": 4,
+                "trap": 0,
             },
         ]
 
@@ -307,7 +337,7 @@ class TestSimPrecisionCalc:
                     },
                     False: {},
                 },
-                "tele_speaker_precision": {
+                "tele_unamplified_speaker_precision": {
                     True: {
                         "KATE UNGER": 0.0,
                         "NITHMI JAYASUNDARA": 0.0,
@@ -329,6 +359,28 @@ class TestSimPrecisionCalc:
                     },
                     False: {},
                 },
+                "tele_total_speaker_precision": {
+                    True: {
+                        "KATHY LI": 1.5,
+                        "KATE UNGER": 1.5,
+                        "NITHMI JAYASUNDARA": 1.5,
+                        "RAY FABIONAR": 1.5,
+                        "ALISON LIN": 0.0,
+                        "NATHAN MILLS": 3.0,
+                    },
+                    False: {},
+                },
+                "trap_precision": {
+                    True: {
+                        "KATHY LI": 1.5,
+                        "KATE UNGER": 1.5,
+                        "NITHMI JAYASUNDARA": 1.5,
+                        "RAY FABIONAR": 1.5,
+                        "ALISON LIN": 0.0,
+                        "NATHAN MILLS": 3.0,
+                    },
+                    False: {},
+                },
             },
             2: {
                 "sim_precision": {
@@ -347,13 +399,21 @@ class TestSimPrecisionCalc:
                     True: {},
                     False: {"KATE UNGER": -15.0, "NATHAN MILLS": -15.0, "KATHY LI": -15.0},
                 },
-                "tele_speaker_precision": {
+                "tele_unamplified_speaker_precision": {
                     True: {},
                     False: {"KATE UNGER": -6.0, "NATHAN MILLS": -6.0, "KATHY LI": -6.0},
                 },
                 "tele_amp_precision": {
                     True: {},
                     False: {"KATE UNGER": -4.0, "NATHAN MILLS": -4.0, "KATHY LI": -4.0},
+                },
+                "tele_total_speaker_precision": {
+                    True: {},
+                    False: {"NATHAN MILLS": -6.0, "KATHY LI": -6.0, "KATE UNGER": -6.0},
+                },
+                "trap_precision": {
+                    True: {},
+                    False: {"NATHAN MILLS": 0.0, "KATHY LI": 0.0, "KATE UNGER": 0.0},
                 },
             },
         }
@@ -363,16 +423,20 @@ class TestSimPrecisionCalc:
                 "auto_speaker_precision": {True: 10, False: 25},
                 "auto_amp_precision": {True: 24, False: 4},
                 "tele_amplified_precision": {True: 40, False: 15},
-                "tele_speaker_precision": {True: 6, False: 2},
+                "tele_unamplified_speaker_precision": {True: 6, False: 2},
                 "tele_amp_precision": {True: 7, False: 7},
+                "tele_total_speaker_precision": {True: 11, False: 4},
+                "trap_precision": {True: 0, False: 0},
             },
             2: {
                 "sim_precision": {True: 96, False: 44},
                 "auto_speaker_precision": {True: 45, False: 20},
                 "auto_amp_precision": {True: 4, False: 0},
                 "tele_amplified_precision": {True: 35, False: 20},
-                "tele_speaker_precision": {True: 6, False: 2},
+                "tele_unamplified_speaker_precision": {True: 6, False: 2},
                 "tele_amp_precision": {True: 6, False: 2},
+                "tele_total_speaker_precision": {True: 10, False: 5},
+                "trap_precision": {True: 0, False: 0},
             },
         }
         test_aim_reported_scores = {
@@ -409,7 +473,7 @@ class TestSimPrecisionCalc:
                     },
                     False: {},
                 },
-                "tele_speaker_precision": {
+                "tele_unamplified_speaker_precision": {
                     True: {
                         "4414": {"KATHY LI": 2},
                         "1678": {"ALISON LIN": 2, "NATHAN MILLS": 2},
@@ -422,6 +486,22 @@ class TestSimPrecisionCalc:
                         "4414": {"KATHY LI": 3},
                         "1678": {"ALISON LIN": 0, "NATHAN MILLS": 0},
                         "589": {"KATE UNGER": 2, "NITHMI JAYASUNDARA": 2, "RAY FABIONAR": 2},
+                    },
+                    False: {},
+                },
+                "tele_total_speaker_precision": {
+                    True: {
+                        "1678": {"ALISON LIN": 4, "NATHAN MILLS": 1},
+                        "589": {"KATE UNGER": 4, "NITHMI JAYASUNDARA": 4, "RAY FABIONAR": 4},
+                        "4414": {"KATHY LI": 3},
+                    },
+                    False: {},
+                },
+                "trap_precision": {
+                    True: {
+                        "4414": {"KATHY LI": 0},
+                        "1678": {"ALISON LIN": 0, "NATHAN MILLS": 0},
+                        "589": {"KATE UNGER": 0, "NITHMI JAYASUNDARA": 0, "RAY FABIONAR": 0},
                     },
                     False: {},
                 },
@@ -459,7 +539,7 @@ class TestSimPrecisionCalc:
                         "589": {"KATE UNGER": 15},
                     },
                 },
-                "tele_speaker_precision": {
+                "tele_unamplified_speaker_precision": {
                     True: {},
                     False: {
                         "4414": {"KATHY LI": 2},
@@ -473,6 +553,22 @@ class TestSimPrecisionCalc:
                         "4414": {"KATHY LI": 2},
                         "1678": {"NATHAN MILLS": 2},
                         "589": {"KATE UNGER": 2},
+                    },
+                },
+                "tele_total_speaker_precision": {
+                    True: {},
+                    False: {
+                        "589": {"KATE UNGER": 4},
+                        "4414": {"KATHY LI": 4},
+                        "1678": {"NATHAN MILLS": 3},
+                    },
+                },
+                "trap_precision": {
+                    True: {},
+                    False: {
+                        "589": {"KATE UNGER": 0},
+                        "4414": {"KATHY LI": 0},
+                        "1678": {"NATHAN MILLS": 0},
                     },
                 },
             },
