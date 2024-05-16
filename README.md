@@ -3,6 +3,8 @@
 ![pytest](https://github.com/frc1678/server/workflows/pytest/badge.svg)
 ![lint](https://github.com/frc1678/server/workflows/lint/badge.svg)
 
+### Project Management
+The [project management board](https://github.com/orgs/frc1678/projects/11/views/1) contains all current tasks and is an easy way to get a general idea of the current state of Back-End.
 
 ### Setting Up a Server Clone
 For a full in-depth guide, please view this [document](https://docs.google.com/document/d/1we0nVUmStMlVM6SrkcGMQf_yKRHrKUWr4VFLOseBXjQ/edit?usp=sharing).
