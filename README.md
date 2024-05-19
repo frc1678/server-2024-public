@@ -3,9 +3,6 @@
 ![pytest](https://github.com/frc1678/server/workflows/pytest/badge.svg)
 ![lint](https://github.com/frc1678/server/workflows/lint/badge.svg)
 
-### Project Management
-The [task board](https://github.com/orgs/frc1678/projects/11/views/1) contains all current tasks and is an easy way to get a general idea of the current state of Back-End.
-
 ### Setting Up a Server Clone
 For a full in-depth guide, please view this [document](https://docs.google.com/document/d/1we0nVUmStMlVM6SrkcGMQf_yKRHrKUWr4VFLOseBXjQ/edit?usp=sharing).
 
@@ -24,7 +21,3 @@ For a full in-depth guide, please view this [document](https://docs.google.com/d
 
 ### Running Server
 To run the server in production mode on Linux or MacOS make sure to run `export SCOUTING_SERVER_ENV=production`. To take the server out of production mode, run `unset SCOUTING_SERVER_ENV`
-
-
-### Useful Links
-- The infamous [backlog](https://github.com/orgs/frc1678/projects/9)
